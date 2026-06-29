@@ -1,0 +1,2 @@
+FRED API: fb0aa2a28aa9e3cf91f51f541474174f
+Exchange Rate API: 2b31f554c3d67c10fa4e2237
