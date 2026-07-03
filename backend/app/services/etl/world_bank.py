@@ -69,8 +69,9 @@ def fetch_world_bank(code: str, session: Session) -> int:
         except (ValueError, TypeError):
             continue
         value = rec.get("value")
-        if value is not None:
-            value = float(value)
+        if value is None:
+            continue
+        value = float(value)
 
         stmt = (
             sqlite_insert(HistoricalData.__table__)
