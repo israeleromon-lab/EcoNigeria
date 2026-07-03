@@ -100,14 +100,14 @@ export function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-border space-y-1">
-        <Link href="#" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-          <Settings className="w-4 h-4" />
-          Settings
+        <Link href="/api/docs" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+          <Database className="w-4 h-4" />
+          Public API Docs
         </Link>
-        <Link href="#" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+        <a href="https://github.com/israeleromon-lab/EcoNigeria" target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
           <HelpCircle className="w-4 h-4" />
-          Help & Support
-        </Link>
+          Contribute on GitHub
+        </a>
       </div>
     </aside>
   );

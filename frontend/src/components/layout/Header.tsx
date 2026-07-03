@@ -22,13 +22,21 @@ export function Header() {
       </div>
       
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border border-card"></span>
-        </Button>
-        <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary border border-primary/30 cursor-pointer hover:bg-primary/30 transition-colors">
-          <UserCircle className="w-5 h-5" />
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+          </span>
+          Public Open Source
         </div>
+        <a 
+          href="https://github.com/israeleromon-lab/EcoNigeria" 
+          target="_blank" 
+          rel="noreferrer"
+          className="h-9 px-4 rounded-md bg-secondary flex items-center justify-center text-secondary-foreground hover:bg-secondary/80 transition-colors text-sm font-medium"
+        >
+          View Source
+        </a>
       </div>
     </header>
   );
