@@ -8,7 +8,8 @@ export const INDICATORS = [
   { id: "BX.KLT.DINV.CD.WD", slug: "fdi", name: "Foreign Direct Investment", unit: "USD", color: "#14b8a6" },
   { id: "DCOILBRENTEU", slug: "brent-oil", name: "Brent Oil Price", unit: "USD/barrel", color: "#f97316" },
   { id: "FEDFUNDS", slug: "fed-funds", name: "Federal Funds Rate", unit: "%", color: "#eab308" },
-  { id: "NGN_USD", slug: "exchange-rate", name: "Exchange Rate (NGN/USD)", unit: "NGN", color: "#6366f1" }
+  { id: "NGN_USD", slug: "exchange-rate", name: "Exchange Rate (NGN/USD)", unit: "NGN", color: "#6366f1" },
+  { id: "SI.POV.NAHC", slug: "poverty-rate", name: "Poverty Rate", unit: "%", color: "#ef4444" }
 ];
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";

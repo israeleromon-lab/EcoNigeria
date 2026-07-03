@@ -30,6 +30,7 @@ INDICATORS = [
     {"code": "DCOILBRENTEU", "name": "Brent Oil Price", "category": "Energy", "source": "FRED", "unit": "USD/barrel", "description": "Brent crude oil price in USD per barrel"},
     {"code": "FEDFUNDS", "name": "Federal Funds Rate", "category": "Monetary Policy", "source": "FRED", "unit": "%", "description": "US Federal Funds effective rate"},
     {"code": "NGN_USD", "name": "Exchange Rate (NGN/USD)", "category": "Currency", "source": "Exchange Rate API", "unit": "NGN per USD", "description": "Nigerian Naira to US Dollar exchange rate"},
+    {"code": "SI.POV.NAHC", "name": "Poverty Rate", "category": "Social", "source": "World Bank", "unit": "%", "description": "National poverty headcount ratio"},
 ]
 
 # Map CSV column names (from raw/ individual files) → indicator codes
@@ -44,6 +45,7 @@ _INDIVIDUAL_CSV_MAP: dict[str, tuple[str, str]] = {
     "brent_oil.csv": ("value", "DCOILBRENTEU"),
     "federal_funds.csv": ("value", "FEDFUNDS"),
     "government_debt.csv": ("value", "GC.DOD.TOTL.GD.ZS"),
+    "poverty_rate.csv": ("value", "SI.POV.NAHC"),
 }
 
 # Columns in the combined CSV → indicator codes

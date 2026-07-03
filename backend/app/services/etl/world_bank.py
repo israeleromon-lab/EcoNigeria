@@ -29,6 +29,7 @@ WB_CODES = [
     "SL.UEM.TOTL.ZS",
     "GC.DOD.TOTL.GD.ZS",
     "BX.KLT.DINV.CD.WD",
+    "SI.POV.NAHC",
 ]
 
 
