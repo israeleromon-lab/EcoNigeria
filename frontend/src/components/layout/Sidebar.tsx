@@ -18,13 +18,21 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 border-r border-border bg-card/50 backdrop-blur-sm hidden md:flex flex-col h-screen sticky top-0">
+    <aside className="w-64 border-r border-border/40 bg-background/50 backdrop-blur-xl saturate-150 shadow-[4px_0_24px_rgba(0,0,0,0.02)] hidden md:flex flex-col h-screen sticky top-0">
       <div className="p-6">
-        <h2 className="text-2xl font-bold tracking-tight text-primary flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-            <BarChart3 className="w-5 h-5 text-primary-foreground" />
+        <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
+          <div className="relative w-8 h-8 flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary to-emerald-400 rounded-xl opacity-60 blur-[3px]"></div>
+            <div className="relative w-full h-full bg-gradient-to-tr from-primary to-emerald-500 rounded-xl flex items-center justify-center border border-white/20 shadow-lg shadow-primary/30">
+               <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                 <path d="M3 3v18h18" />
+                 <path d="m19 9-5 5-4-4-3 3" />
+               </svg>
+            </div>
           </div>
-          EconoNigeria
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500">
+            EconoNigeria
+          </span>
         </h2>
       </div>
 

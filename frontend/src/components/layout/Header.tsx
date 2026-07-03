@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export function Header() {
   return (
-    <header className="h-16 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between px-6 sticky top-0 z-10">
+    <header className="h-16 border-b border-border/40 bg-background/50 backdrop-blur-xl saturate-150 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex items-center justify-between px-6 sticky top-0 z-10">
       <div className="flex items-center gap-4 flex-1">
         <Button variant="ghost" size="icon" className="md:hidden">
           <Menu className="w-5 h-5" />
