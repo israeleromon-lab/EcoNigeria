@@ -22,5 +22,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the backend source code
 COPY . .
 
-# Railway dynamic port mapping (do not use EXPOSE)
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Railway port mapping
+EXPOSE 8000
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port 8000"]
