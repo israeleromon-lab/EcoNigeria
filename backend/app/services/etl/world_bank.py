@@ -11,7 +11,7 @@ import warnings
 
 import requests
 from urllib3.exceptions import InsecureRequestWarning
-from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -40,7 +40,11 @@ def fetch_world_bank(code: str, session: Session) -> int:
     url = f"{settings.WORLD_BANK_BASE_URL}/country/NGA/indicator/{code}"
     params = {"format": "json", "per_page": 1000}
     resp = requests.get(url, params=params, timeout=30, verify=False)
-    resp.raise_for_status()
+    try:
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"  ⚠ Failed to fetch World Bank {code}: {e}")
+        return 0
 
     payload = resp.json()
     # World Bank returns [metadata, data_array]
@@ -69,10 +73,10 @@ def fetch_world_bank(code: str, session: Session) -> int:
             value = float(value)
 
         stmt = (
-            pg_insert(HistoricalData.__table__)
+            sqlite_insert(HistoricalData.__table__)
             .values(indicator_id=indicator.id, country_code="NGA", date=year, value=value)
             .on_conflict_do_update(
-                constraint="uq_hist_indicator_country_date",
+                index_elements=['indicator_id', 'country_code', 'date'],
                 set_={"value": value},
             )
         )

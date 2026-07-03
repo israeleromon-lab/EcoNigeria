@@ -12,7 +12,7 @@ from __future__ import annotations
 from collections import defaultdict
 
 import requests
-from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -33,7 +33,11 @@ def fetch_fred(code: str, session: Session) -> int:
         "file_type": "json",
     }
     resp = requests.get(url, params=params, timeout=30)
-    resp.raise_for_status()
+    try:
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"  ⚠ Failed to fetch FRED {code} (missing API key or network error): {e}")
+        return 0
 
     observations = resp.json().get("observations", [])
     if not observations:
@@ -63,10 +67,10 @@ def fetch_fred(code: str, session: Session) -> int:
     for year, vals in sorted(yearly.items()):
         avg_value = round(sum(vals) / len(vals), 4)
         stmt = (
-            pg_insert(HistoricalData.__table__)
+            sqlite_insert(HistoricalData.__table__)
             .values(indicator_id=indicator.id, country_code="NGA", date=year, value=avg_value)
             .on_conflict_do_update(
-                constraint="uq_hist_indicator_country_date",
+                index_elements=['indicator_id', 'country_code', 'date'],
                 set_={"value": avg_value},
             )
         )

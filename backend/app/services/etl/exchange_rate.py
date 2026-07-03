@@ -13,7 +13,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 import requests
-from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -25,6 +25,10 @@ def fetch_exchange_rate(session: Session) -> float | None:
 
     Returns the rate on success, None on failure.
     """
+    if not settings.EXCHANGE_RATE_API_KEY:
+        print("  ⚠ Exchange Rate API key is missing")
+        return None
+
     url = f"https://v6.exchangerate-api.com/v6/{settings.EXCHANGE_RATE_API_KEY}/latest/USD"
     resp = requests.get(url, timeout=30)
     resp.raise_for_status()
@@ -46,10 +50,10 @@ def fetch_exchange_rate(session: Session) -> float | None:
 
     current_year = datetime.now(timezone.utc).year
     stmt = (
-        pg_insert(HistoricalData.__table__)
+        sqlite_insert(HistoricalData.__table__)
         .values(indicator_id=indicator.id, country_code="NGA", date=current_year, value=float(ngn_rate))
         .on_conflict_do_update(
-            constraint="uq_hist_indicator_country_date",
+            index_elements=['indicator_id', 'country_code', 'date'],
             set_={"value": float(ngn_rate)},
         )
     )
