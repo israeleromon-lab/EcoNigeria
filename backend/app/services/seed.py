@@ -31,6 +31,7 @@ INDICATORS = [
     {"code": "FEDFUNDS", "name": "Federal Funds Rate", "category": "Monetary Policy", "source": "FRED", "unit": "%", "description": "US Federal Funds effective rate"},
     {"code": "NGN_USD", "name": "Exchange Rate (NGN/USD)", "category": "Currency", "source": "Exchange Rate API", "unit": "NGN per USD", "description": "Nigerian Naira to US Dollar exchange rate"},
     {"code": "SI.POV.NAHC", "name": "Poverty Rate", "category": "Social", "source": "World Bank", "unit": "%", "description": "National poverty headcount ratio"},
+    {"code": "NG.SEC.INCIDENTS", "name": "Level of Insecurity", "category": "Social", "source": "ACLED/Proxy", "unit": "Incidents", "description": "Annual recorded security incidents and armed conflict events"},
 ]
 
 # Map CSV column names (from raw/ individual files) → indicator codes
@@ -46,6 +47,7 @@ _INDIVIDUAL_CSV_MAP: dict[str, tuple[str, str]] = {
     "federal_funds.csv": ("value", "FEDFUNDS"),
     "government_debt.csv": ("value", "GC.DOD.TOTL.GD.ZS"),
     "poverty_rate.csv": ("value", "SI.POV.NAHC"),
+    "insecurity_rate.csv": ("value", "NG.SEC.INCIDENTS"),
 }
 
 # Columns in the combined CSV → indicator codes
