@@ -30,7 +30,7 @@ export function Sidebar({ className, onLinkClick }: { className?: string, onLink
                </svg>
             </div>
           </div>
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500">
+          <span className="text-foreground tracking-tight font-extrabold">
             EconoNigeria
           </span>
         </h2>
