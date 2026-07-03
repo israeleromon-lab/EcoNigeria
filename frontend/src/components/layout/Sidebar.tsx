@@ -14,11 +14,11 @@ import {
   BarChart3,
 } from "lucide-react";
 
-export function Sidebar() {
+export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 border-r border-border/40 bg-background/50 backdrop-blur-xl saturate-150 shadow-[4px_0_24px_rgba(0,0,0,0.02)] hidden md:flex flex-col h-screen sticky top-0">
+    <aside className={cn("w-64 border-r border-border/40 bg-background/50 backdrop-blur-xl saturate-150 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col h-[100dvh] sticky top-0", className)}>
       <div className="p-6">
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
           <div className="relative w-8 h-8 flex items-center justify-center">

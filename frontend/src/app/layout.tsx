@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Header } from "@/components/layout/Header";
+import { ClientLayout } from "@/components/layout/ClientLayout";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
@@ -30,17 +29,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            <div className="flex h-[100dvh] overflow-hidden w-full">
-              <Sidebar />
-              <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden relative w-full">
-                <Header />
-                <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 md:p-8 bg-background">
-                  <div className="max-w-7xl mx-auto w-full">
-                    {children}
-                  </div>
-                </main>
-              </div>
-            </div>
+            <ClientLayout>
+              {children}
+            </ClientLayout>
           </QueryProvider>
         </ThemeProvider>
       </body>

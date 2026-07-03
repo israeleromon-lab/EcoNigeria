@@ -2,15 +2,15 @@
 
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-import { MobileNav } from "@/components/layout/MobileNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-export function Header() {
+export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
     <header className="h-16 border-b border-border/40 bg-background/50 backdrop-blur-xl saturate-150 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex items-center justify-between px-6 sticky top-0 z-10">
       <div className="flex items-center gap-4 flex-1">
-        <MobileNav />
+        <Button variant="ghost" size="icon" className="md:hidden" onClick={onMenuClick}>
+          <Menu className="w-5 h-5" />
+        </Button>
       </div>
       
       <div className="flex items-center gap-3 sm:gap-4">
