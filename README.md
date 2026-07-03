@@ -13,7 +13,7 @@
 
 **Democratizing economic intelligence for 230 million Nigerians**
 
-[Live Demo](#) · [API Docs](#) · [Documentation](docs/) · [Screenshots](#screenshots)
+[Live Demo](https://eco-nigeria-gules.vercel.app/) · [API Docs](#) · [Documentation](docs/) · [Screenshots](#screenshots)
 
 </div>
 
@@ -216,6 +216,7 @@ EconoNigeria democratizes access to economic intelligence by providing:
 ## 📸 Screenshots
 
 *Coming soon — see `screenshots/` directory*
+
 
 ![EconoNigeria Dashboard 1](reports/1%20(1).jpeg)
 
