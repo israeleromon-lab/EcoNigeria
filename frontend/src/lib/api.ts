@@ -17,7 +17,7 @@ export async function fetchIndicatorList() {
 }
 
 export async function fetchIndicatorData(indicatorCode: string) {
-  const res = await fetch(`${API_BASE_URL}/api/indicators/${indicatorCode}`, { next: { revalidate: 3600 } });
+  const res = await fetch(`${API_BASE_URL}/api/indicators/${indicatorCode}/data`, { next: { revalidate: 3600 } });
   if (!res.ok) throw new Error(`Failed to fetch data for ${indicatorCode}`);
   return res.json();
 }

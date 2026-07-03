@@ -34,7 +34,7 @@ def save_report(request: SaveReportRequest, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/")
+@router.get("")
 def get_saved_reports(db: Session = Depends(get_db)):
     reports = db.query(SavedReport).order_by(SavedReport.created_at.desc()).all()
     
