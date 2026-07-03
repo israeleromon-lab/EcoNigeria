@@ -90,3 +90,17 @@ class ModelMetric(Base):
     trained_at = Column(DateTime(timezone=True), default=_utcnow)
 
     indicator = relationship("Indicator", back_populates="metrics")
+
+
+class SavedReport(Base):
+    """User-saved AI Economic Analyst report (Phase 3)."""
+
+    __tablename__ = "saved_reports"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String(200), nullable=False)
+    summary = Column(Text, nullable=False)
+    insights = Column(Text, nullable=False) # Store JSON string of insights
+    outlook = Column(String(50))
+    risk_factors = Column(Text) # Store JSON string of risk factors
+    created_at = Column(DateTime(timezone=True), default=_utcnow)

@@ -33,3 +33,27 @@ export async function fetchAIAnalystReport() {
   if (!res.ok) throw new Error(`Failed to fetch AI Analyst report`);
   return res.json();
 }
+
+export async function saveAIReport(reportData: any) {
+  const res = await fetch(`${API_BASE_URL}/api/research/save`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(reportData),
+  });
+  if (!res.ok) throw new Error(`Failed to save AI report`);
+  return res.json();
+}
+
+export async function getSavedReports() {
+  const res = await fetch(`${API_BASE_URL}/api/research`, { next: { revalidate: 0 } });
+  if (!res.ok) throw new Error(`Failed to fetch saved reports`);
+  return res.json();
+}
+
+export async function runETL() {
+  const res = await fetch(`${API_BASE_URL}/api/admin/run-etl`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error(`Failed to trigger ETL pipeline`);
+  return res.json();
+}

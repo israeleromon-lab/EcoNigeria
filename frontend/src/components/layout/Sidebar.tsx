@@ -4,19 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { INDICATORS } from "@/lib/constants";
-import { LayoutDashboard, Settings, HelpCircle, BarChart3, Menu } from "lucide-react";
+import {
+  LayoutDashboard,
+  LineChart,
+  BookOpen,
+  Settings,
+  Database,
+  HelpCircle,
+  BarChart3,
+} from "lucide-react";
 
 export function Sidebar() {
   const pathname = usePathname();
-
-  const routes = [
-    { name: "Overview", path: "/", icon: LayoutDashboard },
-    ...INDICATORS.map(ind => ({
-      name: ind.name,
-      path: `/${ind.slug}`,
-      icon: BarChart3
-    }))
-  ];
 
   return (
     <aside className="w-64 border-r border-border bg-card/50 backdrop-blur-sm hidden md:flex flex-col h-screen sticky top-0">
@@ -46,20 +45,45 @@ export function Sidebar() {
             <LayoutDashboard className="w-4 h-4" />
             Overview
           </Link>
+          
+          <Link
+            href="/research"
+            className={cn(
+              "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors mt-1",
+              pathname === "/research" 
+                ? "bg-primary/10 text-primary" 
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+          >
+            <BookOpen className="w-4 h-4" />
+            Research Hub
+          </Link>
+          
+          <Link
+            href="/admin"
+            className={cn(
+              "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors mt-1",
+              pathname === "/admin" 
+                ? "bg-primary/10 text-primary" 
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+          >
+            <Database className="w-4 h-4" />
+            Admin Dashboard
+          </Link>
         </div>
 
         <div>
           <p className="px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
             Economic Indicators
           </p>
-          {INDICATORS.map((route) => {
-            const Icon = route.icon;
-            const isActive = pathname === route.path;
+          {INDICATORS.map((ind) => {
+            const isActive = pathname === `/${ind.slug}`;
             
             return (
               <Link
-                key={route.path}
-                href={route.path}
+                key={ind.slug}
+                href={`/${ind.slug}`}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                   isActive
@@ -67,8 +91,8 @@ export function Sidebar() {
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
-                <Icon className="w-4 h-4" />
-                {route.name}
+                <LineChart className="w-4 h-4" />
+                {ind.name}
               </Link>
             );
           })}

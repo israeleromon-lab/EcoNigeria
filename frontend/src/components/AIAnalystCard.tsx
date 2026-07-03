@@ -1,18 +1,43 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAIAnalystReport } from "@/lib/api";
+import { fetchAIAnalystReport, saveAIReport } from "@/lib/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, Sparkles } from "lucide-react";
+import { AlertCircle, Sparkles, Save, Check } from "lucide-react";
 
 export function AIAnalystCard() {
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["ai_analyst"],
     queryFn: fetchAIAnalystReport,
     enabled: false, // Wait for user click to generate
   });
+
+  const handleSave = async () => {
+    if (!data?.report) return;
+    
+    setIsSaving(true);
+    try {
+      await saveAIReport({
+        title: `Economic Outlook - ${new Date().toLocaleDateString()}`,
+        summary: data.report.summary,
+        insights: data.report.key_insights || [],
+        outlook: data.report.outlook || "Neutral",
+        risk_factors: data.report.risk_factors || []
+      });
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 3000);
+    } catch (err) {
+      console.error("Failed to save report:", err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <Card className="bg-card/50 border-border/50 h-full flex flex-col">
@@ -53,7 +78,7 @@ export function AIAnalystCard() {
               </ul>
             </div>
             
-            <div className="grid grid-cols-2 gap-4 mt-auto pt-4">
+            <div className="grid grid-cols-2 gap-4 mt-auto pt-4 border-t border-border mt-4 pb-2">
                <div>
                  <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Outlook</span>
                  <p className="font-medium">{data.report.outlook}</p>
@@ -63,6 +88,16 @@ export function AIAnalystCard() {
                  <p className="font-medium text-destructive">{data.report.risk_factors?.[0]}</p>
                </div>
             </div>
+            
+            <Button 
+              variant="outline" 
+              className="w-full gap-2 mt-2" 
+              onClick={handleSave}
+              disabled={isSaving || isSaved}
+            >
+              {isSaved ? <Check className="w-4 h-4 text-green-500" /> : <Save className="w-4 h-4" />}
+              {isSaved ? "Saved to Research Hub" : isSaving ? "Saving..." : "Save to Research Hub"}
+            </Button>
           </div>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-6">

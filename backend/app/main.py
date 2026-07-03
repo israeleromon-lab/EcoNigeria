@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
-from app.routers import dashboard, indicators, forecasts, analyst
+from app.routers import dashboard, indicators, forecasts, analyst, research, admin
 
 
 # ── Lifespan ─────────────────────────────────────────────────────────
@@ -48,6 +48,8 @@ app.include_router(dashboard.router)
 app.include_router(indicators.router)
 app.include_router(forecasts.router)
 app.include_router(analyst.router)
+app.include_router(research.router)
+app.include_router(admin.router)
 
 
 @app.get("/", tags=["health"])
