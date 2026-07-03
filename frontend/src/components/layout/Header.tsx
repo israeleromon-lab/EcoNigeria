@@ -1,8 +1,7 @@
 "use client";
 
-import { Bell, Search, UserCircle, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export function Header() {
   return (
@@ -11,14 +10,6 @@ export function Header() {
         <Button variant="ghost" size="icon" className="md:hidden">
           <Menu className="w-5 h-5" />
         </Button>
-        <div className="relative w-full max-w-md hidden md:block">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search indicators, news, reports..."
-            className="w-full bg-background/50 pl-9 border-border/50 focus-visible:ring-primary/50"
-          />
-        </div>
       </div>
       
       <div className="flex items-center gap-4">
