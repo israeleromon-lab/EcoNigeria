@@ -43,8 +43,9 @@ export default function IndicatorPage() {
     value: d.value
   })).sort((a: any, b: any) => a.year - b.year) || [];
 
-  const latestValue = chartData.length > 0 ? chartData[chartData.length - 1].value : null;
-  const latestYear = chartData.length > 0 ? chartData[chartData.length - 1].year : null;
+  const validData = chartData.filter((d: any) => d.value !== null && d.value !== undefined);
+  const latestValue = validData.length > 0 ? validData[validData.length - 1].value : null;
+  const latestYear = validData.length > 0 ? validData[validData.length - 1].year : null;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
