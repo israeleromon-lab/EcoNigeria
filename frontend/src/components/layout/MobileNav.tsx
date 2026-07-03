@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -19,7 +20,13 @@ import {
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  // Handle client-side mounting for Portal
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close when pathname changes
   useEffect(() => {
@@ -38,22 +45,18 @@ export function MobileNav() {
     };
   }, [open]);
 
-  return (
+  const sidebarContent = (
     <>
-      <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen(true)}>
-        <Menu className="w-5 h-5" />
-        <span className="sr-only">Toggle mobile menu</span>
-      </Button>
-
-      {open && (
-        <div 
-          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden transition-all"
-          onClick={() => setOpen(false)}
-        />
-      )}
+      <div 
+        className={cn(
+          "fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm transition-opacity duration-300 md:hidden",
+          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        )}
+        onClick={() => setOpen(false)}
+      />
 
       <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-72 bg-background/95 backdrop-blur-xl border-r border-border/40 shadow-2xl transform transition-transform duration-300 ease-in-out md:hidden flex flex-col",
+        "fixed inset-y-0 left-0 z-[110] w-72 bg-background/95 backdrop-blur-2xl border-r border-border/40 shadow-2xl transform transition-transform duration-300 ease-out md:hidden flex flex-col",
         open ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="p-4 flex items-center justify-between border-b border-border/40">
@@ -165,6 +168,17 @@ export function MobileNav() {
           </div>
         </nav>
       </div>
+    </>
+  );
+
+  return (
+    <>
+      <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen(true)}>
+        <Menu className="w-5 h-5" />
+        <span className="sr-only">Toggle mobile menu</span>
+      </Button>
+
+      {mounted && createPortal(sidebarContent, document.body)}
     </>
   );
 }
