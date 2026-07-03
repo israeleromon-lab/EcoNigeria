@@ -217,6 +217,12 @@ EconoNigeria democratizes access to economic intelligence by providing:
 
 *Coming soon — see `screenshots/` directory*
 
+![EconoNigeria Dashboard 1](reports/1%20(1).jpeg)
+
+![EconoNigeria Dashboard 2](reports/1%20(2).jpeg)
+
+![EconoNigeria Dashboard 3](reports/1%20(3).jpeg)
+
 ---
 
 ## 🗺️ Future Work
