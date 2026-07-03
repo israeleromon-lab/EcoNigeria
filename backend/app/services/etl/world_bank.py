@@ -39,8 +39,8 @@ def fetch_world_bank(code: str, session: Session) -> int:
     """
     url = f"{settings.WORLD_BANK_BASE_URL}/country/NGA/indicator/{code}"
     params = {"format": "json", "per_page": 1000}
-    resp = requests.get(url, params=params, timeout=30, verify=False)
     try:
+        resp = requests.get(url, params=params, timeout=30, verify=False)
         resp.raise_for_status()
     except requests.exceptions.RequestException as e:
         print(f"  ⚠ Failed to fetch World Bank {code}: {e}")

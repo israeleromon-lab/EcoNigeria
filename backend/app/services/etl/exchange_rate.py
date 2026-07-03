@@ -29,9 +29,13 @@ def fetch_exchange_rate(session: Session) -> float | None:
         print("  ⚠ Exchange Rate API key is missing")
         return None
 
-    url = f"https://v6.exchangerate-api.com/v6/{settings.EXCHANGE_RATE_API_KEY}/latest/USD"
-    resp = requests.get(url, timeout=30)
-    resp.raise_for_status()
+    try:
+        url = f"https://v6.exchangerate-api.com/v6/{settings.EXCHANGE_RATE_API_KEY}/latest/USD"
+        resp = requests.get(url, timeout=30, verify=False)
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"  ⚠ Failed to fetch Exchange Rate (missing API key or network error): {e}")
+        return None
 
     data = resp.json()
     if data.get("result") != "success":

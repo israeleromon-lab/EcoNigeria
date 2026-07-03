@@ -32,8 +32,8 @@ def fetch_fred(code: str, session: Session) -> int:
         "api_key": settings.FRED_API_KEY,
         "file_type": "json",
     }
-    resp = requests.get(url, params=params, timeout=30)
     try:
+        resp = requests.get(url, params=params, timeout=30, verify=False)
         resp.raise_for_status()
     except requests.exceptions.RequestException as e:
         print(f"  ⚠ Failed to fetch FRED {code} (missing API key or network error): {e}")
