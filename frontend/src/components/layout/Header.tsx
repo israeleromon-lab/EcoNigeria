@@ -3,6 +3,8 @@
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import { ThemeToggle } from "@/components/ThemeToggle";
+
 export function Header() {
   return (
     <header className="h-16 border-b border-border/40 bg-background/50 backdrop-blur-xl saturate-150 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex items-center justify-between px-6 sticky top-0 z-10">
@@ -20,6 +22,7 @@ export function Header() {
           </span>
           Public Open Source
         </div>
+        <ThemeToggle />
         <a 
           href="https://github.com/israeleromon-lab/EcoNigeria" 
           target="_blank" 

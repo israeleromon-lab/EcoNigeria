@@ -4,6 +4,7 @@ import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,21 +21,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased overflow-hidden`}>
-        <QueryProvider>
-          <div className="flex h-screen overflow-hidden">
-            <Sidebar />
-            <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
-              <Header />
-              <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-background">
-                <div className="max-w-7xl mx-auto">
-                  {children}
-                </div>
-              </main>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProvider>
+            <div className="flex h-screen overflow-hidden">
+              <Sidebar />
+              <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+                <Header />
+                <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-background">
+                  <div className="max-w-7xl mx-auto">
+                    {children}
+                  </div>
+                </main>
+              </div>
             </div>
-          </div>
-        </QueryProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
