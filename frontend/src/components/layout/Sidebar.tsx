@@ -14,7 +14,7 @@ import {
   BarChart3,
 } from "lucide-react";
 
-export function Sidebar({ className }: { className?: string }) {
+export function Sidebar({ className, onLinkClick }: { className?: string, onLinkClick?: () => void }) {
   const pathname = usePathname();
 
   return (
@@ -43,6 +43,7 @@ export function Sidebar({ className }: { className?: string }) {
           </p>
           <Link
             href="/"
+            onClick={onLinkClick}
             className={cn(
               "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
               pathname === "/" 
@@ -56,6 +57,7 @@ export function Sidebar({ className }: { className?: string }) {
           
           <Link
             href="/research"
+            onClick={onLinkClick}
             className={cn(
               "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors mt-1",
               pathname === "/research" 
@@ -69,6 +71,7 @@ export function Sidebar({ className }: { className?: string }) {
           
           <Link
             href="/methodology"
+            onClick={onLinkClick}
             className={cn(
               "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors mt-1",
               pathname === "/methodology" 
@@ -82,6 +85,7 @@ export function Sidebar({ className }: { className?: string }) {
           
           <Link
             href="/admin"
+            onClick={onLinkClick}
             className={cn(
               "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors mt-1",
               pathname === "/admin" 
@@ -94,7 +98,7 @@ export function Sidebar({ className }: { className?: string }) {
           </Link>
         </div>
 
-        <div>
+        <div className="pb-6">
           <p className="px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
             Economic Indicators
           </p>
@@ -105,8 +109,9 @@ export function Sidebar({ className }: { className?: string }) {
               <Link
                 key={ind.slug}
                 href={`/${ind.slug}`}
+                onClick={onLinkClick}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors mb-1",
                   isActive
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -121,11 +126,11 @@ export function Sidebar({ className }: { className?: string }) {
       </nav>
 
       <div className="p-4 border-t border-border space-y-1">
-        <a href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/docs`} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+        <a href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/docs`} target="_blank" rel="noreferrer" onClick={onLinkClick} className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
           <Database className="w-4 h-4" />
           Public API Docs
         </a>
-        <a href="https://github.com/israeleromon-lab/EcoNigeria" target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+        <a href="https://github.com/israeleromon-lab/EcoNigeria" target="_blank" rel="noreferrer" onClick={onLinkClick} className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
           <HelpCircle className="w-4 h-4" />
           Contribute on GitHub
         </a>

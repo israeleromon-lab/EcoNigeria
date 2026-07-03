@@ -46,7 +46,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         "fixed inset-y-0 left-0 z-[110] w-72 transform transition-transform duration-300 ease-in-out md:hidden flex flex-col bg-background",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <Sidebar className="w-full flex h-[100dvh] border-r-0" />
+        <Sidebar className="w-full flex h-[100dvh] border-r-0" onLinkClick={() => setMobileMenuOpen(false)} />
       </div>
 
       {/* Main Content Area */}
