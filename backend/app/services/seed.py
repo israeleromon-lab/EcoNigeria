@@ -53,7 +53,7 @@ _COMBINED_CSV_MAP: dict[str, str] = {
 
 # ── paths ────────────────────────────────────────────────────────────
 
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent  # EconoNigeria/
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent  # backend/ or /app
 _RAW_DIR = _PROJECT_ROOT / "datasets" / "raw"
 _COMBINED_CSV = _PROJECT_ROOT / "datasets" / "nigeria_macro_data.csv"
 
