@@ -15,12 +15,17 @@ from app.database import engine, Base
 from app.routers import dashboard, indicators, forecasts, analyst, research, admin
 
 
+import threading
+from app.services.etl.runner import run_etl
+
 # ── Lifespan ─────────────────────────────────────────────────────────
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup: ensure all tables exist.  Shutdown: dispose engine."""
     Base.metadata.create_all(bind=engine)
+    # Automatically run the ETL pipeline in the background on startup
+    threading.Thread(target=run_etl, daemon=True).start()
     yield
     engine.dispose()
 
