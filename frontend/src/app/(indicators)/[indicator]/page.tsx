@@ -47,6 +47,25 @@ export default function IndicatorPage() {
   const latestValue = validData.length > 0 ? validData[validData.length - 1].value : null;
   const latestYear = validData.length > 0 ? validData[validData.length - 1].year : null;
 
+  const handleExportCSV = () => {
+    if (!validData || validData.length === 0) return;
+    
+    const headers = ["Year", "Value", "Unit"];
+    const csvContent = [
+      headers.join(","),
+      ...validData.map((row: any) => `${row.year},${row.value},${indicatorConfig?.unit}`)
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${indicatorConfig?.slug}_historical_data.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -59,7 +78,7 @@ export default function IndicatorPage() {
             Historical data, trends, and AI-driven analysis.
           </p>
         </div>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2" onClick={handleExportCSV} disabled={!validData || validData.length === 0}>
           <Download className="w-4 h-4" />
           Export CSV
         </Button>
