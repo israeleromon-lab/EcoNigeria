@@ -100,10 +100,10 @@ export function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-border space-y-1">
-        <Link href="/api/docs" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+        <a href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/docs`} target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
           <Database className="w-4 h-4" />
           Public API Docs
-        </Link>
+        </a>
         <a href="https://github.com/israeleromon-lab/EcoNigeria" target="_blank" rel="noreferrer" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
           <HelpCircle className="w-4 h-4" />
           Contribute on GitHub
