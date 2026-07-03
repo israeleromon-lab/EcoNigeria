@@ -30,12 +30,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            <div className="flex h-screen overflow-hidden">
+            <div className="flex h-[100dvh] overflow-hidden w-full">
               <Sidebar />
-              <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+              <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden relative w-full">
                 <Header />
-                <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-background">
-                  <div className="max-w-7xl mx-auto">
+                <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 md:p-8 bg-background">
+                  <div className="max-w-7xl mx-auto w-full">
                     {children}
                   </div>
                 </main>

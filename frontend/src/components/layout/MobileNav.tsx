@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { INDICATORS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +13,6 @@ import {
   LayoutDashboard,
   LineChart,
   BookOpen,
-  Settings,
   Database,
   HelpCircle,
 } from "lucide-react";
@@ -23,21 +21,47 @@ export function MobileNav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  // Close when pathname changes
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [open]);
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
-          <Menu className="w-5 h-5" />
-          <span className="sr-only">Toggle mobile menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="w-72 p-0 flex flex-col bg-background/90 backdrop-blur-xl border-border/40">
-        <div className="p-6 pb-2 border-b border-border/40">
-          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-            <div className="relative w-8 h-8 flex items-center justify-center">
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary to-emerald-400 rounded-xl opacity-60 blur-[3px]"></div>
-              <div className="relative w-full h-full bg-gradient-to-tr from-primary to-emerald-500 rounded-xl flex items-center justify-center border border-white/20 shadow-lg shadow-primary/30">
-                 <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <>
+      <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen(true)}>
+        <Menu className="w-5 h-5" />
+        <span className="sr-only">Toggle mobile menu</span>
+      </Button>
+
+      {open && (
+        <div 
+          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden transition-all"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      <div className={cn(
+        "fixed inset-y-0 left-0 z-50 w-72 bg-background/95 backdrop-blur-xl border-r border-border/40 shadow-2xl transform transition-transform duration-300 ease-in-out md:hidden flex flex-col",
+        open ? "translate-x-0" : "-translate-x-full"
+      )}>
+        <div className="p-4 flex items-center justify-between border-b border-border/40">
+          <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
+            <div className="relative w-6 h-6 flex items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary to-emerald-400 rounded-lg opacity-60 blur-[2px]"></div>
+              <div className="relative w-full h-full bg-gradient-to-tr from-primary to-emerald-500 rounded-lg flex items-center justify-center border border-white/20">
+                 <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                    <path d="M3 3v18h18" />
                    <path d="m19 9-5 5-4-4-3 3" />
                  </svg>
@@ -47,6 +71,9 @@ export function MobileNav() {
               EconoNigeria
             </span>
           </h2>
+          <Button variant="ghost" size="icon" onClick={() => setOpen(false)} className="h-8 w-8">
+            <X className="h-5 w-5" />
+          </Button>
         </div>
 
         <nav className="flex-1 overflow-y-auto p-4 space-y-1">
@@ -137,7 +164,7 @@ export function MobileNav() {
             })}
           </div>
         </nav>
-      </SheetContent>
-    </Sheet>
+      </div>
+    </>
   );
 }
