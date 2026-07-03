@@ -43,6 +43,7 @@ _INDIVIDUAL_CSV_MAP: dict[str, tuple[str, str]] = {
     "exchange_rate.csv": ("value", "NGN_USD"),
     "brent_oil.csv": ("value", "DCOILBRENTEU"),
     "federal_funds.csv": ("value", "FEDFUNDS"),
+    "government_debt.csv": ("value", "GC.DOD.TOTL.GD.ZS"),
 }
 
 # Columns in the combined CSV → indicator codes
