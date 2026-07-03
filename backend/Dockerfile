@@ -2,8 +2,9 @@
 FROM python:3.11-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies (required for some Python packages like psycopg and statsmodels)
 RUN apt-get update && apt-get install -y \
@@ -21,8 +22,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the backend source code
 COPY . .
 
-# Expose port
-EXPOSE 8000
-
-# Start FastAPI application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Railway dynamic port mapping (do not use EXPOSE)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
