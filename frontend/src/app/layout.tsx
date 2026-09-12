@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClientLayout } from "@/components/layout/ClientLayout";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-
-const inter = Inter({
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "EconoNigeria - Economic Intelligence Platform",
@@ -21,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased overflow-hidden`}>
+      <body className="min-h-screen bg-background text-foreground antialiased overflow-hidden" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

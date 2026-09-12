@@ -3,32 +3,63 @@
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
+  const pathname = usePathname();
+
+  const links = [
+    { name: "Overview", href: "/" },
+    { name: "Research", href: "/research" },
+    { name: "Methodology", href: "/methodology" },
+  ];
+
   return (
-    <header className="h-16 border-b border-border/40 bg-background/50 backdrop-blur-xl saturate-150 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex items-center justify-between px-6 sticky top-0 z-10">
-      <div className="flex items-center gap-4 flex-1">
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={onMenuClick}>
-          <Menu className="w-5 h-5" />
-        </Button>
+    <header className="h-16 border-b border-border bg-background flex items-center justify-between px-6 sticky top-0 z-50">
+      <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={onMenuClick}>
+            <Menu className="w-5 h-5" />
+          </Button>
+          <Link href="/" className="text-xl font-bold tracking-tight text-foreground uppercase border-2 border-foreground px-2 py-0.5">
+            EconoNigeria
+          </Link>
+        </div>
+        
+        <nav className="hidden md:flex items-center gap-6">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-foreground",
+                pathname === link.href ? "text-foreground border-b border-foreground" : "text-muted-foreground"
+              )}
+            >
+              {link.name}
+            </Link>
+          ))}
+        </nav>
       </div>
       
-      <div className="flex items-center gap-3 sm:gap-4">
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+      <div className="flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-2 px-3 py-1 text-xs font-semibold uppercase border border-border">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground"></span>
           </span>
-          Public Open Source
+          Live Data
         </div>
         <ThemeToggle />
         <a 
           href="https://github.com/israeleromon-lab/EcoNigeria" 
           target="_blank" 
           rel="noreferrer"
-          className="hidden sm:flex h-9 px-4 rounded-md bg-secondary items-center justify-center text-secondary-foreground hover:bg-secondary/80 transition-colors text-sm font-medium"
+          className="hidden sm:flex h-9 px-4 border border-border items-center justify-center text-foreground hover:bg-muted transition-colors text-sm font-medium uppercase tracking-wider"
         >
-          View Source
+          Source
         </a>
       </div>
     </header>

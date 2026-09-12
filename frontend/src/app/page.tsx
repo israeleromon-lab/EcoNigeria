@@ -3,9 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchDashboardData } from "@/lib/api";
 import { INDICATORS } from "@/lib/constants";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { formatIndicatorValue, formatChange } from "@/lib/utils";
 import Link from "next/link";
 import { ArrowUpRight, BarChart3 } from "lucide-react";
@@ -38,31 +36,27 @@ export default function Dashboard() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="space-y-8"
+      className="space-y-12"
     >
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Nigeria Economic Overview</h1>
-        <p className="text-muted-foreground mt-2">
+      <div className="border-b-4 border-foreground pb-6">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight uppercase">Nigeria Economic Overview</h1>
+        <p className="text-xl text-muted-foreground mt-4 font-serif italic">
           Latest macroeconomic indicators, historical data, and AI-powered forecasts.
         </p>
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-l border-t border-border">
           {[...Array(8)].map((_, i) => (
-            <Card key={i} className="bg-card/50">
-              <CardHeader className="pb-2">
-                <Skeleton className="h-4 w-32" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-8 w-24 mb-2" />
-                <Skeleton className="h-3 w-16" />
-              </CardContent>
-            </Card>
+            <div key={i} className="border-r border-b border-border p-6 bg-background">
+              <Skeleton className="h-4 w-32 mb-4" />
+              <Skeleton className="h-8 w-24 mb-2" />
+              <Skeleton className="h-3 w-16" />
+            </div>
           ))}
         </div>
       ) : isError ? (
-        <div className="p-6 bg-destructive/10 text-destructive rounded-lg border border-destructive/20">
+        <div className="p-6 bg-background text-foreground border border-border">
           Failed to load dashboard data. Please make sure the backend server is running.
         </div>
       ) : (
@@ -70,7 +64,7 @@ export default function Dashboard() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-l border-t border-border"
         >
           {INDICATORS.map((indicator) => {
             const stat = data?.indicators?.find((d: any) => d.code === indicator.id);
@@ -81,31 +75,29 @@ export default function Dashboard() {
             return (
               <motion.div key={indicator.id} variants={item}>
                 <Link href={`/${indicator.slug}`} className="block group h-full">
-                  <Card className="bg-background transition-all duration-300 border-border hover:border-foreground/30 hover:bg-muted/30 h-full relative overflow-hidden">
+                  <div className="bg-background transition-colors duration-300 border-r border-b border-border hover:bg-muted/30 h-full relative overflow-hidden p-6 flex flex-col justify-between">
                     <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                       <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
                     </div>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">
+                    <div>
+                      <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
                         {indicator.name}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-foreground">
+                      </h3>
+                      <div className="text-3xl font-bold text-foreground font-serif">
                         {stat?.current_value != null ? formatIndicatorValue(stat.current_value, indicator.unit) : "N/A"}
                       </div>
-                      {stat?.current_value != null && (
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-xs font-medium ${change.color} flex items-center gap-0.5`}>
-                            {change.icon} {change.text}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            in {stat.current_date}
-                          </span>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
+                    </div>
+                    {stat?.current_value != null && (
+                      <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/50">
+                        <span className={`text-xs font-bold ${change.color} flex items-center gap-0.5`}>
+                          {change.icon} {change.text}
+                        </span>
+                        <span className="text-xs text-muted-foreground uppercase tracking-wider">
+                          in {stat.current_date}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </Link>
               </motion.div>
             );
@@ -117,26 +109,28 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-border"
       >
-        <AIAnalystCard />
+        <div className="border-b lg:border-b-0 lg:border-r border-border p-6 md:p-8 bg-background">
+          <AIAnalystCard />
+        </div>
 
-        <Card className="bg-background border-border transition-all duration-300">
-          <CardHeader>
-            <CardTitle>Forecasts Overview</CardTitle>
-            <CardDescription>Predictive models for upcoming quarters</CardDescription>
-          </CardHeader>
-          <CardContent className="flex items-center justify-center py-12">
+        <div className="p-6 md:p-8 bg-background flex flex-col justify-center">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold uppercase tracking-tight mb-2">Forecasts Overview</h2>
+            <p className="text-muted-foreground font-serif italic">Predictive models for upcoming quarters</p>
+          </div>
+          <div className="flex flex-col items-center justify-center py-12 flex-1 border border-border/50 bg-muted/10">
              <div className="text-center">
-               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-4 transition-transform duration-500 group-hover:scale-105">
+               <div className="inline-flex items-center justify-center w-16 h-16 rounded-none border border-border bg-background mb-6 transition-transform duration-500 group-hover:scale-105">
                  <BarChart3 className="w-6 h-6 text-foreground" />
                </div>
-               <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+               <p className="text-sm text-muted-foreground max-w-xs mx-auto font-serif">
                  Select an individual indicator to view detailed historical charts and Prophet/ARIMA forecasts.
                </p>
              </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   );
