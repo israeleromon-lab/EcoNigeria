@@ -103,10 +103,7 @@ def seed_indicators(session) -> dict[str, int]:
     from app.database import engine
     for meta in INDICATORS:
         kwargs = {"set_": {k: v for k, v in meta.items() if k != "code"}}
-        if engine.dialect.name == "sqlite":
-            kwargs["index_elements"] = ["code"]
-        else:
-            kwargs["constraint"] = "uq_indicator_code"
+        kwargs["index_elements"] = ["code"]
 
         stmt = insert(Indicator.__table__).values(**meta).on_conflict_do_update(**kwargs)
         
@@ -129,10 +126,7 @@ def _upsert_data(session, indicator_id: int, year: int, value: float | None):
     from app.database import engine
     
     kwargs = {"set_": {"value": value}}
-    if engine.dialect.name == "sqlite":
-        kwargs["index_elements"] = ["indicator_id", "country_code", "date"]
-    else:
-        kwargs["constraint"] = "uq_hist_indicator_country_date"
+    kwargs["index_elements"] = ["indicator_id", "country_code", "date"]
 
     stmt = (
         insert(HistoricalData.__table__)

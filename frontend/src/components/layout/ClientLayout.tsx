@@ -72,7 +72,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto overflow-x-hidden bg-background">
-        <div className="max-w-6xl mx-auto w-full p-4 sm:p-6 md:p-8 lg:p-12">
+        <div className="w-full mx-auto p-4 sm:p-6 md:p-8 lg:p-12">
           {children}
         </div>
       </main>

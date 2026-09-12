@@ -8,8 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ForecastChart } from "@/components/ForecastChart";
-import { Download, AlertCircle } from "lucide-react";
+import { Download, AlertCircle, ArrowLeft } from "lucide-react";
 import { formatIndicatorValue } from "@/lib/utils";
+import Link from "next/link";
 
 export default function IndicatorPage() {
   const params = useParams();
@@ -70,6 +71,10 @@ export default function IndicatorPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
+          <Link href="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-6 font-serif transition-colors">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Dashboard
+          </Link>
           <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary/10 text-primary mb-2">
             {indicatorConfig.id}
           </div>

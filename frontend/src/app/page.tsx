@@ -46,8 +46,8 @@ export default function Dashboard() {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-l border-t border-border">
-          {[...Array(8)].map((_, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 border-l border-t border-border">
+          {[...Array(12)].map((_, i) => (
             <div key={i} className="border-r border-b border-border p-6 bg-background">
               <Skeleton className="h-4 w-32 mb-4" />
               <Skeleton className="h-8 w-24 mb-2" />
@@ -64,7 +64,7 @@ export default function Dashboard() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-l border-t border-border"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 border-l border-t border-border"
         >
           {INDICATORS.map((indicator) => {
             const stat = data?.indicators?.find((d: any) => d.code === indicator.id);
