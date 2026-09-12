@@ -18,13 +18,12 @@ export function Sidebar({ className, onLinkClick }: { className?: string, onLink
   const pathname = usePathname();
 
   return (
-    <aside className={cn("w-64 border-r border-border/40 bg-background/50 backdrop-blur-xl saturate-150 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col h-[100dvh] sticky top-0", className)}>
+    <aside className={cn("w-64 border-r border-border bg-background flex flex-col h-[100dvh] sticky top-0", className)}>
       <div className="p-6">
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-3">
           <div className="relative w-8 h-8 flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary to-emerald-400 rounded-xl opacity-60 blur-[3px]"></div>
-            <div className="relative w-full h-full bg-gradient-to-tr from-primary to-emerald-500 rounded-xl flex items-center justify-center border border-white/20 shadow-lg shadow-primary/30">
-               <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="relative w-full h-full bg-foreground rounded-lg flex items-center justify-center shadow-sm">
+               <svg className="w-4 h-4 text-background" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                  <path d="M3 3v18h18" />
                  <path d="m19 9-5 5-4-4-3 3" />
                </svg>

@@ -23,8 +23,8 @@ const container = {
 };
 
 const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { type: "tween", ease: "easeOut", duration: 0.4 } }
 };
 
 export default function Dashboard() {
@@ -81,7 +81,7 @@ export default function Dashboard() {
             return (
               <motion.div key={indicator.id} variants={item}>
                 <Link href={`/${indicator.slug}`} className="block group h-full">
-                  <Card className="bg-card/50 hover:bg-card/80 transition-all duration-300 border-border/50 hover:border-border hover:-translate-y-1 hover:shadow-lg h-full relative overflow-hidden">
+                  <Card className="bg-background transition-all duration-300 border-border hover:border-foreground/30 hover:bg-muted/30 h-full relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                       <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
                     </div>
@@ -105,7 +105,6 @@ export default function Dashboard() {
                         </div>
                       )}
                     </CardContent>
-                    <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-transparent to-transparent group-hover:from-primary/50 transition-colors w-full"></div>
                   </Card>
                 </Link>
               </motion.div>
@@ -122,15 +121,15 @@ export default function Dashboard() {
       >
         <AIAnalystCard />
 
-        <Card className="bg-card/50 border-border/50 transition-all duration-300 hover:shadow-lg">
+        <Card className="bg-background border-border transition-all duration-300">
           <CardHeader>
             <CardTitle>Forecasts Overview</CardTitle>
             <CardDescription>Predictive models for upcoming quarters</CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-center py-12">
              <div className="text-center">
-               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-4 transition-transform duration-500 hover:rotate-12 hover:scale-110">
-                 <BarChart3 className="w-6 h-6 text-muted-foreground" />
+               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-4 transition-transform duration-500 group-hover:scale-105">
+                 <BarChart3 className="w-6 h-6 text-foreground" />
                </div>
                <p className="text-sm text-muted-foreground max-w-xs mx-auto">
                  Select an individual indicator to view detailed historical charts and Prophet/ARIMA forecasts.
