@@ -50,6 +50,13 @@ export function AIAnalystCard() {
       <div className="flex-1 flex flex-col">
         {isLoading ? (
           <div className="space-y-4 flex-1">
+            <div className="flex items-center gap-3 p-4 bg-muted/10 border border-border text-sm font-serif text-muted-foreground mb-4">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-foreground"></span>
+              </span>
+              <span className="animate-pulse">Waking up Gemini AI... Please allow up to 50 seconds.</span>
+            </div>
             <Skeleton className="h-24 w-full rounded-none" />
             <Skeleton className="h-4 w-3/4 rounded-none" />
             <Skeleton className="h-4 w-1/2 rounded-none" />

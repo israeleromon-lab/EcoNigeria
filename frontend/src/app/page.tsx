@@ -46,14 +46,23 @@ export default function Dashboard() {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 border-l border-t border-border">
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="border-r border-b border-border p-6 bg-background">
-              <Skeleton className="h-4 w-32 mb-4" />
-              <Skeleton className="h-8 w-24 mb-2" />
-              <Skeleton className="h-3 w-16" />
-            </div>
-          ))}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 p-4 bg-muted/10 border border-border text-sm font-serif text-muted-foreground">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-foreground"></span>
+            </span>
+            <span className="animate-pulse">Waking up the data server... Please allow up to 50 seconds for the initial connection on our free hosting tier.</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 border-l border-t border-border">
+            {[...Array(12)].map((_, i) => (
+              <div key={i} className="border-r border-b border-border p-6 bg-background">
+                <Skeleton className="h-4 w-32 mb-4" />
+                <Skeleton className="h-8 w-24 mb-2" />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            ))}
+          </div>
         </div>
       ) : isError ? (
         <div className="p-6 bg-background text-foreground border border-border">

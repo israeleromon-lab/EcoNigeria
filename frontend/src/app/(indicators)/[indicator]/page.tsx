@@ -97,7 +97,16 @@ export default function IndicatorPage() {
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <Skeleton className="w-full h-[350px] rounded-xl" />
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 p-4 bg-muted/10 border border-border text-sm font-serif text-muted-foreground">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-foreground"></span>
+                  </span>
+                  <span className="animate-pulse">Waking up the data server... Please allow up to 50 seconds for the initial connection on our free hosting tier.</span>
+                </div>
+                <Skeleton className="w-full h-[350px] rounded-none" />
+              </div>
             ) : chartData.length === 0 ? (
               <div className="w-full h-[350px] flex items-center justify-center border border-dashed rounded-xl text-muted-foreground">
                 No data available
