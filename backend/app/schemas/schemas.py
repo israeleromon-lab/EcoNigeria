@@ -35,14 +35,18 @@ class IndicatorDetail(IndicatorOut):
 # ── Historical data ──────────────────────────────────────────────────
 
 class DataPoint(BaseModel):
-    date: int
+    period: str
     value: Optional[float] = None
+    observation_time: Optional[str] = None
+    publication_time: Optional[str] = None
+    source_checked_time: Optional[str] = None
 
 
 class HistoricalDataOut(BaseModel):
     code: str
     name: str
     unit: Optional[str] = None
+    native_frequency: Optional[str] = None
     data: List[DataPoint]
 
 
@@ -52,10 +56,11 @@ class LatestValueOut(BaseModel):
     code: str
     name: str
     unit: Optional[str] = None
+    native_frequency: Optional[str] = None
     current_value: Optional[float] = None
-    current_date: Optional[int] = None
+    current_period: Optional[str] = None
     previous_value: Optional[float] = None
-    previous_date: Optional[int] = None
+    previous_period: Optional[str] = None
     pct_change: Optional[float] = None
 
 
@@ -77,7 +82,7 @@ class StatsOut(BaseModel):
 # ── Dashboard ────────────────────────────────────────────────────────
 
 class SparklinePoint(BaseModel):
-    date: int
+    period: str
     value: Optional[float] = None
 
 
@@ -86,10 +91,11 @@ class DashboardIndicator(BaseModel):
     name: str
     category: Optional[str] = None
     unit: Optional[str] = None
+    native_frequency: Optional[str] = None
     current_value: Optional[float] = None
-    current_date: Optional[int] = None
+    current_period: Optional[str] = None
     previous_value: Optional[float] = None
-    previous_date: Optional[int] = None
+    previous_period: Optional[str] = None
     pct_change: Optional[float] = None
     sparkline: List[SparklinePoint] = []
 

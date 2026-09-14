@@ -51,7 +51,7 @@ def get_indicator(code: str, db: Session = Depends(get_db)):
     latest = (
         db.query(HistoricalData)
         .filter(HistoricalData.indicator_id == ind.id, HistoricalData.value.isnot(None))
-        .order_by(desc(HistoricalData.date))
+        .order_by(desc(HistoricalData.period))
         .first()
     )
     return IndicatorDetail(
@@ -63,7 +63,7 @@ def get_indicator(code: str, db: Session = Depends(get_db)):
         unit=ind.unit,
         description=ind.description,
         latest_value=latest.value if latest else None,
-        latest_date=latest.date if latest else None,
+        latest_date=latest.period if latest else None,
     )
 
 
@@ -78,16 +78,26 @@ def get_indicator_data(
     ind = _get_indicator_or_404(code, db)
     q = db.query(HistoricalData).filter(HistoricalData.indicator_id == ind.id)
     if start_year is not None:
-        q = q.filter(HistoricalData.date >= start_year)
+        q = q.filter(HistoricalData.period >= str(start_year))
     if end_year is not None:
-        q = q.filter(HistoricalData.date <= end_year)
-    rows = q.order_by(HistoricalData.date).all()
+        q = q.filter(HistoricalData.period <= str(end_year))
+    rows = q.order_by(HistoricalData.period).all()
 
     return HistoricalDataOut(
         code=ind.code,
         name=ind.name,
         unit=ind.unit,
-        data=[DataPoint(date=r.date, value=r.value) for r in rows],
+        native_frequency=ind.native_frequency,
+        data=[
+            DataPoint(
+                period=r.period,
+                value=r.value,
+                observation_time=r.observation_time.isoformat() if r.observation_time else None,
+                publication_time=r.publication_time.isoformat() if r.publication_time else None,
+                source_checked_time=r.source_checked_time.isoformat() if r.source_checked_time else None,
+            )
+            for r in rows
+        ],
     )
 
 
@@ -98,7 +108,7 @@ def get_latest(code: str, db: Session = Depends(get_db)):
     rows = (
         db.query(HistoricalData)
         .filter(HistoricalData.indicator_id == ind.id, HistoricalData.value.isnot(None))
-        .order_by(desc(HistoricalData.date))
+        .order_by(desc(HistoricalData.period))
         .limit(2)
         .all()
     )
@@ -113,10 +123,11 @@ def get_latest(code: str, db: Session = Depends(get_db)):
         code=ind.code,
         name=ind.name,
         unit=ind.unit,
+        native_frequency=ind.native_frequency,
         current_value=cur.value if cur else None,
-        current_date=cur.date if cur else None,
+        current_period=cur.period if cur else None,
         previous_value=prev.value if prev else None,
-        previous_date=prev.date if prev else None,
+        previous_period=prev.period if prev else None,
         pct_change=pct_change,
     )
 
@@ -128,7 +139,7 @@ def get_stats(code: str, db: Session = Depends(get_db)):
     rows = (
         db.query(HistoricalData)
         .filter(HistoricalData.indicator_id == ind.id, HistoricalData.value.isnot(None))
-        .order_by(HistoricalData.date)
+        .order_by(HistoricalData.period)
         .all()
     )
     values = [r.value for r in rows if r.value is not None]
@@ -144,8 +155,8 @@ def get_stats(code: str, db: Session = Depends(get_db)):
         std=round(statistics.stdev(values), 4) if len(values) >= 2 else None,
         min=round(min(values), 4),
         max=round(max(values), 4),
-        first_year=rows[0].date,
-        last_year=rows[-1].date,
+        first_year=int(rows[0].period[:4]) if rows and rows[0].period else None,
+        last_year=int(rows[-1].period[:4]) if rows and rows[-1].period else None,
     )
 
 
@@ -162,9 +173,9 @@ def export_csv(code: str, db: Session = Depends(get_db)):
 
     buf = io.StringIO()
     writer = csv.writer(buf)
-    writer.writerow(["date", "value"])
+    writer.writerow(["period", "value"])
     for r in rows:
-        writer.writerow([r.date, r.value])
+        writer.writerow([r.period, r.value])
     buf.seek(0)
 
     filename = f"{code.replace('.', '_').replace('/', '_')}_data.csv"

@@ -16,6 +16,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from app.database import SessionLocal, engine
 from app.database import Base
 from app.models import Indicator, HistoricalData
+from datetime import datetime, timezone
 
 # ── Indicator registry ───────────────────────────────────────────────
 
@@ -126,11 +127,18 @@ def _upsert_data(session, indicator_id: int, year: int, value: float | None):
     from app.database import engine
     
     kwargs = {"set_": {"value": value}}
-    kwargs["index_elements"] = ["indicator_id", "country_code", "date"]
+    kwargs["index_elements"] = ["indicator_id", "country_code", "period"]
 
     stmt = (
         insert(HistoricalData.__table__)
-        .values(indicator_id=indicator_id, country_code="NGA", date=year, value=value)
+        .values(
+            indicator_id=indicator_id, 
+            country_code="NGA", 
+            period=str(year), 
+            value=value,
+            observation_time=datetime(year, 1, 1, tzinfo=timezone.utc),
+            native_frequency="Annual" # Defaulting CSV seeds to Annual
+        )
         .on_conflict_do_update(**kwargs)
     )
     session.execute(stmt)

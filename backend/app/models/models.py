@@ -32,6 +32,7 @@ class Indicator(Base):
     category = Column(String(100))
     source = Column(String(100))
     unit = Column(String(100))
+    native_frequency = Column(String(50), nullable=True) # e.g. Annual, Monthly, Daily
     description = Column(Text)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
@@ -43,19 +44,26 @@ class Indicator(Base):
 
 
 class HistoricalData(Base):
-    """Yearly historical observation for an indicator."""
+    """Historical observation for an indicator."""
 
     __tablename__ = "historical_data"
     __table_args__ = (
-        UniqueConstraint("indicator_id", "country_code", "date", name="uq_hist_indicator_country_date"),
+        UniqueConstraint("indicator_id", "country_code", "period", name="uq_hist_indicator_country_period"),
     )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     indicator_id = Column(Integer, ForeignKey("indicators.id"), nullable=False, index=True)
     country_code = Column(String(10), default="NGA")
-    date = Column(Integer, nullable=False)  # year
+    
+    # Provenance tracking schema
+    period = Column(String(20), nullable=False) # e.g. "2024", "2024-Q1", "2024-03" (ISO-8601 String)
     value = Column(Float, nullable=True)
-    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    
+    source_checked_time = Column(DateTime(timezone=True), nullable=True) # Last time cron job checked source
+    observation_time = Column(DateTime(timezone=True), nullable=True) # Exact start of the period represented
+    publication_time = Column(DateTime(timezone=True), nullable=True) # When original source published it
+    native_frequency = Column(String(50), nullable=True) # e.g. Annual, Monthly
+    ingestion_time = Column(DateTime(timezone=True), default=_utcnow)
 
     indicator = relationship("Indicator", back_populates="data_points")
 
