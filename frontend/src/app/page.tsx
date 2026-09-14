@@ -39,9 +39,9 @@ export default function Dashboard() {
       className="space-y-12"
     >
       <div className="border-b-4 border-foreground pb-6">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight uppercase">Nigeria Economic Overview</h1>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight uppercase">The open intelligence layer for Nigeria's economy.</h1>
         <p className="text-xl text-muted-foreground mt-4 font-serif italic">
-          Latest macroeconomic indicators, historical data, and AI-powered forecasts.
+          Explore economic data, understand what changed, analyze the drivers, and forecast what may come next.
         </p>
       </div>
 

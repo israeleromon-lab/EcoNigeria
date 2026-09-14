@@ -11,9 +11,11 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const pathname = usePathname();
 
   const links = [
-    { name: "Overview", href: "/" },
-    { name: "Research", href: "/research" },
-    { name: "Methodology", href: "/methodology" },
+    { name: "Explore", href: "/" },
+    { name: "API Docs", href: "https://github.com/israeleromon-lab/EconoNigeria/tree/main/docs", external: true },
+    { name: "Methodology", href: "https://github.com/israeleromon-lab/EconoNigeria/blob/main/docs/methodology.md", external: true },
+    { name: "Data Sources", href: "https://github.com/israeleromon-lab/EconoNigeria/blob/main/docs/data-sources.md", external: true },
+    { name: "Roadmap", href: "https://github.com/israeleromon-lab/EconoNigeria/blob/main/ROADMAP.md", external: true },
   ];
 
   return (
@@ -33,6 +35,8 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
             <Link
               key={link.href}
               href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-foreground",
                 pathname === link.href ? "text-foreground border-b border-foreground" : "text-muted-foreground"
@@ -54,7 +58,7 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
         </div>
         <ThemeToggle />
         <a 
-          href="https://github.com/israeleromon-lab/EcoNigeria" 
+          href="https://github.com/israeleromon-lab/EconoNigeria" 
           target="_blank" 
           rel="noreferrer"
           className="hidden sm:flex h-9 px-4 border border-border items-center justify-center text-foreground hover:bg-muted transition-colors text-sm font-medium uppercase tracking-wider"

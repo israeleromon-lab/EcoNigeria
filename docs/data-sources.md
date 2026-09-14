@@ -1,155 +1,92 @@
-# Data Sources — EconoNigeria
+# Data Sources — EconoNigeria 2.0
 
 ## Overview
 
-EconoNigeria aggregates macroeconomic data from three primary sources. Data is fetched via ETL pipelines, validated, cleaned, and stored in PostgreSQL (Supabase).
+EconoNigeria aggregates macroeconomic data from multiple primary sources. Under EconoNigeria 2.0, our data infrastructure uses a near-real-time monitoring architecture to detect new data immediately without fabricating data points between official releases.
+
+---
+
+## Provenance Tracking Schema
+
+To guarantee transparency and reproducibility, every data point tracked by EconoNigeria stores detailed provenance metadata:
+
+- `source_checked_time`: The exact timestamp when our ingestion engine last pinged the source.
+- `observation_time`: The specific period the data point represents (e.g., January 2026).
+- `publication_time`: The timestamp when the original source officially published the data.
+- `ingestion_time`: The timestamp when the data was validated and successfully written to our database.
+- `native_frequency`: The actual frequency at which the source publishes the data (e.g., Monthly, Quarterly, Daily).
 
 ---
 
 ## 1. World Bank Indicators API
 
-**Base URL:** `https://api.worldbank.org/v2`
-
-**Authentication:** None required (public API)
-
+**Base URL:** `https://api.worldbank.org/v2`  
+**Authentication:** None required (public API)  
 **Country Code:** `NGA` (Nigeria)
-
-**Endpoint Pattern:**
-```
-GET /country/NGA/indicator/{indicator_code}?format=json&per_page=1000
-```
 
 ### Indicators
 
-| Indicator | Code | Unit | Typical Range |
+| Indicator | Code | Native Frequency | Unit |
 |---|---|---|---|
-| Total Population | `SP.POP.TOTL` | People | 1960–present |
-| GDP Per Capita | `NY.GDP.PCAP.CD` | Current USD | 1960–present |
-| Inflation Rate (CPI) | `FP.CPI.TOTL.ZG` | Annual % | 1960–present |
-| GDP Growth Rate | `NY.GDP.MKTP.KD.ZG` | Annual % | 1961–present |
-| Unemployment Rate | `SL.UEM.TOTL.ZS` | % of labor force | 1991–present |
-| Government Debt | `GC.DOD.TOTL.GD.ZS` | % of GDP | Limited data |
-| Foreign Direct Investment | `BX.KLT.DINV.CD.WD` | Current USD | 1970–present |
+| Total Population | `SP.POP.TOTL` | Annual | People |
+| GDP Per Capita | `NY.GDP.PCAP.CD` | Annual | Current USD |
+| Inflation Rate (CPI) | `FP.CPI.TOTL.ZG` | Annual/Monthly | Annual % |
+| GDP Growth Rate | `NY.GDP.MKTP.KD.ZG` | Annual/Quarterly | Annual % |
+| Unemployment Rate | `SL.UEM.TOTL.ZS` | Annual | % of labor force |
+| Government Debt | `GC.DOD.TOTL.GD.ZS` | Annual | % of GDP |
+| Foreign Direct Investment | `BX.KLT.DINV.CD.WD` | Annual | Current USD |
 
-### Response Format
-```json
-[
-  {"page": 1, "pages": 1, "per_page": 1000, "total": 64},
-  [
-    {
-      "indicator": {"id": "SP.POP.TOTL", "value": "Population, total"},
-      "country": {"id": "NG", "value": "Nigeria"},
-      "date": "2024",
-      "value": 232679478
-    }
-  ]
-]
-```
-
-### Rate Limits
-- No strict rate limit, but recommended: max 10 requests/second
-- Data refreshes: Annually (World Development Indicators)
-
-### References
-- [API Documentation](https://datahelpdesk.worldbank.org/knowledgebase/articles/889392)
-- [Indicator API Queries](https://datahelpdesk.worldbank.org/knowledgebase/articles/898599)
+### Ingestion Strategy
+Although World Bank data changes infrequently, EconoNigeria periodically polls for updates to detect historical revisions or new annual releases.
 
 ---
 
 ## 2. FRED (Federal Reserve Economic Data)
 
-**Base URL:** `https://api.stlouisfed.org/fred`
-
+**Base URL:** `https://api.stlouisfed.org/fred`  
 **Authentication:** API Key required (`FRED_API_KEY`)
 
-**Endpoint:**
-```
-GET /series/observations?series_id={code}&api_key={key}&file_type=json
-```
-
 ### Indicators
 
-| Indicator | Code | Unit | Frequency |
+| Indicator | Code | Native Frequency | Unit |
 |---|---|---|---|
-| Brent Crude Oil Price | `DCOILBRENTEU` | USD/barrel | Daily |
-| Federal Funds Rate | `FEDFUNDS` | % | Monthly |
+| Brent Crude Oil Price | `DCOILBRENTEU` | Daily | USD/barrel |
+| Federal Funds Rate | `FEDFUNDS` | Monthly | % |
 
-### Response Format
-```json
-{
-  "observations": [
-    {"date": "2024-01-01", "value": "78.12"},
-    {"date": "2024-01-02", "value": "77.85"}
-  ]
-}
-```
-
-### Notes
-- DCOILBRENTEU is daily data — we aggregate to annual averages for consistency
-- FEDFUNDS is monthly — we aggregate to annual averages
-- API key is free: [Register here](https://fred.stlouisfed.org/docs/api/api_key.html)
-
-### Rate Limits
-- 120 requests per minute
-
-### References
-- [FRED API Documentation](https://fred.stlouisfed.org/docs/api/fred/)
+### Ingestion Strategy
+Daily and monthly monitoring jobs track these endpoints to capture rapid commodity and interest rate movements.
 
 ---
 
-## 3. Exchange Rate API
+## 3. Official Nigerian Sources (Upcoming)
 
-**Base URL:** `https://v6.exchangerate-api.com/v6`
+EconoNigeria 2.0 will heavily expand into native Nigerian data sources, building direct ingestion adapters for:
 
-**Authentication:** API Key required (`EXCHANGE_RATE_API_KEY`)
+- **Central Bank of Nigeria (CBN)**
+- **National Bureau of Statistics (NBS)**
 
-**Endpoint:**
-```
-GET /{api_key}/latest/USD
-```
+### Ingestion Strategy
+These adapters will utilize our 1-minute monitoring job to detect new publications (like monthly inflation reports or quarterly GDP figures) the moment they are released to the public.
+
+---
+
+## 4. High-Frequency Market Data
+
+For highly volatile indicators, EconoNigeria uses active, high-frequency monitoring.
 
 ### Indicators
 
-| Indicator | Code | Unit |
+| Indicator | Native Frequency | Unit |
 |---|---|---|
-| NGN/USD Exchange Rate | `NGN_USD` | NGN per 1 USD |
+| Exchange Rate (NGN/USD) | Near Real-Time (Minute/Hourly) | NGN per 1 USD |
 
-### Response Format
-```json
-{
-  "result": "success",
-  "conversion_rates": {
-    "NGN": 1550.25,
-    "EUR": 0.92,
-    ...
-  }
-}
-```
-
-### Notes
-- Only provides **latest** exchange rate (no historical data on free tier)
-- Historical data requires paid plan or alternative source
-- For historical NGN/USD, we may supplement with World Bank indicator `PA.NUS.FCRF`
-
-### Rate Limits
-- 1,500 requests/month on free tier
-
-### References
-- [Exchange Rate API Docs](https://www.exchangerate-api.com/docs/overview)
+### Ingestion Strategy
+The ingestion engine pings market data endpoints (such as ExchangeRate API or market aggregators) at regular, short intervals to provide a "Live" freshness indicator on the dashboard.
 
 ---
 
-## Data Refresh Schedule
+## Data Quality & Validation
 
-| Source | Frequency | Method |
-|---|---|---|
-| World Bank | Weekly (data changes annually) | ETL cron job |
-| FRED | Daily (for oil prices) | ETL cron job |
-| Exchange Rate | Hourly (for latest rate) | ETL cron job |
-
-## Data Quality
-
-- All data is validated for null values before storage
-- Outlier detection flags values > 3 standard deviations from mean
-- Missing years are preserved as NULL (not interpolated)
-- Source metadata is stored with each data point for audit trail
+- **Missing Values:** Handled transparently; gaps are not artificially interpolated unless explicitly required by a forecasting model (in which case it is tracked).
+- **Outlier Detection:** Flags values > 3 standard deviations from the 12-month mean.
+- **Revision Detection:** Checks if historical values have been revised by the original source and updates our records accordingly.

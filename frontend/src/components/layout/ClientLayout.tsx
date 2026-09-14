@@ -29,9 +29,11 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   }, [mobileMenuOpen]);
 
   const links = [
-    { name: "Overview", href: "/" },
-    { name: "Research", href: "/research" },
-    { name: "Methodology", href: "/methodology" },
+    { name: "Explore", href: "/" },
+    { name: "API Docs", href: "https://github.com/israeleromon-lab/EconoNigeria/tree/main/docs", external: true },
+    { name: "Methodology", href: "https://github.com/israeleromon-lab/EconoNigeria/blob/main/docs/methodology.md", external: true },
+    { name: "Data Sources", href: "https://github.com/israeleromon-lab/EconoNigeria/blob/main/docs/data-sources.md", external: true },
+    { name: "Roadmap", href: "https://github.com/israeleromon-lab/EconoNigeria/blob/main/ROADMAP.md", external: true },
   ];
 
   return (
@@ -58,6 +60,8 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
                 className={cn(
                   "text-2xl font-medium pb-2 border-b border-border/50 transition-colors hover:text-foreground",
                   pathname === link.href ? "text-foreground border-foreground" : "text-muted-foreground"
