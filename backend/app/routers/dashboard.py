@@ -16,32 +16,46 @@ router = APIRouter(prefix="/api", tags=["dashboard"])
 @router.get("/dashboard", response_model=DashboardOut)
 def get_dashboard(db: Session = Depends(get_db)):
     """Return every indicator with its latest value, previous value,
-    percentage change, and a sparkline of the last 10 data points."""
+    percentage change, and a sparkline of the last 10 data points.
+    """
 
     indicators = db.query(Indicator).order_by(Indicator.id).all()
     results: list[DashboardIndicator] = []
 
     for ind in indicators:
-        # Latest 10 data points (for sparkline) ordered ascending
+        # HistoricalData stores the observation key as `period`, not `date`.
         points = (
             db.query(HistoricalData)
-            .filter(HistoricalData.indicator_id == ind.id, HistoricalData.value.isnot(None))
-            .order_by(desc(HistoricalData.date))
+            .filter(
+                HistoricalData.indicator_id == ind.id,
+                HistoricalData.value.isnot(None),
+            )
+            .order_by(desc(HistoricalData.period))
             .limit(10)
             .all()
         )
         points.reverse()  # oldest → newest
 
-        sparkline = [SparklinePoint(date=p.date, value=p.value) for p in points]
+        sparkline = [
+            SparklinePoint(period=p.period, value=p.value)
+            for p in points
+        ]
 
         current_value = points[-1].value if points else None
-        current_date = points[-1].date if points else None
+        current_period = points[-1].period if points else None
         previous_value = points[-2].value if len(points) >= 2 else None
-        previous_date = points[-2].date if len(points) >= 2 else None
+        previous_period = points[-2].period if len(points) >= 2 else None
 
         pct_change = None
-        if current_value is not None and previous_value is not None and previous_value != 0:
-            pct_change = round((current_value - previous_value) / abs(previous_value) * 100, 2)
+        if (
+            current_value is not None
+            and previous_value is not None
+            and previous_value != 0
+        ):
+            pct_change = round(
+                (current_value - previous_value) / abs(previous_value) * 100,
+                2,
+            )
 
         results.append(
             DashboardIndicator(
@@ -50,9 +64,9 @@ def get_dashboard(db: Session = Depends(get_db)):
                 category=ind.category,
                 unit=ind.unit,
                 current_value=current_value,
-                current_date=current_date,
+                current_period=current_period,
                 previous_value=previous_value,
-                previous_date=previous_date,
+                previous_period=previous_period,
                 pct_change=pct_change,
                 sparkline=sparkline,
             )
