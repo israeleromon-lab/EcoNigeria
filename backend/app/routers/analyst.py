@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Indicator, HistoricalData
@@ -10,12 +10,11 @@ router = APIRouter(prefix="/api/analyst", tags=["ai_analyst"])
 def get_ai_report(db: Session = Depends(get_db)):
     """Generate an AI analyst report from available macro data.
 
-    If the required Nigeria indicators are not yet present in the database,
-    we still return a fallback report instead of crashing the frontend with a
-    404 / red error state.
+    The historical-data model stores its time key as ``period`` rather than
+    ``date``. Missing indicators or observations are tolerated so the analyst
+    can still use the AI/mock fallback while ETL is running.
     """
     key_codes = ["NY.GDP.PCAP.CD", "FP.CPI.TOTL.ZG", "SP.POP.TOTL", "SL.UEM.TOTL.ZS"]
-
     data_to_analyze = []
 
     for code in key_codes:
@@ -25,8 +24,12 @@ def get_ai_report(db: Session = Depends(get_db)):
 
         hist_data = (
             db.query(HistoricalData)
-            .filter(HistoricalData.indicator_id == indicator.id, HistoricalData.country_code == "NGA")
-            .order_by(HistoricalData.date.desc())
+            .filter(
+                HistoricalData.indicator_id == indicator.id,
+                HistoricalData.country_code == "NGA",
+                HistoricalData.value.isnot(None),
+            )
+            .order_by(HistoricalData.period.desc())
             .limit(3)
             .all()
         )
@@ -34,10 +37,12 @@ def get_ai_report(db: Session = Depends(get_db)):
         data_to_analyze.append({
             "indicator_name": indicator.name,
             "unit": indicator.unit,
-            "recent_values": [{"year": h.date, "value": h.value} for h in hist_data]
+            "recent_values": [
+                {"year": observation.period, "value": observation.value}
+                for observation in hist_data
+            ],
         })
 
-    # Fallback: don't fail the UI if the required dataset is not populated yet.
     engine = AIAnalystEngine()
     report = engine.generate_report(data_to_analyze)
 
