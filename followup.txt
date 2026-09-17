@@ -130,7 +130,48 @@ It should use:
 
 This was identified but was not committed in the changes above. It should be fixed before relying on the Export CSV button.
 
-7. Deployment instructions
+7. AI Economic Analyst report failure and resolution
+-----------------------------------------------------
+The AI Economic Analyst initially displayed:
+
+"Failed to generate report."
+
+Render logs identified the immediate root cause:
+
+AttributeError: type object 'HistoricalData' has no attribute 'date'
+
+The failure occurred in backend/app/routers/analyst.py before the OpenRouter request was made. The HistoricalData model defines period, not date.
+
+The analyst route was updated to:
+- Order observations using HistoricalData.period.
+- Return observation.period as the report data year.
+- Ignore null historical values.
+- Continue generating a fallback report when indicators or observations are not yet available.
+- Return data_available to indicate whether database data was found.
+
+Committed changes:
+- Commit: d3bd166b690a86787847307e0dd2a806b756b689 — added graceful handling for missing analyst indicator data on branch fix-ai-analyst-empty-db.
+- Commit: 106b602de6b0ffbac2925488d85ea240bd870e77 — corrected HistoricalData.date to HistoricalData.period on branch fix-ai-analyst-empty-db.
+- Commit: 6d2a53ccc57aaf79a21fad0d027446de568a2c90 — applied the production analyst fix directly to main.
+- File: backend/app/routers/analyst.py
+
+The OpenRouter API key was configured in Render. The logged database exception occurred before the OpenRouter call, so the key was not the cause of that failure.
+
+Render subsequently deployed the corrected backend. The live endpoint:
+
+https://econonigeria-apt.onrender.com/api/analyst/report
+
+returned a successful JSON response with:
+- success=true
+- a generated summary
+- key_insights
+- outlook
+- risk_factors
+- data_available=true
+
+The Vercel frontend also successfully rendered the report. The endpoint displays raw JSON when opened directly, which is expected; the frontend consumes that JSON and presents the formatted analyst card.
+
+8. Deployment instructions
 --------------------------
 After backend changes:
 1. Redeploy the Render service from main.
@@ -138,6 +179,7 @@ After backend changes:
 3. Test /health.
 4. Test /api/dashboard.
 5. Test indicator data and forecast endpoints.
+6. Test /api/analyst/report and confirm the response reaches the OpenRouter stage.
 
 After frontend changes:
 1. Set NEXT_PUBLIC_API_URL in Vercel to the Render backend origin without /api.
@@ -151,6 +193,7 @@ https://YOUR-RENDER-SERVICE.onrender.com/health
 https://YOUR-RENDER-SERVICE.onrender.com/api/dashboard
 https://YOUR-RENDER-SERVICE.onrender.com/api/indicators/SP.POP.TOTL/data
 https://YOUR-RENDER-SERVICE.onrender.com/api/forecasts/SP.POP.TOTL
+https://econonigeria-apt.onrender.com/api/analyst/report
 
 Current status
 --------------
@@ -159,4 +202,9 @@ Current status
 - Forecast backend period-field issue: committed in bd0ed58 and requires Render redeployment.
 - Frontend indicator chart period mapping: must be verified/applied in Vercel.
 - CSV export date-field mismatch: still requires a code fix.
+- AI Analyst backend period-field issue: fixed on main in commit 6d2a53c and verified successfully on Render.
+- OpenRouter configuration: confirmed in Render and successfully generating reports.
+- AI Analyst frontend rendering: verified successfully on the deployed Vercel frontend.
+- Mobile layout: the Outlook/Key Risk two-column section is narrow on small screens and could be improved by stacking the columns responsively.
+- FRED and exchange-rate warnings: separate missing-key configuration issues; they do not block the AI Analyst report.
 - KPI source/provenance consistency: recommendations documented; not yet implemented as a complete feature.
