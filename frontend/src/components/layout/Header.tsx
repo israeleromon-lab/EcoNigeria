@@ -12,10 +12,10 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
 
   const links = [
     { name: "Explore", href: "/" },
-    { name: "API Docs", href: "https://github.com/israeleromon-lab/EconoNigeria/tree/main/docs", external: true },
-    { name: "Methodology", href: "https://github.com/israeleromon-lab/EconoNigeria/blob/main/docs/methodology.md", external: true },
-    { name: "Data Sources", href: "https://github.com/israeleromon-lab/EconoNigeria/blob/main/docs/data-sources.md", external: true },
-    { name: "Roadmap", href: "https://github.com/israeleromon-lab/EconoNigeria/blob/main/ROADMAP.md", external: true },
+    { name: "API Docs", href: "https://github.com/israeleromon-lab/EcoNigeria/tree/main/docs", external: true },
+    { name: "Methodology", href: "/methodology" },
+    { name: "Data Sources", href: "https://github.com/israeleromon-lab/EcoNigeria/blob/main/docs/data-sources.md", external: true },
+    { name: "Roadmap", href: "https://github.com/israeleromon-lab/EcoNigeria/blob/main/ROADMAP.md", external: true },
   ];
 
   return (
@@ -58,7 +58,7 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
         </div>
         <ThemeToggle />
         <a 
-          href="https://github.com/israeleromon-lab/EconoNigeria" 
+          href="https://github.com/israeleromon-lab/EcoNigeria" 
           target="_blank" 
           rel="noreferrer"
           className="hidden sm:flex h-9 px-4 border border-border items-center justify-center text-foreground hover:bg-muted transition-colors text-sm font-medium uppercase tracking-wider"

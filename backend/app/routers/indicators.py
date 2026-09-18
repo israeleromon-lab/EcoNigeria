@@ -167,7 +167,7 @@ def export_csv(code: str, db: Session = Depends(get_db)):
     rows = (
         db.query(HistoricalData)
         .filter(HistoricalData.indicator_id == ind.id)
-        .order_by(HistoricalData.date)
+        .order_by(HistoricalData.period)
         .all()
     )
 

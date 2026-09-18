@@ -29,7 +29,7 @@ class IndicatorOut(IndicatorBase):
 class IndicatorDetail(IndicatorOut):
     """Single indicator with its latest value."""
     latest_value: Optional[float] = None
-    latest_date: Optional[int] = None
+    latest_period: Optional[str] = None
 
 
 # ── Historical data ──────────────────────────────────────────────────

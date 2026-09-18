@@ -40,7 +40,7 @@ export default function IndicatorPage() {
 
   // Format data for chart
   const chartData = data?.data?.map((d: any) => ({
-    year: d.date,
+    year: d.period,
     value: d.value
   })).sort((a: any, b: any) => a.year - b.year) || [];
 

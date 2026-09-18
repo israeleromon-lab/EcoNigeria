@@ -37,7 +37,7 @@ export function ForecastChart({ indicatorCode, indicatorName, unit, historicalDa
   
   // Format forecast data
   const forecastItems = data.data.forecast.map((f: any) => ({
-    year: f.date,
+    year: f.period,
     value: null,
     forecast: f.ensemble_value,
     prophet_upper: f.prophet_upper,

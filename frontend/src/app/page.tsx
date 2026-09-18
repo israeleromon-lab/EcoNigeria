@@ -102,7 +102,7 @@ export default function Dashboard() {
                           {change.icon} {change.text}
                         </span>
                         <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                          in {stat.current_date}
+                          in {stat.current_period}
                         </span>
                       </div>
                     )}

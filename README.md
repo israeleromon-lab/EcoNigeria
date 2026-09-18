@@ -13,7 +13,7 @@
 
 **Explore economic data, understand what changed, analyze the drivers, and forecast what may come next.**
 
-[Live Platform](https://eco-nigeria-gules.vercel.app/) · [API Docs](docs/api.md) · [Documentation](docs/) · [GitHub](https://github.com/israeleromon-lab/EcoNigeria)
+[Live Platform](https://eco-nigeria-gules.vercel.app/) · [API Docs](docs/) · [Documentation](docs/) · [GitHub](https://github.com/israeleromon-lab/EcoNigeria)
 
 </div>
 
@@ -59,8 +59,8 @@ graph TD
     A[Sources: CBN, NBS, World Bank] -->|1-Minute Checks| B(Ingestion & Validation)
     B --> C[(Economic Database)]
     C --> D[Open API / Cache]
-    D --> E[Dashboard (Explore)]
-    D --> F[Forecast Lab (Prophet/ARIMA)]
+    D --> E["Dashboard (Explore)"]
+    D --> F["Forecast Lab (Prophet/ARIMA)"]
     C --> G[AI Economic Analyst]
 ```
 

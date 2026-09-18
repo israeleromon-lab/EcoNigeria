@@ -84,12 +84,12 @@ export function AIAnalystCard() {
               </ul>
             </div>
             
-            <div className="grid grid-cols-2 gap-4 mt-auto pt-4 border-t border-border mt-4 pb-2">
-               <div className="border-r border-border pr-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto pt-4 border-t border-border mt-4 pb-2">
+               <div className="sm:border-r border-border sm:pr-4">
                  <span className="text-xs text-muted-foreground uppercase tracking-wider font-bold">Outlook</span>
                  <p className="font-serif text-lg mt-1">{data.report.outlook}</p>
                </div>
-               <div className="pl-4">
+               <div className="sm:pl-4">
                  <span className="text-xs text-muted-foreground uppercase tracking-wider font-bold">Key Risk</span>
                  <p className="font-serif text-lg text-destructive mt-1">{data.report.risk_factors?.[0]}</p>
                </div>

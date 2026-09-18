@@ -21,13 +21,14 @@ class ForecastingEngine:
     
     def __init__(self, data: List[Dict[str, Any]]):
         """
-        data: List of dicts with 'date' and 'value'. 
-        Dates should be years (e.g. 2010).
+        data: List of dicts with 'period' and 'value'. 
+        Periods should ideally be strings representing years (e.g. "2010") for annual data.
         """
         self.df = pd.DataFrame(data)
         if not self.df.empty:
-            # Convert year to a proper datetime format for Prophet
-            self.df['ds'] = pd.to_datetime(self.df['date'].astype(str) + '-12-31')
+            # Convert year to a proper datetime format for Prophet.
+            # Assuming 'period' starts with a 4-digit year.
+            self.df['ds'] = pd.to_datetime(self.df['period'].astype(str).str[:4] + '-12-31')
             self.df['y'] = self.df['value']
             self.df = self.df.sort_values('ds').reset_index(drop=True)
             
@@ -58,7 +59,7 @@ class ForecastingEngine:
         arima_fcst = self._train_arima(self.df, periods=periods)
         
         # Format results
-        last_year = self.df['date'].max()
+        last_year = int(self.df['period'].astype(str).str[:4].max())
         
         forecast_results = []
         for i in range(periods):
@@ -70,7 +71,7 @@ class ForecastingEngine:
             ensemble_val = (prophet_row['yhat'] + arima_val) / 2
             
             forecast_results.append({
-                "date": int(year),
+                "period": str(year),
                 "prophet_value": float(prophet_row['yhat']),
                 "prophet_lower": float(prophet_row['yhat_lower']),
                 "prophet_upper": float(prophet_row['yhat_upper']),
