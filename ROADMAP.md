@@ -24,7 +24,7 @@ Goal: Provide data-grounded insights and analytical tools.
 - [ ] Economic Signals: Automated alerts for meaningful market movements
 - [x] Economic Pulse: A composite analytical score tracking macroeconomic health
 - [ ] Data-grounded AI Analyst: Connecting Gemini strictly to the validated database
-- [ ] Event Timeline: Overlay historical events against data
+- [x] Event Timeline: Overlay historical events against data
 - [ ] Research Hub: Platform for publishing data-backed economic briefs
 
 ## PHASE D — FORECASTING

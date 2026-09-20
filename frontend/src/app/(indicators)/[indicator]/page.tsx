@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useParams, notFound } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { fetchIndicatorData } from "@/lib/api";
@@ -8,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ForecastChart } from "@/components/ForecastChart";
+import { EventTimelineCard } from "@/components/EventTimelineCard";
 import { SourceBadge } from "@/components/ui/SourceBadge";
 import { StaleWarning } from "@/components/ui/StaleWarning";
 import { MethodologyDialog } from "@/components/MethodologyDialog";
@@ -16,6 +18,9 @@ import { formatIndicatorValue } from "@/lib/utils";
 import Link from "next/link";
 
 export default function IndicatorPage() {
+  const [showEvents, setShowEvents] = useState(true);
+  const [highlightedYear, setHighlightedYear] = useState<string | null>(null);
+
   const params = useParams();
   const slug = params.indicator as string;
   
@@ -119,38 +124,53 @@ export default function IndicatorPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-card/50 md:col-span-2 border-border/50">
-          <CardHeader>
-            <CardTitle>Historical Trend</CardTitle>
-            <CardDescription>Value over time ({indicatorConfig.unit})</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-muted/10 border border-border text-sm font-serif text-muted-foreground">
-                  <span className="relative flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-foreground"></span>
-                  </span>
-                  <span className="animate-pulse">Waking up the data server... Please allow up to 50 seconds for the initial connection on our free hosting tier.</span>
+        <div className="md:col-span-2 space-y-6">
+          <Card className="bg-card/50 border-border/50">
+            <CardHeader>
+              <CardTitle>Historical Trend</CardTitle>
+              <CardDescription>Value over time ({indicatorConfig.unit})</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-4 bg-muted/10 border border-border text-sm font-serif text-muted-foreground">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-foreground"></span>
+                    </span>
+                    <span className="animate-pulse">Waking up the data server... Please allow up to 50 seconds for the initial connection on our free hosting tier.</span>
+                  </div>
+                  <Skeleton className="w-full h-[350px] rounded-none" />
                 </div>
-                <Skeleton className="w-full h-[350px] rounded-none" />
-              </div>
-            ) : chartData.length === 0 ? (
-              <div className="w-full h-[350px] flex items-center justify-center border border-dashed rounded-xl text-muted-foreground">
-                No data available
-              </div>
-            ) : (
-              <ForecastChart 
-                indicatorCode={indicatorConfig.id}
-                indicatorName={indicatorConfig.name}
-                unit={indicatorConfig.unit}
-                historicalData={chartData}
-                color={indicatorConfig.color}
-              />
-            )}
-          </CardContent>
-        </Card>
+              ) : chartData.length === 0 ? (
+                <div className="w-full h-[350px] flex items-center justify-center border border-dashed rounded-xl text-muted-foreground">
+                  No data available
+                </div>
+              ) : (
+                <ForecastChart 
+                  indicatorCode={indicatorConfig.id}
+                  indicatorName={indicatorConfig.name}
+                  indicatorSlug={indicatorConfig.slug}
+                  unit={indicatorConfig.unit}
+                  historicalData={chartData}
+                  color={indicatorConfig.color}
+                  showEvents={showEvents}
+                  highlightedYear={highlightedYear}
+                />
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Macroeconomic Event Timeline */}
+          <EventTimelineCard
+            indicatorSlug={indicatorConfig.slug}
+            indicatorName={indicatorConfig.name}
+            showEvents={showEvents}
+            onToggleShowEvents={setShowEvents}
+            highlightedYear={highlightedYear}
+            onHighlightYear={setHighlightedYear}
+          />
+        </div>
 
         <div className="space-y-6">
           <Card className="bg-card/50 border-border/50">
