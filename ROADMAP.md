@@ -15,14 +15,14 @@ Goal: Establish the open-source foundation, governance, and architecture.
 Goal: Build a robust, transparent, near-real-time data layer.
 - [ ] Implement robust source adapters for CBN, NBS, and World Bank
 - [ ] Establish one-minute source monitoring for eligible high-frequency data
-- [ ] Implement data freshness and provenance tracking metadata
-- [ ] Build a public Data Status page monitoring pipeline health
+- [x] Implement data freshness and provenance tracking metadata
+- [x] Build a public Data Status page monitoring pipeline health
 - [ ] Establish versioned datasets for reproducibility
 
 ## PHASE C — INTELLIGENCE
 Goal: Provide data-grounded insights and analytical tools.
 - [ ] Economic Signals: Automated alerts for meaningful market movements
-- [ ] Economic Pulse: A composite analytical score tracking macroeconomic health
+- [x] Economic Pulse: A composite analytical score tracking macroeconomic health
 - [ ] Data-grounded AI Analyst: Connecting Gemini strictly to the validated database
 - [ ] Event Timeline: Overlay historical events against data
 - [ ] Research Hub: Platform for publishing data-backed economic briefs

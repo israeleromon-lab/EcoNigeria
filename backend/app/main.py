@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
-from app.routers import dashboard, indicators, forecasts, analyst, research, admin
+from app.routers import dashboard, indicators, forecasts, analyst, research, admin, status
 
 
 import threading
@@ -55,6 +55,7 @@ app.include_router(forecasts.router)
 app.include_router(analyst.router)
 app.include_router(research.router)
 app.include_router(admin.router)
+app.include_router(status.router)
 
 
 @app.get("/", tags=["health"])

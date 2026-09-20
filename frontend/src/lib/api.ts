@@ -57,3 +57,10 @@ export async function runETL() {
   if (!res.ok) throw new Error(`Failed to trigger ETL pipeline`);
   return res.json();
 }
+
+export async function fetchSystemStatus() {
+  const res = await fetch(`${API_BASE_URL}/api/status`, { next: { revalidate: 60 } });
+  if (!res.ok) throw new Error(`Failed to fetch system status`);
+  return res.json();
+}
+

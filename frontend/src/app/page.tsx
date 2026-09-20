@@ -8,8 +8,9 @@ import { SourceBadge } from "@/components/ui/SourceBadge";
 import { StaleWarning } from "@/components/ui/StaleWarning";
 import { formatIndicatorValue, formatChange } from "@/lib/utils";
 import Link from "next/link";
-import { ArrowUpRight, BarChart3 } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import { AIAnalystCard } from "@/components/AIAnalystCard";
+import { EconomicPulseCard } from "@/components/EconomicPulseCard";
 import { motion } from "framer-motion";
 
 const container = {
@@ -46,6 +47,8 @@ export default function Dashboard() {
           Explore economic data, understand what changed, analyze the drivers, and forecast what may come next.
         </p>
       </div>
+
+      <EconomicPulseCard />
 
       {isLoading ? (
         <div className="space-y-6">

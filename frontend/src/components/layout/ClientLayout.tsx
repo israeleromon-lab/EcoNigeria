@@ -30,9 +30,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   const links = [
     { name: "Explore", href: "/" },
-    { name: "API Docs", href: "https://github.com/israeleromon-lab/EcoNigeria/tree/main/docs", external: true },
     { name: "Methodology", href: "/methodology" },
+    { name: "Data Status", href: "/status" },
     { name: "Data Sources", href: "https://github.com/israeleromon-lab/EcoNigeria/blob/main/docs/data-sources.md", external: true },
+    { name: "API Docs", href: "https://github.com/israeleromon-lab/EcoNigeria/tree/main/docs", external: true },
     { name: "Roadmap", href: "https://github.com/israeleromon-lab/EcoNigeria/blob/main/ROADMAP.md", external: true },
   ];
 

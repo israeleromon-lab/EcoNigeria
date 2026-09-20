@@ -105,3 +105,44 @@ class DashboardIndicator(BaseModel):
 
 class DashboardOut(BaseModel):
     indicators: List[DashboardIndicator]
+
+
+# ── System Status & Economic Pulse (EconoNigeria 2.0) ───────────────
+
+class SourceStatus(BaseModel):
+    key: str
+    name: str
+    status: str  # "operational" | "degraded" | "in_development"
+    native_frequency: str
+    indicators_count: int
+    total_observations: int
+    latest_period: Optional[str] = None
+    last_checked: Optional[str] = None
+
+
+class PulseDriver(BaseModel):
+    indicator: str
+    direction: str  # "drag" | "neutral" | "support"
+    impact: str
+
+
+class EconomicPulse(BaseModel):
+    score: int  # 0 to 100
+    rating: str  # "Resilient" | "Moderate" | "Strained" | "Vulnerable"
+    summary: str
+    drivers: List[PulseDriver] = []
+    last_computed: str
+
+
+class SystemStatusOut(BaseModel):
+    status: str  # "operational" | "degraded"
+    environment: str
+    database_engine: str
+    timestamp: str
+    total_indicators: int
+    total_observations: int
+    stale_indicators_count: int
+    freshness_percentage: float
+    sources: List[SourceStatus]
+    economic_pulse: EconomicPulse
+
