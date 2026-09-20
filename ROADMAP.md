@@ -37,9 +37,9 @@ Goal: Provide transparent predictive models for policymakers and researchers.
 
 ## PHASE E — OPEN DEVELOPER ECOSYSTEM
 Goal: Allow third parties to build upon EconoNigeria without paywalls.
-- [ ] Publish the Open REST API (e.g., `/v1/indicators/inflation`)
-- [ ] Write comprehensive API documentation
-- [ ] Release Python and JavaScript SDK/Examples
+- [x] Publish the Open REST API (e.g., `/v1/indicators/inflation`)
+- [x] Write comprehensive API documentation
+- [x] Release Python and JavaScript SDK/Examples
 - [ ] Build a plugin architecture for external data sources
 - [ ] Publish reproducible Jupyter notebooks
 
