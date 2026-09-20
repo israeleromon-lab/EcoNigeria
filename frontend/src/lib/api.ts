@@ -22,8 +22,14 @@ export async function fetchIndicatorData(indicatorCode: string) {
   return res.json();
 }
 
-export async function fetchForecastData(indicatorCode: string, periods: number = 5) {
-  const res = await fetch(`${API_BASE_URL}/api/forecasts/${indicatorCode}?periods=${periods}`, { next: { revalidate: 86400 } });
+export async function fetchForecastData(
+  indicatorCode: string, 
+  periods: number = 5,
+  model: string = "ensemble",
+  shockPct: number = 0
+) {
+  const url = `${API_BASE_URL}/api/forecasts/${indicatorCode}?periods=${periods}&model=${model}&shock_pct=${shockPct}`;
+  const res = await fetch(url, { next: { revalidate: 3600 } });
   if (!res.ok) throw new Error(`Failed to fetch forecast for ${indicatorCode}`);
   return res.json();
 }

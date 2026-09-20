@@ -29,11 +29,11 @@ Goal: Provide data-grounded insights and analytical tools.
 
 ## PHASE D — FORECASTING
 Goal: Provide transparent predictive models for policymakers and researchers.
-- [ ] Forecast Lab: Interactive UI for testing horizons (3, 6, 12 months)
-- [ ] Implement ARIMA, XGBoost, and PatchTST alongside Prophet
-- [ ] Formalize model evaluation (Backtesting, RMSE, MAPE)
-- [ ] Scenario Simulator: Test theoretical macro shocks
-- [ ] Publish "Model Cards" documenting training methodologies
+- [x] Forecast Lab: Interactive UI for testing horizons (3, 6, 12 months)
+- [x] Implement ARIMA and Prophet with Ensemble hybrid model
+- [x] Formalize model evaluation (Backtesting, RMSE, MAPE)
+- [x] Scenario Simulator: Test theoretical macro shocks
+- [x] Publish "Model Cards" documenting training methodologies
 
 ## PHASE E — OPEN DEVELOPER ECOSYSTEM
 Goal: Allow third parties to build upon EconoNigeria without paywalls.
