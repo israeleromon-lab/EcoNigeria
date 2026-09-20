@@ -13,10 +13,10 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 import requests
-from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.database import engine
 from app.models import Indicator, HistoricalData
 
 
@@ -52,13 +52,35 @@ def fetch_exchange_rate(session: Session) -> float | None:
         print("  ⚠ Indicator NGN_USD not found in DB — run seed first")
         return None
 
-    current_year = datetime.now(timezone.utc).year
+    # Select the insert implementation for the active database dialect.
+    if engine.dialect.name == "sqlite":
+        from sqlalchemy.dialects.sqlite import insert
+    elif engine.dialect.name == "postgresql":
+        from sqlalchemy.dialects.postgresql import insert
+    else:
+        print(f"  ⚠ Unsupported database dialect: {engine.dialect.name}")
+        return None
+
+    now = datetime.now(timezone.utc)
+    current_year = now.year
     stmt = (
-        sqlite_insert(HistoricalData.__table__)
-        .values(indicator_id=indicator.id, country_code="NGA", date=current_year, value=float(ngn_rate))
+        insert(HistoricalData.__table__)
+        .values(
+            indicator_id=indicator.id,
+            country_code="NGA",
+            period=str(current_year),
+            value=float(ngn_rate),
+            observation_time=now.isoformat(),
+            native_frequency="Daily",
+            source_checked_time=now.isoformat(),
+        )
         .on_conflict_do_update(
-            index_elements=['indicator_id', 'country_code', 'date'],
-            set_={"value": float(ngn_rate)},
+            index_elements=["indicator_id", "country_code", "period"],
+            set_={
+                "value": float(ngn_rate),
+                "observation_time": now.isoformat(),
+                "source_checked_time": now.isoformat(),
+            },
         )
     )
     session.execute(stmt)

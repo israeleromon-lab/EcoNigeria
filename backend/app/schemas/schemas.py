@@ -91,12 +91,15 @@ class DashboardIndicator(BaseModel):
     name: str
     category: Optional[str] = None
     unit: Optional[str] = None
+    source: Optional[str] = None
     native_frequency: Optional[str] = None
     current_value: Optional[float] = None
     current_period: Optional[str] = None
     previous_value: Optional[float] = None
     previous_period: Optional[str] = None
     pct_change: Optional[float] = None
+    last_updated: Optional[str] = None
+    is_stale: bool = False
     sparkline: List[SparklinePoint] = []
 
 

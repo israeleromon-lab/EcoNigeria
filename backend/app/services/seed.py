@@ -21,18 +21,18 @@ from datetime import datetime, timezone
 # ── Indicator registry ───────────────────────────────────────────────
 
 INDICATORS = [
-    {"code": "SP.POP.TOTL", "name": "Total Population", "category": "Demographics", "source": "World Bank", "unit": "People", "description": "Total population count"},
-    {"code": "NY.GDP.PCAP.CD", "name": "GDP Per Capita", "category": "Economic Growth", "source": "World Bank", "unit": "USD", "description": "GDP per capita in current US dollars"},
-    {"code": "FP.CPI.TOTL.ZG", "name": "Inflation Rate", "category": "Prices", "source": "World Bank", "unit": "%", "description": "Consumer price inflation, annual %"},
-    {"code": "NY.GDP.MKTP.KD.ZG", "name": "GDP Growth Rate", "category": "Economic Growth", "source": "World Bank", "unit": "%", "description": "Annual GDP growth rate"},
-    {"code": "SL.UEM.TOTL.ZS", "name": "Unemployment Rate", "category": "Labor", "source": "World Bank", "unit": "%", "description": "Unemployment as % of total labor force"},
-    {"code": "GC.DOD.TOTL.GD.ZS", "name": "Government Debt", "category": "Fiscal", "source": "World Bank", "unit": "% of GDP", "description": "Central government debt as % of GDP"},
-    {"code": "BX.KLT.DINV.CD.WD", "name": "Foreign Direct Investment", "category": "Investment", "source": "World Bank", "unit": "USD", "description": "Foreign direct investment, net inflows"},
-    {"code": "DCOILBRENTEU", "name": "Brent Oil Price", "category": "Energy", "source": "FRED", "unit": "USD/barrel", "description": "Brent crude oil price in USD per barrel"},
-    {"code": "FEDFUNDS", "name": "Federal Funds Rate", "category": "Monetary Policy", "source": "FRED", "unit": "%", "description": "US Federal Funds effective rate"},
-    {"code": "NGN_USD", "name": "Exchange Rate (NGN/USD)", "category": "Currency", "source": "Exchange Rate API", "unit": "NGN per USD", "description": "Nigerian Naira to US Dollar exchange rate"},
-    {"code": "SI.POV.NAHC", "name": "Poverty Rate", "category": "Social", "source": "World Bank", "unit": "%", "description": "National poverty headcount ratio"},
-    {"code": "NG.SEC.INCIDENTS", "name": "Level of Insecurity", "category": "Social", "source": "ACLED/Proxy", "unit": "Incidents", "description": "Annual recorded security incidents and armed conflict events"},
+    {"code": "SP.POP.TOTL", "name": "Total Population", "category": "Demographics", "source": "World Bank", "unit": "People", "native_frequency": "Annual", "description": "Total population count"},
+    {"code": "NY.GDP.PCAP.CD", "name": "GDP Per Capita", "category": "Economic Growth", "source": "World Bank", "unit": "USD", "native_frequency": "Annual", "description": "GDP per capita in current US dollars"},
+    {"code": "FP.CPI.TOTL.ZG", "name": "Inflation Rate", "category": "Prices", "source": "World Bank", "unit": "%", "native_frequency": "Annual", "description": "Consumer price inflation, annual %"},
+    {"code": "NY.GDP.MKTP.KD.ZG", "name": "GDP Growth Rate", "category": "Economic Growth", "source": "World Bank", "unit": "%", "native_frequency": "Annual", "description": "Annual GDP growth rate"},
+    {"code": "SL.UEM.TOTL.ZS", "name": "Unemployment Rate", "category": "Labor", "source": "World Bank", "unit": "%", "native_frequency": "Annual", "description": "Unemployment as % of total labor force"},
+    {"code": "GC.DOD.TOTL.GD.ZS", "name": "Government Debt", "category": "Fiscal", "source": "World Bank", "unit": "% of GDP", "native_frequency": "Annual", "description": "Central government debt as % of GDP"},
+    {"code": "BX.KLT.DINV.CD.WD", "name": "Foreign Direct Investment", "category": "Investment", "source": "World Bank", "unit": "USD", "native_frequency": "Annual", "description": "Foreign direct investment, net inflows"},
+    {"code": "DCOILBRENTEU", "name": "Brent Oil Price", "category": "Energy", "source": "FRED", "unit": "USD/barrel", "native_frequency": "Daily", "description": "Brent crude oil price in USD per barrel"},
+    {"code": "FEDFUNDS", "name": "Federal Funds Rate", "category": "Monetary Policy", "source": "FRED", "unit": "%", "native_frequency": "Monthly", "description": "US Federal Funds effective rate"},
+    {"code": "NGN_USD", "name": "Exchange Rate (NGN/USD)", "category": "Currency", "source": "Exchange Rate API", "unit": "NGN per USD", "native_frequency": "Daily", "description": "Nigerian Naira to US Dollar exchange rate"},
+    {"code": "SI.POV.NAHC", "name": "Poverty Rate", "category": "Social", "source": "World Bank", "unit": "%", "native_frequency": "Annual", "description": "National poverty headcount ratio"},
+    {"code": "NG.SEC.INCIDENTS", "name": "Level of Insecurity", "category": "Social", "source": "ACLED/Proxy", "unit": "Incidents", "native_frequency": "Annual", "description": "Annual recorded security incidents and armed conflict events"},
 ]
 
 # Map CSV column names (from raw/ individual files) → indicator codes

@@ -8,7 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ForecastChart } from "@/components/ForecastChart";
-import { Download, AlertCircle, ArrowLeft } from "lucide-react";
+import { SourceBadge } from "@/components/ui/SourceBadge";
+import { StaleWarning } from "@/components/ui/StaleWarning";
+import { MethodologyDialog } from "@/components/MethodologyDialog";
+import { Download, AlertCircle, ArrowLeft, AlertTriangle } from "lucide-react";
 import { formatIndicatorValue } from "@/lib/utils";
 import Link from "next/link";
 
@@ -48,6 +51,14 @@ export default function IndicatorPage() {
   const latestValue = validData.length > 0 ? validData[validData.length - 1].value : null;
   const latestYear = validData.length > 0 ? validData[validData.length - 1].year : null;
 
+  // Determine staleness: if latest data is > 2 years old
+  const currentYear = new Date().getFullYear();
+  const dataYear = latestYear ? parseInt(String(latestYear).slice(0, 4), 10) : 0;
+  const isStale = dataYear > 0 && (currentYear - dataYear) > 2;
+
+  const source = data?.unit ? "See below" : "World Bank"; // fallback
+  const frequency = data?.native_frequency || "Annual";
+
   const handleExportCSV = () => {
     if (!validData || validData.length === 0) return;
     
@@ -69,14 +80,32 @@ export default function IndicatorPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
+      {/* Stale data banner */}
+      {isStale && !isLoading && (
+        <div className="flex items-center gap-3 p-4 bg-amber-500/10 border border-amber-500/20 text-sm font-serif text-amber-700 dark:text-amber-400">
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <span>
+            The latest available data for this indicator is from <strong>{latestYear}</strong>. This may not reflect current conditions.
+          </span>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <Link href="/" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-6 font-serif transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Link>
-          <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary/10 text-primary mb-2">
-            {indicatorConfig.id}
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary/10 text-primary">
+              {indicatorConfig.id}
+            </div>
+            <MethodologyDialog
+              indicatorName={indicatorConfig.name}
+              methodology={indicatorConfig.methodology}
+              source={source}
+              frequency={frequency}
+            />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">{indicatorConfig.name}</h1>
           <p className="text-muted-foreground mt-1">
@@ -142,8 +171,36 @@ export default function IndicatorPage() {
                   <p className="text-sm text-muted-foreground mt-2">
                     Recorded in {latestYear || "N/A"}
                   </p>
+                  {isStale && (
+                    <StaleWarning period={String(latestYear || "unknown")} frequency={frequency} />
+                  )}
                 </>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Data Provenance Card */}
+          <Card className="bg-card/50 border-border/50">
+            <CardHeader>
+              <CardTitle className="text-sm uppercase tracking-wider">Data Source</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Source</span>
+                <SourceBadge source={source} />
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Frequency</span>
+                <span className="font-medium">{frequency}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Latest Period</span>
+                <span className="font-medium">{latestYear || "N/A"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Data Points</span>
+                <span className="font-medium">{validData.length}</span>
+              </div>
             </CardContent>
           </Card>
 

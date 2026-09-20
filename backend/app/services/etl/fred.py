@@ -12,10 +12,10 @@ from __future__ import annotations
 from collections import defaultdict
 
 import requests
-from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.database import engine
 from app.models import Indicator, HistoricalData
 
 FRED_CODES = ["DCOILBRENTEU", "FEDFUNDS"]
@@ -49,6 +49,15 @@ def fetch_fred(code: str, session: Session) -> int:
         print(f"  ⚠ Indicator {code} not found in DB — run seed first")
         return 0
 
+    # Select the insert implementation for the active database dialect.
+    if engine.dialect.name == "sqlite":
+        from sqlalchemy.dialects.sqlite import insert
+    elif engine.dialect.name == "postgresql":
+        from sqlalchemy.dialects.postgresql import insert
+    else:
+        print(f"  ⚠ Unsupported database dialect: {engine.dialect.name}")
+        return 0
+
     # Aggregate daily/monthly values into annual averages
     yearly: dict[int, list[float]] = defaultdict(list)
     for obs in observations:
@@ -67,11 +76,22 @@ def fetch_fred(code: str, session: Session) -> int:
     for year, vals in sorted(yearly.items()):
         avg_value = round(sum(vals) / len(vals), 4)
         stmt = (
-            sqlite_insert(HistoricalData.__table__)
-            .values(indicator_id=indicator.id, country_code="NGA", date=year, value=avg_value)
+            insert(HistoricalData.__table__)
+            .values(
+                indicator_id=indicator.id,
+                country_code="NGA",
+                period=str(year),
+                value=avg_value,
+                observation_time=f"{year}-01-01",
+                native_frequency="Annual",
+            )
             .on_conflict_do_update(
-                index_elements=['indicator_id', 'country_code', 'date'],
-                set_={"value": avg_value},
+                index_elements=["indicator_id", "country_code", "period"],
+                set_={
+                    "value": avg_value,
+                    "observation_time": f"{year}-01-01",
+                    "native_frequency": "Annual",
+                },
             )
         )
         session.execute(stmt)

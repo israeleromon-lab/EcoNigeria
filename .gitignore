@@ -40,6 +40,9 @@ coverage/
 *.zip
 *.xlsx
 
+# Sensitive files
+api.txt
+
 # Database
 *.db
 *.sqlite

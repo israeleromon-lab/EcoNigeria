@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchDashboardData } from "@/lib/api";
 import { INDICATORS } from "@/lib/constants";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SourceBadge } from "@/components/ui/SourceBadge";
+import { StaleWarning } from "@/components/ui/StaleWarning";
 import { formatIndicatorValue, formatChange } from "@/lib/utils";
 import Link from "next/link";
 import { ArrowUpRight, BarChart3 } from "lucide-react";
@@ -85,11 +87,13 @@ export default function Dashboard() {
               <motion.div key={indicator.id} variants={item}>
                 <Link href={`/${indicator.slug}`} className="block group h-full">
                   <div className="bg-background transition-colors duration-300 border-r border-b border-border hover:bg-muted/30 h-full relative overflow-hidden p-6 flex flex-col justify-between">
-                    <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
+                    <div className="absolute top-0 right-0 p-3 flex items-center gap-1">
+                      {stat?.source && (
+                        <SourceBadge source={stat.source} frequency={stat.native_frequency} />
+                      )}
                     </div>
                     <div>
-                      <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
+                      <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4 pr-16">
                         {indicator.name}
                       </h3>
                       <div className="text-3xl font-bold text-foreground font-serif">
@@ -97,13 +101,18 @@ export default function Dashboard() {
                       </div>
                     </div>
                     {stat?.current_value != null && (
-                      <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/50">
-                        <span className={`text-xs font-bold ${change.color} flex items-center gap-0.5`}>
-                          {change.icon} {change.text}
-                        </span>
-                        <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                          in {stat.current_period}
-                        </span>
+                      <div className="mt-4 pt-4 border-t border-border/50">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs font-bold ${change.color} flex items-center gap-0.5`}>
+                            {change.icon} {change.text}
+                          </span>
+                          <span className="text-xs text-muted-foreground uppercase tracking-wider">
+                            in {stat.current_period}
+                          </span>
+                        </div>
+                        {stat.is_stale && (
+                          <StaleWarning period={stat.current_period || "unknown"} frequency={stat.native_frequency} />
+                        )}
                       </div>
                     )}
                   </div>
