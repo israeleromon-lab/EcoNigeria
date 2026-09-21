@@ -13,19 +13,19 @@ Goal: Establish the open-source foundation, governance, and architecture.
 
 ## PHASE B — DATA INFRASTRUCTURE
 Goal: Build a robust, transparent, near-real-time data layer.
-- [ ] Implement robust source adapters for CBN, NBS, and World Bank
-- [ ] Establish one-minute source monitoring for eligible high-frequency data
+- [x] Implement robust source adapters for CBN, NBS, and World Bank
+- [x] Establish one-minute source monitoring for eligible high-frequency data
 - [x] Implement data freshness and provenance tracking metadata
 - [x] Build a public Data Status page monitoring pipeline health
-- [ ] Establish versioned datasets for reproducibility
+- [x] Establish versioned datasets for reproducibility
 
 ## PHASE C — INTELLIGENCE
 Goal: Provide data-grounded insights and analytical tools.
-- [ ] Economic Signals: Automated alerts for meaningful market movements
+- [x] Economic Signals: Automated alerts for meaningful market movements
 - [x] Economic Pulse: A composite analytical score tracking macroeconomic health
-- [ ] Data-grounded AI Analyst: Connecting Gemini strictly to the validated database
+- [x] Data-grounded AI Analyst: Connecting Gemini strictly to the validated database
 - [x] Event Timeline: Overlay historical events against data
-- [ ] Research Hub: Platform for publishing data-backed economic briefs
+- [x] Research Hub: Platform for publishing data-backed economic briefs
 
 ## PHASE D — FORECASTING
 Goal: Provide transparent predictive models for policymakers and researchers.
@@ -40,10 +40,10 @@ Goal: Allow third parties to build upon EconoNigeria without paywalls.
 - [x] Publish the Open REST API (e.g., `/v1/indicators/inflation`)
 - [x] Write comprehensive API documentation
 - [x] Release Python and JavaScript SDK/Examples
-- [ ] Build a plugin architecture for external data sources
-- [ ] Publish reproducible Jupyter notebooks
+- [x] Build a plugin architecture for external data sources
+- [x] Publish reproducible Jupyter notebooks
 
 ## PHASE F — SCALE TO AFRICA
 Goal: Expand the open intelligence infrastructure across the continent.
-- [ ] Expand ingestion architecture to Ghana, Kenya, South Africa, Egypt, Rwanda, and Côte d'Ivoire.
-- [ ] Enable cross-country comparisons (`/v1/compare/nigeria/ghana`)
+- [x] Expand ingestion architecture to Ghana, Kenya, South Africa, Egypt, Rwanda, and Côte d'Ivoire.
+- [x] Enable cross-country comparisons (`/v1/compare/nigeria/ghana`)

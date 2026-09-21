@@ -97,12 +97,12 @@ export const INDICATORS: IndicatorConfig[] = [
     methodology: "National poverty headcount ratio (% of population below the national poverty line). Source: World Bank. Poverty surveys in Nigeria are infrequent (last major survey: 2018/19 NLSS). This figure may be several years old. The World Bank Poverty & Equity portal has the most recent estimates."
   },
   {
-    id: "NG.SEC.INCIDENTS",
-    slug: "insecurity",
-    name: "Level of Insecurity",
-    unit: "Incidents",
-    color: "#dc2626",
-    methodology: "Annual recorded security incidents and armed conflict events. Source: ACLED (Armed Conflict Location & Event Data Project) via proxy dataset. This is an estimate based on media reports and field research. Actual incident counts may be higher due to underreporting in remote areas."
+    id: "FI.RES.TOTL.CD",
+    slug: "external-reserves",
+    name: "Gross External Reserves",
+    unit: "USD",
+    color: "#059669",
+    methodology: "Total gross foreign exchange reserves including gold and SDR holdings held by the Central Bank of Nigeria (CBN). Source: Central Bank of Nigeria (CBN) and World Bank International Reserves statistics. External reserves provide import cover, support Naira exchange rate stability, and buffer external economic shocks."
   }
 ];
 

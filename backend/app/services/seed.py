@@ -32,7 +32,7 @@ INDICATORS = [
     {"code": "FEDFUNDS", "name": "Federal Funds Rate", "category": "Monetary Policy", "source": "FRED", "unit": "%", "native_frequency": "Monthly", "description": "US Federal Funds effective rate"},
     {"code": "NGN_USD", "name": "Exchange Rate (NGN/USD)", "category": "Currency", "source": "Exchange Rate API", "unit": "NGN per USD", "native_frequency": "Daily", "description": "Nigerian Naira to US Dollar exchange rate"},
     {"code": "SI.POV.NAHC", "name": "Poverty Rate", "category": "Social", "source": "World Bank", "unit": "%", "native_frequency": "Annual", "description": "National poverty headcount ratio"},
-    {"code": "NG.SEC.INCIDENTS", "name": "Level of Insecurity", "category": "Social", "source": "ACLED/Proxy", "unit": "Incidents", "native_frequency": "Annual", "description": "Annual recorded security incidents and armed conflict events"},
+    {"code": "FI.RES.TOTL.CD", "name": "Gross External Reserves", "category": "External Sector", "source": "CBN / World Bank", "unit": "USD", "native_frequency": "Monthly", "description": "Total gross foreign exchange reserves including gold and SDR holdings"},
 ]
 
 # Map CSV column names (from raw/ individual files) → indicator codes
@@ -48,7 +48,7 @@ _INDIVIDUAL_CSV_MAP: dict[str, tuple[str, str]] = {
     "federal_funds.csv": ("value", "FEDFUNDS"),
     "government_debt.csv": ("value", "GC.DOD.TOTL.GD.ZS"),
     "poverty_rate.csv": ("value", "SI.POV.NAHC"),
-    "insecurity_rate.csv": ("value", "NG.SEC.INCIDENTS"),
+    "external_reserves.csv": ("value", "FI.RES.TOTL.CD"),
 }
 
 # Columns in the combined CSV → indicator codes
@@ -199,6 +199,14 @@ def run_seed():
 
     session = SessionLocal()
     try:
+        # Clean up deprecated indicators if present
+        deprecated = session.query(Indicator).filter(Indicator.code == "NG.SEC.INCIDENTS").first()
+        if deprecated:
+            session.query(HistoricalData).filter(HistoricalData.indicator_id == deprecated.id).delete()
+            session.delete(deprecated)
+            session.commit()
+            print("  [CLEANUP] Removed deprecated indicator NG.SEC.INCIDENTS")
+
         print("Seeding indicators ...")
         code_to_id = seed_indicators(session)
         print(f"  {len(code_to_id)} indicators upserted")

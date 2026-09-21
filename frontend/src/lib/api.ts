@@ -70,3 +70,33 @@ export async function fetchSystemStatus() {
   return res.json();
 }
 
+export async function fetchEconomicSignals() {
+  const res = await fetch(`${API_BASE_URL}/api/signals`, { next: { revalidate: 60 } });
+  if (!res.ok) throw new Error(`Failed to fetch economic signals`);
+  return res.json();
+}
+
+export async function generateCustomBrief(topic: string = "Macro Diagnostic") {
+  const res = await fetch(`${API_BASE_URL}/api/analyst/brief`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ topic }),
+  });
+  if (!res.ok) throw new Error("Failed to generate policy brief");
+  return res.json();
+}
+
+export async function fetchPanAfricanBenchmarks() {
+  const res = await fetch(`${API_BASE_URL}/api/compare`, { next: { revalidate: 3600 } });
+  if (!res.ok) throw new Error("Failed to fetch Pan-African benchmarks");
+  return res.json();
+}
+
+export async function fetchBilateralComparison(countryA: string, countryB: string) {
+  const res = await fetch(`${API_BASE_URL}/api/compare/${countryA}/${countryB}`, { next: { revalidate: 3600 } });
+  if (!res.ok) throw new Error(`Failed to fetch comparison for ${countryA} vs ${countryB}`);
+  return res.json();
+}
+
+
+

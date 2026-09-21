@@ -11,6 +11,7 @@ import Link from "next/link";
 import { BarChart3 } from "lucide-react";
 import { AIAnalystCard } from "@/components/AIAnalystCard";
 import { EconomicPulseCard } from "@/components/EconomicPulseCard";
+import { EconomicSignalsBanner } from "@/components/EconomicSignalsBanner";
 import { motion } from "framer-motion";
 
 const container = {
@@ -49,6 +50,8 @@ export default function Dashboard() {
       </div>
 
       <EconomicPulseCard />
+
+      <EconomicSignalsBanner />
 
       {isLoading ? (
         <div className="space-y-6">

@@ -31,10 +31,11 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const links = [
     { name: "Explore", href: "/" },
     { name: "Forecast Lab", href: "/forecasts" },
-    { name: "Methodology", href: "/methodology" },
+    { name: "Research Hub", href: "/research" },
+    { name: "Compare (Africa)", href: "/compare" },
     { name: "Data Status", href: "/status" },
-    { name: "Data Sources", href: "https://github.com/israeleromon-lab/EcoNigeria/blob/main/docs/data-sources.md", external: true },
     { name: "API Docs", href: "/developers" },
+    { name: "Methodology", href: "/methodology" },
     { name: "Roadmap", href: "https://github.com/israeleromon-lab/EcoNigeria/blob/main/ROADMAP.md", external: true },
   ];
 

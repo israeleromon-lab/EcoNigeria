@@ -93,7 +93,7 @@ export const MACRO_EVENTS: MacroEvent[] = [
     category: "Fiscal Policy",
     color: "#8b5cf6", // Purple
     description: "An overnight abolition of petrol subsidies by the federal government sparked nationwide strikes and civil protests under the 'Occupy Nigeria' movement, forcing a partial reinstatement of fuel subsidies.",
-    indicators: ["inflation", "gdp-growth", "insecurity"]
+    indicators: ["inflation", "gdp-growth", "external-reserves"]
   },
   {
     id: "global-financial-crisis-2008",

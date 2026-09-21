@@ -15,6 +15,8 @@ export function formatNumber(num: number): string {
 
 export function formatCurrency(num: number): string {
   if (num === null || num === undefined) return "-";
+  if (Math.abs(num) >= 1e9) return "$" + (num / 1e9).toFixed(2) + "B";
+  if (Math.abs(num) >= 1e6) return "$" + (num / 1e6).toFixed(2) + "M";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
