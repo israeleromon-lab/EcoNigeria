@@ -12,7 +12,6 @@ import { BarChart3 } from "lucide-react";
 import { AIAnalystCard } from "@/components/AIAnalystCard";
 import { EconomicPulseCard } from "@/components/EconomicPulseCard";
 import { EconomicSignalsBanner } from "@/components/EconomicSignalsBanner";
-import { AnimatedGridPattern } from "@/components/magicui/AnimatedGridPattern";
 import { motion } from "framer-motion";
 
 const container = {
@@ -43,26 +42,11 @@ export default function Dashboard() {
       transition={{ duration: 0.5 }}
       className="space-y-12"
     >
-      <div className="relative overflow-hidden border-b-4 border-foreground pb-8 pt-4 px-2">
-        <AnimatedGridPattern
-          numSquares={30}
-          maxOpacity={0.18}
-          duration={3}
-          className="[mask-image:radial-gradient(600px_circle_at_center,white,transparent)] text-emerald-500/30"
-        />
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 mb-4 text-xs font-mono uppercase tracking-widest border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            Open Economic Intelligence Infrastructure
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight uppercase">The open intelligence layer for Nigeria's economy.</h1>
-          <p className="text-xl text-muted-foreground mt-4 font-serif italic max-w-3xl">
-            Explore economic data, understand what changed, analyze the drivers, and forecast what may come next.
-          </p>
-        </div>
+      <div className="border-b-4 border-foreground pb-6">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight uppercase">The open intelligence layer for Nigeria's economy.</h1>
+        <p className="text-xl text-muted-foreground mt-4 font-serif italic">
+          Explore economic data, understand what changed, analyze the drivers, and forecast what may come next.
+        </p>
       </div>
 
       <EconomicPulseCard />
@@ -108,17 +92,17 @@ export default function Dashboard() {
             return (
               <motion.div key={indicator.id} variants={item}>
                 <Link href={`/${indicator.slug}`} className="block group h-full">
-                  <div className="bg-background transition-colors duration-300 border-r border-b border-border hover:bg-muted/30 h-full relative overflow-hidden p-6 flex flex-col justify-between">
-                    <div className="absolute top-0 right-0 p-3 flex items-center gap-1">
-                      {stat?.source && (
-                        <SourceBadge source={stat.source} frequency={stat.native_frequency} />
-                      )}
-                    </div>
+                  <div className="bg-background transition-colors duration-300 border-r border-b border-border hover:bg-muted/30 h-full relative overflow-hidden p-5 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4 pr-16">
+                      {stat?.source && (
+                        <div className="mb-3 flex items-center justify-end">
+                          <SourceBadge source={stat.source} frequency={stat.native_frequency} />
+                        </div>
+                      )}
+                      <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 leading-snug">
                         {indicator.name}
                       </h3>
-                      <div className="text-3xl font-bold text-foreground font-serif">
+                      <div className="text-2xl xl:text-3xl font-bold text-foreground font-serif">
                         {stat?.current_value != null ? formatIndicatorValue(stat.current_value, indicator.unit) : "N/A"}
                       </div>
                     </div>

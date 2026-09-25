@@ -132,37 +132,50 @@ export function ForecastChart({
   };
 
   return (
-    <div className="h-[380px] w-full relative">
+    <div className="h-[400px] w-full relative">
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={chartData} margin={{ top: 20, right: 15, left: 0, bottom: 5 }}>
+        <ComposedChart data={chartData} margin={{ top: 24, right: 20, left: 4, bottom: 10 }}>
           <defs>
             <linearGradient id="colorForecast" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={color} stopOpacity={0.3}/>
               <stop offset="95%" stopColor={color} stopOpacity={0}/>
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888888" strokeOpacity={0.25} />
           <XAxis 
             dataKey="year" 
             axisLine={false}
             tickLine={false}
-            tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11, fontFamily: 'monospace' }}
+            minTickGap={35}
+            tick={{ fill: '#888888', fontSize: 11, fontFamily: 'monospace' }}
             dy={8}
           />
           <YAxis 
             axisLine={false}
             tickLine={false}
-            tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11, fontFamily: 'monospace' }}
+            tick={{ fill: '#888888', fontSize: 11, fontFamily: 'monospace' }}
             tickFormatter={(val) => {
-              if (val >= 1e9) return `${(val / 1e9).toFixed(1)}B`;
-              if (val >= 1e6) return `${(val / 1e6).toFixed(1)}M`;
-              if (val >= 1e3) return `${(val / 1e3).toFixed(0)}K`;
-              return val;
+              const num = Number(val);
+              if (isNaN(num)) return String(val);
+              if (Math.abs(num) >= 1e9) return `${(num / 1e9).toFixed(1)}B`;
+              if (Math.abs(num) >= 1e6) return `${(num / 1e6).toFixed(1)}M`;
+              if (Math.abs(num) >= 1e3) return `${(num / 1e3).toFixed(0)}K`;
+              return Number.isInteger(num) ? String(num) : num.toFixed(1);
             }}
-            width={55}
+            width={65}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }} />
+          <Legend 
+            verticalAlign="top" 
+            height={36} 
+            wrapperStyle={{ 
+              fontSize: '11px', 
+              fontFamily: 'monospace',
+              textTransform: 'uppercase', 
+              letterSpacing: '0.05em',
+              paddingBottom: '10px'
+            }} 
+          />
           
           <Area 
             type="monotone" 
@@ -189,8 +202,8 @@ export function ForecastChart({
             strokeWidth={1} 
             strokeDasharray="3 3" 
             dot={false}
-            opacity={0.4}
-            name="Upper Bound"
+            opacity={0.45}
+            name="80% Confidence Band"
           />
           <Line 
             type="monotone" 
@@ -199,11 +212,12 @@ export function ForecastChart({
             strokeWidth={1} 
             strokeDasharray="3 3" 
             dot={false}
-            opacity={0.4}
+            opacity={0.45}
+            legendType="none"
             name="Lower Bound"
           />
 
-          {/* Render event milestone lines */}
+          {/* Render event milestone lines — only display text label when highlighted to prevent text clustering */}
           {showEvents && relevantEvents.map((evt) => {
             const isHighlighted = highlightedYear === evt.year;
             return (
@@ -212,15 +226,20 @@ export function ForecastChart({
                 x={String(evt.year)}
                 stroke={evt.color}
                 strokeWidth={isHighlighted ? 2.5 : 1.5}
+                strokeOpacity={isHighlighted ? 1 : 0.45}
                 strokeDasharray={isHighlighted ? "none" : "3 3"}
-                label={{
-                  value: evt.shortTitle,
-                  position: "insideTopLeft",
-                  fill: evt.color,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  fontFamily: "sans-serif",
-                }}
+                label={
+                  isHighlighted
+                    ? {
+                        value: `${evt.year}: ${evt.shortTitle}`,
+                        position: "insideTopRight",
+                        fill: evt.color,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        fontFamily: "monospace",
+                      }
+                    : undefined
+                }
               />
             );
           })}

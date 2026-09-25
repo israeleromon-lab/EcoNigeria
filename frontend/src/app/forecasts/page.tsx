@@ -302,31 +302,44 @@ export default function ForecastLabPage() {
               <span>Forecast could not be generated for this series. Minimum 5 historical observations required.</span>
             </div>
           ) : (
-            <div className="h-[400px] w-full">
+            <div className="h-[420px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 10 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                <ComposedChart data={chartData} margin={{ top: 24, right: 20, left: 4, bottom: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888888" strokeOpacity={0.25} />
                   <XAxis 
                     dataKey="year" 
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11, fontFamily: 'monospace' }}
+                    minTickGap={35}
+                    tick={{ fill: '#888888', fontSize: 11, fontFamily: 'monospace' }}
                     dy={8}
                   />
                   <YAxis 
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11, fontFamily: 'monospace' }}
+                    tick={{ fill: '#888888', fontSize: 11, fontFamily: 'monospace' }}
                     tickFormatter={(v) => {
-                      if (v >= 1e9) return `${(v / 1e9).toFixed(1)}B`;
-                      if (v >= 1e6) return `${(v / 1e6).toFixed(1)}M`;
-                      if (v >= 1e3) return `${(v / 1e3).toFixed(0)}K`;
-                      return v;
+                      const num = Number(v);
+                      if (isNaN(num)) return String(v);
+                      if (Math.abs(num) >= 1e9) return `${(num / 1e9).toFixed(1)}B`;
+                      if (Math.abs(num) >= 1e6) return `${(num / 1e6).toFixed(1)}M`;
+                      if (Math.abs(num) >= 1e3) return `${(num / 1e3).toFixed(0)}K`;
+                      return Number.isInteger(num) ? String(num) : num.toFixed(1);
                     }}
-                    width={60}
+                    width={65}
                   />
                   <Tooltip content={<CustomTooltip />} />
-                  <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }} />
+                  <Legend 
+                    verticalAlign="top" 
+                    height={36} 
+                    wrapperStyle={{ 
+                      fontSize: '11px', 
+                      fontFamily: 'monospace',
+                      textTransform: 'uppercase', 
+                      letterSpacing: '0.05em',
+                      paddingBottom: '10px'
+                    }} 
+                  />
 
                   {/* Historical Area */}
                   <Area 
@@ -358,8 +371,8 @@ export default function ForecastLabPage() {
                     strokeWidth={1} 
                     strokeDasharray="2 2" 
                     dot={false}
-                    opacity={0.4}
-                    name="80% Upper Bound"
+                    opacity={0.45}
+                    name="80% Confidence Band"
                   />
                   <Line 
                     type="monotone" 
@@ -368,7 +381,8 @@ export default function ForecastLabPage() {
                     strokeWidth={1} 
                     strokeDasharray="2 2" 
                     dot={false}
-                    opacity={0.4}
+                    opacity={0.45}
+                    legendType="none"
                     name="80% Lower Bound"
                   />
 

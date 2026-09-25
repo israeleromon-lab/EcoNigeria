@@ -61,7 +61,7 @@ export default function IndicatorPage() {
   const dataYear = latestYear ? parseInt(String(latestYear).slice(0, 4), 10) : 0;
   const isStale = dataYear > 0 && (currentYear - dataYear) > 2;
 
-  const source = data?.unit ? "See below" : "World Bank"; // fallback
+  const source = data?.source || (indicatorConfig.id === "DCOILBRENTEU" || indicatorConfig.id === "FEDFUNDS" ? "FRED" : indicatorConfig.id === "NGN_USD" ? "Exchange Rate API" : "World Bank");
   const frequency = data?.native_frequency || "Annual";
 
   const handleExportCSV = () => {
@@ -102,7 +102,7 @@ export default function IndicatorPage() {
             Back to Dashboard
           </Link>
           <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary/10 text-primary">
+            <div className="inline-flex items-center border border-border bg-muted px-2.5 py-0.5 text-xs font-mono font-bold text-foreground">
               {indicatorConfig.id}
             </div>
             <MethodologyDialog
@@ -128,7 +128,9 @@ export default function IndicatorPage() {
           <Card className="bg-card/50 border-border/50">
             <CardHeader>
               <CardTitle>Historical Trend</CardTitle>
-              <CardDescription>Value over time ({indicatorConfig.unit})</CardDescription>
+              <CardDescription>
+                Value over time ({indicatorConfig.unit}) — Hover chart or select a policy event below to inspect milestones
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {isLoading ? (

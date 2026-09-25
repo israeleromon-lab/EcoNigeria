@@ -340,28 +340,63 @@ export default function ComparePage() {
               </div>
 
               {/* Recharts Line Chart */}
-              <div className="h-72 w-full pt-4">
+              <div className="h-80 w-full pt-4">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#888888" opacity={0.2} />
-                    <XAxis dataKey="period" stroke="#888888" fontSize={12} tickLine={false} />
-                    <YAxis stroke="#888888" fontSize={12} tickLine={false} unit="%" />
+                  <LineChart data={chartData} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888888" strokeOpacity={0.25} />
+                    <XAxis 
+                      dataKey="period" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      minTickGap={25}
+                      tick={{ fill: "#888888", fontSize: 11, fontFamily: "monospace" }}
+                      dy={8}
+                    />
+                    <YAxis 
+                      axisLine={false} 
+                      tickLine={false} 
+                      width={55}
+                      tick={{ fill: "#888888", fontSize: 11, fontFamily: "monospace" }}
+                      tickFormatter={(v) => `${v}%`}
+                    />
                     <Tooltip
-                      contentStyle={{
-                        backgroundColor: "var(--background)",
-                        borderColor: "var(--border)",
-                        fontFamily: "monospace",
-                        fontSize: "12px",
+                      content={({ active, payload, label }: any) => {
+                        if (!active || !payload || !payload.length) return null;
+                        return (
+                          <div className="bg-card border-2 border-foreground p-3 shadow-xl text-xs font-mono min-w-[180px]">
+                            <div className="font-bold text-foreground border-b border-border pb-1 mb-2 uppercase tracking-wider">
+                              Year: {label}
+                            </div>
+                            <div className="space-y-1.5">
+                              {payload.map((entry: any, idx: number) => (
+                                <div key={idx} className="flex items-center justify-between gap-4">
+                                  <span className="text-muted-foreground">{entry.name}:</span>
+                                  <span className="font-bold" style={{ color: entry.color }}>
+                                    {entry.value != null ? `${entry.value}%` : "N/A"}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
                       }}
                     />
-                    <Legend wrapperStyle={{ fontFamily: "monospace", fontSize: "12px", paddingTop: "10px" }} />
+                    <Legend 
+                      verticalAlign="top" 
+                      height={36}
+                      wrapperStyle={{ 
+                        fontFamily: "monospace", 
+                        fontSize: "12px", 
+                        paddingBottom: "10px" 
+                      }} 
+                    />
                     <Line
                       type="monotone"
                       dataKey={cA.code}
                       name={`${cA.flag} ${cA.name}`}
-                      stroke="#0f172a"
+                      stroke="#3b82f6"
                       strokeWidth={3}
-                      dot={{ r: 4 }}
+                      dot={{ r: 4, fill: "#3b82f6" }}
                       activeDot={{ r: 6 }}
                     />
                     <Line
@@ -371,7 +406,7 @@ export default function ComparePage() {
                       stroke="#10b981"
                       strokeWidth={3}
                       strokeDasharray="4 4"
-                      dot={{ r: 4 }}
+                      dot={{ r: 4, fill: "#10b981" }}
                       activeDot={{ r: 6 }}
                     />
                   </LineChart>
