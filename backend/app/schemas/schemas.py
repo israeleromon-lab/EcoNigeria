@@ -98,13 +98,41 @@ class DashboardIndicator(BaseModel):
     previous_value: Optional[float] = None
     previous_period: Optional[str] = None
     pct_change: Optional[float] = None
+    abs_change: Optional[float] = None
+    bps_change: Optional[int] = None
     last_updated: Optional[str] = None
     is_stale: bool = False
     sparkline: List[SparklinePoint] = []
+    sparkline_values: List[float] = []
 
 
 class DashboardOut(BaseModel):
     indicators: List[DashboardIndicator]
+
+
+class DashboardSummaryItem(BaseModel):
+    code: str
+    name: str
+    category: Optional[str] = None
+    unit: Optional[str] = None
+    source: str = "World Bank"
+    native_frequency: str = "Annual"
+    current_value: Optional[float] = None
+    current_period: Optional[str] = None
+    previous_value: Optional[float] = None
+    previous_period: Optional[str] = None
+    pct_change: Optional[float] = None
+    abs_change: Optional[float] = None
+    bps_change: Optional[int] = None
+    last_updated: Optional[str] = None
+    is_stale: bool = False
+    sparkline: List[float] = []
+    sparkline_points: List[SparklinePoint] = []
+
+
+class DashboardSummaryOut(BaseModel):
+    indicators: List[DashboardSummaryItem]
+
 
 
 # ── System Status & Economic Pulse (EconoNigeria 2.0) ───────────────

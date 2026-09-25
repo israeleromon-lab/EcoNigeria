@@ -7,6 +7,8 @@ from app.schemas.schemas import (
     StatsOut,
     DashboardOut,
     DashboardIndicator,
+    DashboardSummaryItem,
+    DashboardSummaryOut,
     SparklinePoint,
 )
 
@@ -19,5 +21,8 @@ __all__ = [
     "StatsOut",
     "DashboardOut",
     "DashboardIndicator",
+    "DashboardSummaryItem",
+    "DashboardSummaryOut",
     "SparklinePoint",
 ]
+

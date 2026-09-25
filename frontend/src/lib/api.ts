@@ -1,12 +1,25 @@
 import { API_BASE_URL } from "./constants";
 
 export async function fetchDashboardData() {
-  const res = await fetch(`${API_BASE_URL}/api/dashboard`, { next: { revalidate: 3600 } });
+  const summaryRes = await fetch(`${API_BASE_URL}/api/dashboard/summary`, {
+    next: { revalidate: 3600 },
+  });
+  if (summaryRes.ok) {
+    return summaryRes.json();
+  }
+  const res = await fetch(`${API_BASE_URL}/api/dashboard`, {
+    next: { revalidate: 3600 },
+  });
   if (!res.ok) {
     throw new Error("Failed to fetch dashboard data");
   }
   return res.json();
 }
+
+export async function fetchDashboardSummary() {
+  return fetchDashboardData();
+}
+
 
 export async function fetchIndicatorList() {
   const res = await fetch(`${API_BASE_URL}/api/indicators`, { next: { revalidate: 86400 } });

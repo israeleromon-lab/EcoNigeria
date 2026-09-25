@@ -33,11 +33,38 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import { NumberTicker } from "@/components/magicui/NumberTicker";
+
+const SCENARIO_PRESETS = [
+  {
+    label: "Oil Shock: Brent @ $50",
+    slug: "brent-oil",
+    shockPct: -28,
+  },
+  {
+    label: "Naira FX Float Stress (-20%)",
+    slug: null,
+    shockPct: -20,
+  },
+  {
+    label: "Baseline Regime (0%)",
+    slug: null,
+    shockPct: 0,
+  },
+  {
+    label: "Reform & Export Expansion (+15%)",
+    slug: null,
+    shockPct: 15,
+  },
+];
+
 export default function ForecastLabPage() {
   const [selectedSlug, setSelectedSlug] = useState<string>("inflation");
   const [periods, setPeriods] = useState<number>(5);
   const [modelChoice, setModelChoice] = useState<string>("ensemble");
   const [shockPct, setShockPct] = useState<number>(0);
+  const [committedShockPct, setCommittedShockPct] = useState<number>(0);
+  const [isDraggingSlider, setIsDraggingSlider] = useState<boolean>(false);
 
   const selectedIndicator = INDICATORS.find(i => i.slug === selectedSlug) || INDICATORS[2];
 
@@ -50,14 +77,14 @@ export default function ForecastLabPage() {
     queryFn: () => fetchIndicatorData(selectedIndicator.id),
   });
 
-  // Fetch forecast data with dynamic controls
+  // Fetch forecast data with committed controls
   const { 
     data: forecastResp, 
     isLoading: isForecastLoading, 
     isError: isForecastError 
   } = useQuery({
-    queryKey: ["forecast_lab", selectedIndicator.id, periods, modelChoice, shockPct],
-    queryFn: () => fetchForecastData(selectedIndicator.id, periods, modelChoice, shockPct),
+    queryKey: ["forecast_lab", selectedIndicator.id, periods, modelChoice, committedShockPct],
+    queryFn: () => fetchForecastData(selectedIndicator.id, periods, modelChoice, committedShockPct),
   });
 
   const isLoading = isHistLoading || isForecastLoading;
@@ -70,10 +97,11 @@ export default function ForecastLabPage() {
 
   const validHist = rawHist.filter((d: any) => d.value !== null);
 
-  // Combine historical and forecast projection points
+  // Combine historical and forecast projection points (with instantaneous client-side shock preview while dragging)
   const chartData = [...validHist];
 
-  if (forecastResp?.data?.forecast && validHist.length > 0) {
+  const forecastSeries = forecastResp?.data?.forecast || [];
+  if (forecastSeries.length > 0 && validHist.length > 0) {
     const lastHist = validHist[validHist.length - 1];
     
     // Add transition point
@@ -86,17 +114,38 @@ export default function ForecastLabPage() {
       scenario: shockPct !== 0 ? lastHist.value : null,
     };
 
-    forecastResp.data.forecast.forEach((f: any) => {
+    forecastSeries.forEach((f: any) => {
+      const baseForecastVal = Number(f.selected_value ?? 0);
+      const liveScenarioVal =
+        shockPct === 0
+          ? null
+          : Number((baseForecastVal * (1 + shockPct / 100)).toFixed(4));
+
       chartData.push({
         year: String(f.period),
         value: null,
         forecast: f.selected_value,
         upper: f.prophet_upper,
         lower: f.prophet_lower,
-        scenario: f.scenario_value,
+        scenario: liveScenarioVal ?? f.scenario_value,
       });
     });
   }
+
+  const terminalPoint =
+    forecastSeries.length > 0 ? forecastSeries[forecastSeries.length - 1] : null;
+  const baselineTerminalValue =
+    terminalPoint?.selected_value != null
+      ? Number(terminalPoint.selected_value)
+      : validHist.length > 0
+      ? Number(validHist[validHist.length - 1].value)
+      : 0;
+  const shockedTerminalValue = Number(
+    (baselineTerminalValue * (1 + shockPct / 100)).toFixed(2)
+  );
+  const terminalDeltaValue = Number(
+    (shockedTerminalValue - baselineTerminalValue).toFixed(2)
+  );
 
   const evaluation = forecastResp?.data?.evaluation;
   const modelCard = forecastResp?.data?.model_card;
@@ -105,17 +154,17 @@ export default function ForecastLabPage() {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload || !payload.length) return null;
     return (
-      <div className="bg-card border-2 border-foreground p-3 shadow-xl text-xs font-serif rounded-none min-w-[200px]">
-        <div className="font-mono font-bold text-sm border-b border-border pb-1 mb-2 uppercase tracking-wider text-foreground">
-          Year: {label}
+      <div className="bg-card dark:bg-[#111622] border border-border dark:border-white/[0.15] p-3 shadow-xl text-xs font-mono rounded-none min-w-[200px]">
+        <div className="font-mono font-bold text-xs border-b border-border dark:border-white/[0.08] pb-1 mb-2 uppercase tracking-wider text-foreground">
+          Period: {label}
         </div>
-        <div className="space-y-1.5 font-sans">
+        <div className="space-y-1.5">
           {payload.map((entry: any, i: number) => {
             if (entry.value == null) return null;
             return (
               <div key={i} className="flex justify-between gap-3 text-xs">
                 <span className="text-muted-foreground">{entry.name}:</span>
-                <span className="font-bold font-serif" style={{ color: entry.color }}>
+                <span className="font-bold font-mono tabular-nums" style={{ color: entry.color }}>
                   {formatIndicatorValue(entry.value, selectedIndicator.unit)}
                 </span>
               </div>
@@ -129,10 +178,10 @@ export default function ForecastLabPage() {
   return (
     <div className="space-y-10 animate-in fade-in duration-500">
       {/* Hero Header */}
-      <div className="border-b-4 border-foreground pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="border-b border-border dark:border-white/[0.12] pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 mb-2 text-xs font-mono uppercase tracking-wider text-muted-foreground">
-            <Cpu className="w-4 h-4 text-primary" />
+          <div className="inline-flex items-center gap-2 mb-2 text-xs font-mono uppercase tracking-wider text-emerald-500">
+            <Cpu className="w-4 h-4 text-emerald-500" />
             EconoNigeria 2.0 Predictive Engine
           </div>
           <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tight">Forecast Lab</h1>
@@ -150,10 +199,10 @@ export default function ForecastLabPage() {
       </div>
 
       {/* Control Panel Grid */}
-      <div className="border border-border bg-background p-6 space-y-6">
+      <div className="border border-border dark:border-white/[0.08] bg-card dark:bg-[#0B0F17] p-6 space-y-6">
         {/* Indicator Selector Tabs */}
         <div>
-          <span className="text-xs uppercase font-bold tracking-wider text-muted-foreground block mb-3">
+          <span className="text-xs font-mono uppercase font-bold tracking-wider text-muted-foreground block mb-3">
             1. Select Macro Indicator
           </span>
           <div className="flex flex-wrap gap-2">
@@ -162,12 +211,14 @@ export default function ForecastLabPage() {
                 key={ind.id}
                 onClick={() => {
                   setSelectedSlug(ind.slug);
-                  setShockPct(0); // reset shock on switch
+                  setIsDraggingSlider(false);
+                  setShockPct(0);
+                  setCommittedShockPct(0);
                 }}
-                className={`text-xs px-3 py-1.5 border transition-all font-serif ${
+                className={`text-xs px-3 py-1.5 border transition-all font-mono uppercase tracking-wider ${
                   selectedSlug === ind.slug
-                    ? "border-foreground bg-foreground text-background font-bold shadow-sm"
-                    : "border-border/60 hover:bg-muted/30 text-muted-foreground"
+                    ? "border-emerald-500 bg-emerald-500/15 text-emerald-400 font-bold"
+                    : "border-border dark:border-white/[0.08] hover:bg-muted/30 text-muted-foreground"
                 }`}
               >
                 {ind.name}
@@ -177,9 +228,9 @@ export default function ForecastLabPage() {
         </div>
 
         {/* Horizon & Model Selectors */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/50">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/50 dark:border-white/[0.08]">
           <div>
-            <span className="text-xs uppercase font-bold tracking-wider text-muted-foreground block mb-2">
+            <span className="text-xs font-mono uppercase font-bold tracking-wider text-muted-foreground block mb-2">
               2. Forecast Horizon
             </span>
             <div className="flex gap-2">
@@ -189,8 +240,8 @@ export default function ForecastLabPage() {
                   onClick={() => setPeriods(yr)}
                   className={`flex-1 py-1.5 px-3 border text-xs font-mono uppercase tracking-wider transition-all ${
                     periods === yr
-                      ? "border-foreground bg-foreground text-background font-bold"
-                      : "border-border/60 hover:bg-muted/30 text-muted-foreground"
+                      ? "border-emerald-500 bg-emerald-500/15 text-emerald-400 font-bold"
+                      : "border-border dark:border-white/[0.08] hover:bg-muted/30 text-muted-foreground"
                   }`}
                 >
                   {yr} {yr === 1 ? "Year" : "Years"}
@@ -200,7 +251,7 @@ export default function ForecastLabPage() {
           </div>
 
           <div>
-            <span className="text-xs uppercase font-bold tracking-wider text-muted-foreground block mb-2">
+            <span className="text-xs font-mono uppercase font-bold tracking-wider text-muted-foreground block mb-2">
               3. Statistical Model
             </span>
             <div className="flex gap-2">
@@ -214,8 +265,8 @@ export default function ForecastLabPage() {
                   onClick={() => setModelChoice(m.key)}
                   className={`flex-1 py-1.5 px-2 border text-xs font-mono transition-all ${
                     modelChoice === m.key
-                      ? "border-foreground bg-foreground text-background font-bold"
-                      : "border-border/60 hover:bg-muted/30 text-muted-foreground"
+                      ? "border-emerald-500 bg-emerald-500/15 text-emerald-400 font-bold"
+                      : "border-border dark:border-white/[0.08] hover:bg-muted/30 text-muted-foreground"
                   }`}
                 >
                   {m.label}
@@ -225,25 +276,31 @@ export default function ForecastLabPage() {
           </div>
         </div>
 
-        {/* Scenario Shock Simulator */}
-        <div className="pt-4 border-t border-border/50 bg-muted/10 p-4 border">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+        {/* Scenario Shock Simulator with Drag Bypass Rule & Automated Scenario Presets */}
+        <div className="pt-4 border-t border-border/50 dark:border-white/[0.08] bg-background dark:bg-[#111622] p-4 border dark:border-white/[0.08] space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-primary" />
-              <span className="text-xs uppercase font-bold tracking-wider text-foreground">
+              <Sliders className="w-4 h-4 text-emerald-500" />
+              <span className="text-xs font-mono uppercase font-bold tracking-wider text-foreground">
                 4. Scenario Shock Simulator
               </span>
-              <span className="text-xs text-muted-foreground font-serif">
-                (Test theoretical stress shocks)
+              <span className="text-[11px] font-mono text-muted-foreground">
+                {isDraggingSlider
+                  ? "[DRAG BYPASS ACTIVE · RAW FRAME READOUT]"
+                  : "[SPRING LOCKED · STIFFNESS 260 / DAMPING 32]"}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-bold text-primary">
+              <span className="font-mono text-xs font-bold text-emerald-400 tabular-nums">
                 {shockPct > 0 ? `+${shockPct}% Shock` : shockPct < 0 ? `${shockPct}% Shock` : "Baseline (0%)"}
               </span>
               {shockPct !== 0 && (
                 <button
-                  onClick={() => setShockPct(0)}
+                  onClick={() => {
+                    setIsDraggingSlider(false);
+                    setShockPct(0);
+                    setCommittedShockPct(0);
+                  }}
                   className="text-[10px] uppercase font-mono underline text-muted-foreground hover:text-foreground"
                 >
                   Reset
@@ -252,15 +309,60 @@ export default function ForecastLabPage() {
             </div>
           </div>
 
-          <div className="space-y-3">
+          {/* Automated Scenario Presets (Triggers overdamped spring roll) */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mr-1">
+              Presets:
+            </span>
+            {SCENARIO_PRESETS.map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => {
+                  // Ensure spring is active (not bypassed) for automated preset roll
+                  setIsDraggingSlider(false);
+                  if (preset.slug && preset.slug !== selectedSlug) {
+                    setSelectedSlug(preset.slug);
+                  }
+                  setShockPct(preset.shockPct);
+                  setCommittedShockPct(preset.shockPct);
+                }}
+                className={`px-2.5 py-1 text-[11px] font-mono border transition-colors ${
+                  shockPct === preset.shockPct &&
+                  (!preset.slug || preset.slug === selectedSlug)
+                    ? "border-emerald-500 bg-emerald-500/15 text-emerald-400 font-semibold"
+                    : "border-border dark:border-white/[0.1] bg-card dark:bg-[#0B0F17] text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-2">
             <input
               type="range"
               min="-30"
               max="30"
-              step="5"
+              step="1"
               value={shockPct}
+              onPointerDown={() => setIsDraggingSlider(true)}
+              onMouseDown={() => setIsDraggingSlider(true)}
+              onTouchStart={() => setIsDraggingSlider(true)}
               onChange={(e) => setShockPct(Number(e.target.value))}
-              className="w-full accent-primary cursor-pointer"
+              onPointerUp={() => {
+                setIsDraggingSlider(false);
+                setCommittedShockPct(shockPct);
+              }}
+              onMouseUp={() => {
+                setIsDraggingSlider(false);
+                setCommittedShockPct(shockPct);
+              }}
+              onTouchEnd={() => {
+                setIsDraggingSlider(false);
+                setCommittedShockPct(shockPct);
+              }}
+              className="w-full accent-emerald-500 cursor-pointer"
             />
             <div className="flex justify-between text-[10px] font-mono text-muted-foreground">
               <span>-30% Severe Contraction</span>
@@ -268,8 +370,61 @@ export default function ForecastLabPage() {
               <span>+30% Upside Shock</span>
             </div>
           </div>
+
+          {/* Live Tabular Terminal Readout Strip with Drag Bypass */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-border/50 dark:border-white/[0.08]">
+            <div className="p-3 bg-card dark:bg-[#0B0F17] border border-border dark:border-white/[0.08]">
+              <span className="block text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                Baseline Terminal ({terminalPoint?.period || `+${periods}Y`})
+              </span>
+              <NumberTicker
+                value={baselineTerminalValue}
+                bypassSpring={isDraggingSlider}
+                formatter={(val) =>
+                  formatIndicatorValue(val, selectedIndicator.unit)
+                }
+                className="text-lg font-bold font-mono tabular-nums text-foreground mt-0.5"
+              />
+            </div>
+
+            <div className="p-3 bg-card dark:bg-[#0B0F17] border border-border dark:border-white/[0.08]">
+              <span className="block text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                Scenario Projected Value
+              </span>
+              <NumberTicker
+                value={shockedTerminalValue}
+                bypassSpring={isDraggingSlider}
+                formatter={(val) =>
+                  formatIndicatorValue(val, selectedIndicator.unit)
+                }
+                className="text-lg font-bold font-mono tabular-nums text-emerald-400 mt-0.5"
+              />
+            </div>
+
+            <div className="p-3 bg-card dark:bg-[#0B0F17] border border-border dark:border-white/[0.08]">
+              <span className="block text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+                Net Scenario Spread
+              </span>
+              <NumberTicker
+                value={terminalDeltaValue}
+                bypassSpring={isDraggingSlider}
+                formatter={(val) => {
+                  const sign = val > 0 ? "+" : "";
+                  return `${sign}${formatIndicatorValue(val, selectedIndicator.unit)}`;
+                }}
+                className={`text-lg font-bold font-mono tabular-nums mt-0.5 ${
+                  terminalDeltaValue > 0
+                    ? "text-emerald-400"
+                    : terminalDeltaValue < 0
+                    ? "text-rose-400"
+                    : "text-muted-foreground"
+                }`}
+              />
+            </div>
+          </div>
         </div>
       </div>
+
 
       {/* Main Interactive Forecast Chart */}
       <Card className="rounded-none border-2 border-foreground shadow-none bg-background">
