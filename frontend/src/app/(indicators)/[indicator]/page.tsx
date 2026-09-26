@@ -204,7 +204,7 @@ export default function IndicatorPage() {
         <div>
           <Link
             href="/"
-            className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-6 font-serif transition-colors"
+            className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-4 sm:mb-6 font-serif transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
@@ -224,18 +224,18 @@ export default function IndicatorPage() {
               frequency={frequency}
             />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
             {indicatorConfig.name}
           </h1>
-          <p className="text-muted-foreground mt-1 font-serif">
+          <p className="text-sm sm:text-base text-muted-foreground mt-1 font-serif">
             Verified historical series, econometric ensemble forecast (with 80%
             CI &amp; holdout backtest), and primary institutional provenance.
           </p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto shrink-0">
           <Button
             variant="outline"
-            className="gap-2 rounded-none font-mono text-xs uppercase tracking-wider"
+            className="flex-1 sm:flex-initial gap-2 rounded-none font-mono text-xs uppercase tracking-wider"
             onClick={handleExportCSV}
             disabled={!validData || validData.length === 0}
           >
@@ -244,7 +244,7 @@ export default function IndicatorPage() {
           </Button>
           <Button
             variant="outline"
-            className="gap-2 rounded-none font-mono text-xs uppercase tracking-wider"
+            className="flex-1 sm:flex-initial gap-2 rounded-none font-mono text-xs uppercase tracking-wider"
             onClick={handleExportJSON}
             disabled={!validData || validData.length === 0}
           >
@@ -256,7 +256,7 @@ export default function IndicatorPage() {
 
       {/* Methodological Discontinuity / Structural Break Callout (if applicable) */}
       {indicatorConfig.structuralBreakNote && (
-        <div className="p-4 border-l-4 border-amber-500 bg-amber-500/[0.06] border border-amber-500/20 flex items-start gap-3">
+        <div className="p-3.5 sm:p-4 border-l-4 border-amber-500 bg-amber-500/[0.06] border border-amber-500/20 flex items-start gap-3">
           <GitCommit className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <div className="text-xs space-y-1">
             <div className="font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">
@@ -269,12 +269,12 @@ export default function IndicatorPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
           <Card className="bg-card/50 border-border/50 rounded-none">
             <CardHeader>
               <CardTitle>Empirical Trend &amp; 5-Year Ensemble Forecast</CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Value over time ({indicatorConfig.unit}) — Solid line denotes
                 verified institutional observations; dashed line &amp; band denote
                 out-of-sample ML projections
@@ -284,7 +284,7 @@ export default function IndicatorPage() {
               {isLoading ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 p-4 bg-muted/10 border border-border text-sm font-serif text-muted-foreground">
-                    <span className="relative flex h-3 w-3">
+                    <span className="relative flex h-3 w-3 shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-3 w-3 bg-foreground"></span>
                     </span>
@@ -292,10 +292,10 @@ export default function IndicatorPage() {
                       Synchronizing historical series from EconoNigeria backend...
                     </span>
                   </div>
-                  <Skeleton className="w-full h-[350px] rounded-none" />
+                  <Skeleton className="w-full h-[280px] sm:h-[350px] rounded-none" />
                 </div>
               ) : chartData.length === 0 ? (
-                <div className="w-full h-[350px] flex items-center justify-center border border-dashed rounded-none text-muted-foreground">
+                <div className="w-full h-[280px] sm:h-[350px] flex items-center justify-center border border-dashed rounded-none text-muted-foreground">
                   No data available
                 </div>
               ) : (
@@ -324,7 +324,7 @@ export default function IndicatorPage() {
           />
         </div>
 
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 self-start">
           <Card className="bg-card/50 border-border/50 rounded-none">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-mono uppercase tracking-wider text-muted-foreground">
@@ -339,7 +339,7 @@ export default function IndicatorPage() {
                 </div>
               ) : (
                 <>
-                  <div className="text-4xl font-bold text-foreground font-mono tabular-nums">
+                  <div className="text-3xl sm:text-4xl font-bold text-foreground font-mono tabular-nums">
                     {latestValue != null
                       ? formatIndicatorValue(
                           Number(latestValue),
@@ -371,39 +371,39 @@ export default function IndicatorPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-3 text-xs">
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-muted-foreground">Primary Authority</span>
-                <span className="font-mono font-semibold text-foreground">
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-muted-foreground shrink-0">Primary Authority</span>
+                <span className="font-mono font-semibold text-foreground text-right">
                   {indicatorConfig.publisher}
                 </span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-muted-foreground">Series Code</span>
-                <span className="font-mono text-foreground">
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-muted-foreground shrink-0">Series Code</span>
+                <span className="font-mono text-foreground text-right break-all">
                   {indicatorConfig.id}
                 </span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-muted-foreground">Native Cadence</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-muted-foreground shrink-0">Native Cadence</span>
                 <span className="font-mono text-foreground text-right">
                   {indicatorConfig.nativeFrequency}
                 </span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-muted-foreground">Release Schedule</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-muted-foreground shrink-0">Release Schedule</span>
                 <span className="font-mono text-muted-foreground text-right">
                   {indicatorConfig.releaseCadence}
                 </span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-muted-foreground">Base / Valuation</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-muted-foreground shrink-0">Base / Valuation</span>
                 <span className="font-mono text-muted-foreground text-right">
                   {indicatorConfig.baseYear}
                 </span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-muted-foreground">Verified Observations</span>
-                <span className="font-mono font-semibold text-foreground">
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-muted-foreground shrink-0">Verified Observations</span>
+                <span className="font-mono font-semibold text-foreground text-right">
                   {validData.length > 0 ? validData.length : "50+ (Annual)"}
                 </span>
               </div>
@@ -412,20 +412,20 @@ export default function IndicatorPage() {
                   href={indicatorConfig.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 border border-border hover:border-foreground text-foreground font-mono text-[11px] uppercase tracking-wider transition-colors"
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 border border-border hover:border-foreground text-foreground font-mono text-[11px] uppercase tracking-wider transition-colors text-center"
                 >
-                  Verify at Primary Source ({indicatorConfig.publisher.split("/")[0].trim()})
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Verify at Primary Source ({indicatorConfig.publisher.split("/")[0].trim()})</span>
+                  <ExternalLink className="w-3.5 h-3.5 shrink-0" />
                 </a>
               </div>
             </CardContent>
           </Card>
 
           {/* Clearly Demarcated Machine-Generated Macro Summary */}
-          <Card className="bg-primary/5 border-primary/20 rounded-none">
+          <Card className="bg-primary/5 border-primary/20 rounded-none md:col-span-2 lg:col-span-1">
             <CardHeader className="pb-2">
               <div className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-primary mb-1">
-                <span className="w-2 h-2 rounded-full bg-primary"></span>
+                <span className="w-2 h-2 rounded-full bg-primary shrink-0"></span>
                 <span>MACHINE-GENERATED MACRO SUMMARY</span>
               </div>
               <CardTitle className="text-sm font-mono uppercase tracking-wider text-foreground">

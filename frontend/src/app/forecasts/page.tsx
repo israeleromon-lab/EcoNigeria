@@ -176,20 +176,20 @@ export default function ForecastLabPage() {
   };
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-500">
+    <div className="space-y-6 sm:space-y-10 animate-in fade-in duration-500">
       {/* Hero Header */}
-      <div className="border-b border-border dark:border-white/[0.12] pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="border-b border-border dark:border-white/[0.12] pb-5 sm:pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 mb-2 text-xs font-mono uppercase tracking-wider text-emerald-500">
-            <Cpu className="w-4 h-4 text-emerald-500" />
-            EconoNigeria 2.0 Predictive Engine
+            <Cpu className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>EconoNigeria 2.0 Predictive Engine</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tight">Forecast Lab</h1>
-          <p className="text-base md:text-lg text-muted-foreground mt-2 font-serif max-w-3xl">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold uppercase tracking-tight">Forecast Lab</h1>
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground mt-2 font-serif max-w-3xl">
             Interactive multi-model forecasting laboratory. Explore projections across customizable horizons, evaluate out-of-sample backtesting metrics, and simulate macroeconomic shocks.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 self-start md:self-auto">
           <Link href={`/${selectedIndicator.slug}`}>
             <Button variant="outline" className="rounded-none text-xs gap-1.5 font-mono">
               View Indicator Page →
@@ -199,13 +199,13 @@ export default function ForecastLabPage() {
       </div>
 
       {/* Control Panel Grid */}
-      <div className="border border-border dark:border-white/[0.08] bg-card dark:bg-[#0B0F17] p-6 space-y-6">
+      <div className="border border-border dark:border-white/[0.08] bg-card dark:bg-[#0B0F17] p-4 sm:p-6 space-y-5 sm:space-y-6">
         {/* Indicator Selector Tabs */}
         <div>
-          <span className="text-xs font-mono uppercase font-bold tracking-wider text-muted-foreground block mb-3">
+          <span className="text-xs font-mono uppercase font-bold tracking-wider text-muted-foreground block mb-2.5 sm:mb-3">
             1. Select Macro Indicator
           </span>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex overflow-x-auto sm:flex-wrap gap-2 pb-1 sm:pb-0 -mx-1 px-1 no-scrollbar">
             {INDICATORS.map((ind) => (
               <button
                 key={ind.id}
@@ -215,7 +215,7 @@ export default function ForecastLabPage() {
                   setShockPct(0);
                   setCommittedShockPct(0);
                 }}
-                className={`text-xs px-3 py-1.5 border transition-all font-mono uppercase tracking-wider ${
+                className={`text-xs px-3 py-1.5 border transition-all font-mono uppercase tracking-wider shrink-0 whitespace-nowrap ${
                   selectedSlug === ind.slug
                     ? "border-emerald-500 bg-emerald-500/15 text-emerald-400 font-bold"
                     : "border-border dark:border-white/[0.08] hover:bg-muted/30 text-muted-foreground"
@@ -228,17 +228,17 @@ export default function ForecastLabPage() {
         </div>
 
         {/* Horizon & Model Selectors */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/50 dark:border-white/[0.08]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 pt-4 border-t border-border/50 dark:border-white/[0.08]">
           <div>
             <span className="text-xs font-mono uppercase font-bold tracking-wider text-muted-foreground block mb-2">
               2. Forecast Horizon
             </span>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 sm:flex gap-2">
               {[1, 3, 5, 8].map((yr) => (
                 <button
                   key={yr}
                   onClick={() => setPeriods(yr)}
-                  className={`flex-1 py-1.5 px-3 border text-xs font-mono uppercase tracking-wider transition-all ${
+                  className={`flex-1 py-2 sm:py-1.5 px-3 border text-xs font-mono uppercase tracking-wider transition-all ${
                     periods === yr
                       ? "border-emerald-500 bg-emerald-500/15 text-emerald-400 font-bold"
                       : "border-border dark:border-white/[0.08] hover:bg-muted/30 text-muted-foreground"
@@ -254,7 +254,7 @@ export default function ForecastLabPage() {
             <span className="text-xs font-mono uppercase font-bold tracking-wider text-muted-foreground block mb-2">
               3. Statistical Model
             </span>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {[
                 { key: "ensemble", label: "Ensemble (Recommended)" },
                 { key: "prophet", label: "Meta Prophet" },
@@ -263,7 +263,7 @@ export default function ForecastLabPage() {
                 <button
                   key={m.key}
                   onClick={() => setModelChoice(m.key)}
-                  className={`flex-1 py-1.5 px-2 border text-xs font-mono transition-all ${
+                  className={`py-2 sm:py-1.5 px-2.5 border text-xs font-mono transition-all ${
                     modelChoice === m.key
                       ? "border-emerald-500 bg-emerald-500/15 text-emerald-400 font-bold"
                       : "border-border dark:border-white/[0.08] hover:bg-muted/30 text-muted-foreground"
@@ -277,14 +277,14 @@ export default function ForecastLabPage() {
         </div>
 
         {/* Scenario Shock Simulator with Drag Bypass Rule & Automated Scenario Presets */}
-        <div className="pt-4 border-t border-border/50 dark:border-white/[0.08] bg-background dark:bg-[#111622] p-4 border dark:border-white/[0.08] space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-emerald-500" />
+        <div className="pt-4 border-t border-border/50 dark:border-white/[0.08] bg-background dark:bg-[#111622] p-3.5 sm:p-4 border dark:border-white/[0.08] space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <Sliders className="w-4 h-4 text-emerald-500 shrink-0" />
               <span className="text-xs font-mono uppercase font-bold tracking-wider text-foreground">
                 4. Scenario Shock Simulator
               </span>
-              <span className="text-[11px] font-mono text-muted-foreground">
+              <span className="text-[10px] sm:text-[11px] font-mono text-muted-foreground">
                 {isDraggingSlider
                   ? "[DRAG BYPASS ACTIVE · RAW FRAME READOUT]"
                   : "[SPRING LOCKED · STIFFNESS 260 / DAMPING 32]"}
@@ -310,8 +310,8 @@ export default function ForecastLabPage() {
           </div>
 
           {/* Automated Scenario Presets (Triggers overdamped spring roll) */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mr-1">
+          <div className="flex overflow-x-auto sm:flex-wrap items-center gap-2 pb-1 sm:pb-0 -mx-1 px-1 no-scrollbar">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mr-1 shrink-0">
               Presets:
             </span>
             {SCENARIO_PRESETS.map((preset) => (
@@ -327,7 +327,7 @@ export default function ForecastLabPage() {
                   setShockPct(preset.shockPct);
                   setCommittedShockPct(preset.shockPct);
                 }}
-                className={`px-2.5 py-1 text-[11px] font-mono border transition-colors ${
+                className={`px-2.5 py-1.5 sm:py-1 text-[11px] font-mono border transition-colors shrink-0 whitespace-nowrap ${
                   shockPct === preset.shockPct &&
                   (!preset.slug || preset.slug === selectedSlug)
                     ? "border-emerald-500 bg-emerald-500/15 text-emerald-400 font-semibold"
@@ -362,10 +362,10 @@ export default function ForecastLabPage() {
                 setIsDraggingSlider(false);
                 setCommittedShockPct(shockPct);
               }}
-              className="w-full accent-emerald-500 cursor-pointer"
+              className="w-full h-6 accent-emerald-500 cursor-pointer touch-pan-y"
             />
-            <div className="flex justify-between text-[10px] font-mono text-muted-foreground">
-              <span>-30% Severe Contraction</span>
+            <div className="flex justify-between text-[9px] sm:text-[10px] font-mono text-muted-foreground">
+              <span>-30% Contraction</span>
               <span>Baseline (0%)</span>
               <span>+30% Upside Shock</span>
             </div>
@@ -431,7 +431,7 @@ export default function ForecastLabPage() {
         <CardHeader className="border-b border-border pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <CardTitle className="text-xl font-bold font-serif uppercase tracking-tight">
+              <CardTitle className="text-lg sm:text-xl font-bold font-serif uppercase tracking-tight">
                 {selectedIndicator.name} — Projection Trajectory
               </CardTitle>
               <CardDescription className="text-xs font-mono mt-1">
@@ -439,40 +439,40 @@ export default function ForecastLabPage() {
               </CardDescription>
             </div>
             {shockPct !== 0 && (
-              <span className="inline-flex items-center gap-1 text-xs font-mono px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                <AlertCircle className="w-3.5 h-3.5" /> Simulated Scenario Active
+              <span className="inline-flex items-center gap-1 text-xs font-mono px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 self-start sm:self-auto">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" /> Simulated Scenario Active
               </span>
             )}
           </div>
         </CardHeader>
 
-        <CardContent className="pt-6">
+        <CardContent className="pt-4 sm:pt-6">
           {isLoading ? (
-            <div className="h-[400px] flex items-center justify-center">
+            <div className="h-[280px] sm:h-[360px] md:h-[400px] flex items-center justify-center">
               <Skeleton className="w-full h-full rounded-none" />
             </div>
           ) : isForecastError ? (
-            <div className="h-[400px] flex flex-col items-center justify-center border border-dashed text-muted-foreground text-sm font-serif p-6 text-center">
+            <div className="h-[280px] sm:h-[360px] md:h-[400px] flex flex-col items-center justify-center border border-dashed text-muted-foreground text-sm font-serif p-6 text-center">
               <AlertCircle className="w-8 h-8 text-destructive mb-2" />
               <span>Forecast could not be generated for this series. Minimum 5 historical observations required.</span>
             </div>
           ) : (
-            <div className="h-[420px] w-full">
+            <div className="h-[280px] sm:h-[360px] md:h-[420px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={chartData} margin={{ top: 24, right: 20, left: 4, bottom: 10 }}>
+                <ComposedChart data={chartData} margin={{ top: 16, right: 8, left: 0, bottom: 6 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888888" strokeOpacity={0.25} />
                   <XAxis 
                     dataKey="year" 
                     axisLine={false}
                     tickLine={false}
-                    minTickGap={35}
-                    tick={{ fill: '#888888', fontSize: 11, fontFamily: 'monospace' }}
+                    minTickGap={28}
+                    tick={{ fill: '#888888', fontSize: 10, fontFamily: 'monospace' }}
                     dy={8}
                   />
                   <YAxis 
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: '#888888', fontSize: 11, fontFamily: 'monospace' }}
+                    tick={{ fill: '#888888', fontSize: 10, fontFamily: 'monospace' }}
                     tickFormatter={(v) => {
                       const num = Number(v);
                       if (isNaN(num)) return String(v);
@@ -481,18 +481,17 @@ export default function ForecastLabPage() {
                       if (Math.abs(num) >= 1e3) return `${(num / 1e3).toFixed(0)}K`;
                       return Number.isInteger(num) ? String(num) : num.toFixed(1);
                     }}
-                    width={65}
+                    width={50}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend 
                     verticalAlign="top" 
-                    height={36} 
                     wrapperStyle={{ 
-                      fontSize: '11px', 
+                      fontSize: '10px', 
                       fontFamily: 'monospace',
                       textTransform: 'uppercase', 
-                      letterSpacing: '0.05em',
-                      paddingBottom: '10px'
+                      letterSpacing: '0.04em',
+                      paddingBottom: '8px'
                     }} 
                   />
 
