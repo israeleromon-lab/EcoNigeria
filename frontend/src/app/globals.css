@@ -41,6 +41,9 @@
 
 @layer base {
   :root {
+    --font-jetbrains-mono: "JetBrains Mono", "IBM Plex Mono", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --font-editorial-serif: "Newsreader", "Georgia", "Times New Roman", serif;
+    --font-humanist-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --background: 210 20% 98%;
     --foreground: 220 35% 7%;
     --card: 0 0% 100%;

@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db, engine
 from app.models import Indicator, HistoricalData
+from app.routers.dashboard import _is_stale, _PROVENANCE_OVERRIDES
 from app.schemas.schemas import (
     SystemStatusOut,
     SourceStatus,
@@ -20,16 +21,19 @@ from app.schemas.schemas import (
 
 router = APIRouter(prefix="/api", tags=["status"])
 
-# Staleness thresholds in months, keyed by native_frequency.
-_STALE_THRESHOLDS: dict[str | None, int] = {
-    "Daily": 1,
-    "Monthly": 3,
-    "Quarterly": 9,
-    "Annual": 24,
-    None: 24,
-}
-
 KNOWN_SOURCES = [
+    {
+        "key": "cbn",
+        "name": "Central Bank of Nigeria (CBN)",
+        "source_match": "CBN",
+        "frequency": "Daily / Monthly",
+    },
+    {
+        "key": "nbs",
+        "name": "National Bureau of Statistics (NBS)",
+        "source_match": "NBS",
+        "frequency": "Monthly / Quarterly",
+    },
     {
         "key": "world_bank",
         "name": "World Bank Indicators API",
@@ -40,31 +44,13 @@ KNOWN_SOURCES = [
         "key": "fred",
         "name": "FRED (Federal Reserve)",
         "source_match": "FRED",
-        "frequency": "Daily / Monthly (Annualized)",
+        "frequency": "Daily / Monthly",
     },
     {
         "key": "exchange_rate",
-        "name": "Exchange Rate API",
+        "name": "FMDQ / Exchange Rate API",
         "source_match": "Exchange Rate API",
         "frequency": "Daily / Spot",
-    },
-    {
-        "key": "acled",
-        "name": "ACLED / Security Proxy",
-        "source_match": "ACLED/Proxy",
-        "frequency": "Annual",
-    },
-    {
-        "key": "cbn",
-        "name": "Central Bank of Nigeria (CBN)",
-        "source_match": "CBN",
-        "frequency": "Daily / Monthly (Upcoming)",
-    },
-    {
-        "key": "nbs",
-        "name": "National Bureau of Statistics (NBS)",
-        "source_match": "NBS",
-        "frequency": "Monthly / Quarterly (Upcoming)",
     },
 ]
 
@@ -190,27 +176,30 @@ def get_system_status(db: Session = Depends(get_db)):
             .order_by(desc(HistoricalData.period))
             .first()
         )
-        if latest_pt and latest_pt[0]:
-            try:
-                yr = int(str(latest_pt[0])[:4])
-                months_ago = (now.year - yr) * 12 + now.month
-                threshold = _STALE_THRESHOLDS.get(ind.native_frequency, 24)
-                if months_ago > threshold:
-                    stale_count += 1
-            except (ValueError, TypeError):
-                stale_count += 1
-        else:
+        _, override_freq = _PROVENANCE_OVERRIDES.get(
+            ind.code, (ind.source or "World Bank", ind.native_frequency or "Annual")
+        )
+        effective_freq = override_freq or ind.native_frequency or "Annual"
+        period_val = str(latest_pt[0]) if (latest_pt and latest_pt[0]) else None
+        if _is_stale(period_val, effective_freq):
             stale_count += 1
 
     freshness_pct = 0.0
     if total_indicators > 0:
         freshness_pct = round(((total_indicators - stale_count) / total_indicators) * 100, 1)
 
-    # Build per-source statuses
+    # Build per-source statuses using effective institutional provenance
     sources_out: List[SourceStatus] = []
     for src in KNOWN_SOURCES:
-        # Find matching indicators
-        matching_inds = [i for i in indicators if i.source == src["source_match"]]
+        matching_inds = []
+        for i in indicators:
+            eff_source, _ = _PROVENANCE_OVERRIDES.get(
+                i.code, (i.source or "World Bank", i.native_frequency or "Annual")
+            )
+            if eff_source == src["source_match"] or (
+                src["key"] == "exchange_rate" and i.code == "NGN_USD"
+            ):
+                matching_inds.append(i)
         ind_count = len(matching_inds)
 
         if ind_count > 0:

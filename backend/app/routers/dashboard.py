@@ -44,13 +44,28 @@ def _is_stale(period: str | None, frequency: str | None) -> bool:
     """Return True if the latest observation period is too old."""
     if not period:
         return True
+    p = str(period).strip()
     try:
-        year = int(period[:4])
+        year = int(p[:4])
     except (ValueError, TypeError):
         return True
+
     now = datetime.now(timezone.utc)
-    months_ago = (now.year - year) * 12 + now.month
+    if len(p) >= 7 and p[4] == "-" and p[5:7].isdigit():
+        obs_month = min(12, max(1, int(p[5:7])))
+        is_year_only = False
+    elif len(p) >= 7 and p[4:6].upper() == "-Q" and p[6].isdigit():
+        obs_month = min(12, max(1, int(p[6]) * 3))
+        is_year_only = False
+    else:
+        obs_month = now.month if year >= now.year else 12
+        is_year_only = True
+
+    months_ago = max(0, (now.year - year) * 12 + (now.month - obs_month))
     threshold = _STALE_THRESHOLDS.get(frequency, 24)
+    if is_year_only:
+        # Annualized/year-bucketed observations represent the full calendar year
+        threshold = max(threshold, 12)
     return months_ago > threshold
 
 
@@ -113,7 +128,7 @@ def _build_dashboard_items(db: Session) -> tuple[list[DashboardIndicator], list[
         )
         source = override_source or ind.source or "World Bank"
         freq = override_freq or ind.native_frequency or "Annual"
-        stale = _is_stale(current_period, ind.native_frequency or freq)
+        stale = _is_stale(current_period, freq)
 
         indicators_out.append(
             DashboardIndicator(

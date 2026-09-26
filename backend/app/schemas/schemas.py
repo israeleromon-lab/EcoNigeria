@@ -45,6 +45,7 @@ class DataPoint(BaseModel):
 class HistoricalDataOut(BaseModel):
     code: str
     name: str
+    source: Optional[str] = None
     unit: Optional[str] = None
     native_frequency: Optional[str] = None
     data: List[DataPoint]

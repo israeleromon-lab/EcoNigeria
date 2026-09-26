@@ -47,7 +47,11 @@ def list_indicators(db: Session = Depends(get_db)):
 @router.get("/{code}", response_model=IndicatorDetail)
 def get_indicator(code: str, db: Session = Depends(get_db)):
     """Single indicator metadata plus its latest value."""
+    from app.routers.dashboard import _PROVENANCE_OVERRIDES
     ind = _get_indicator_or_404(code, db)
+    source, _ = _PROVENANCE_OVERRIDES.get(
+        ind.code, (ind.source or "World Bank", ind.native_frequency or "Annual")
+    )
     latest = (
         db.query(HistoricalData)
         .filter(HistoricalData.indicator_id == ind.id, HistoricalData.value.isnot(None))
@@ -59,11 +63,11 @@ def get_indicator(code: str, db: Session = Depends(get_db)):
         code=ind.code,
         name=ind.name,
         category=ind.category,
-        source=ind.source,
+        source=source,
         unit=ind.unit,
         description=ind.description,
         latest_value=latest.value if latest else None,
-        latest_date=latest.period if latest else None,
+        latest_period=latest.period if latest else None,
     )
 
 
@@ -75,7 +79,11 @@ def get_indicator_data(
     db: Session = Depends(get_db),
 ):
     """Historical data for an indicator, optionally filtered by year range."""
+    from app.routers.dashboard import _PROVENANCE_OVERRIDES
     ind = _get_indicator_or_404(code, db)
+    source, freq = _PROVENANCE_OVERRIDES.get(
+        ind.code, (ind.source or "World Bank", ind.native_frequency or "Annual")
+    )
     q = db.query(HistoricalData).filter(HistoricalData.indicator_id == ind.id)
     if start_year is not None:
         q = q.filter(HistoricalData.period >= str(start_year))
@@ -86,8 +94,9 @@ def get_indicator_data(
     return HistoricalDataOut(
         code=ind.code,
         name=ind.name,
+        source=source,
         unit=ind.unit,
-        native_frequency=ind.native_frequency,
+        native_frequency=freq,
         data=[
             DataPoint(
                 period=r.period,
