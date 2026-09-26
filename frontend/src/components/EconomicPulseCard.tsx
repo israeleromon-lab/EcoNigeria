@@ -78,23 +78,23 @@ export function EconomicPulseCard({ initialData }: EconomicPulseCardProps) {
 
       <CardHeader className="border-b border-border dark:border-white/[0.08] pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-start sm:items-center gap-2.5">
             <span
-              className="p-1.5 border border-white/10"
+              className="p-1.5 border border-white/10 shrink-0 mt-0.5 sm:mt-0"
               style={{ backgroundColor: `${style.hex}1A`, color: style.hex }}
             >
               <Activity className="w-4 h-4" />
             </span>
             <div>
-              <CardTitle className="text-sm font-mono font-bold uppercase tracking-wider">
+              <CardTitle className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider leading-snug">
                 Nigeria Economic Pulse // Composite Index
               </CardTitle>
-              <p className="text-xs text-muted-foreground font-serif">
+              <p className="text-xs text-muted-foreground font-serif mt-0.5">
                 Real-time macroeconomic health diagnostic (0–100 scale)
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span
               className={`inline-flex items-center px-2.5 py-0.5 text-[11px] font-mono font-bold uppercase tracking-wider border ${style.badge}`}
             >
@@ -110,17 +110,17 @@ export function EconomicPulseCard({ initialData }: EconomicPulseCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="pt-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+      <CardContent className="pt-5 sm:pt-6 space-y-5 sm:space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 items-center">
           {/* Score Display with Tabular Spring Roll */}
           <div className="space-y-2.5 border-b md:border-b-0 md:border-r border-border dark:border-white/[0.08] pb-4 md:pb-0 md:pr-6">
             <div className="flex items-baseline gap-2">
               <NumberTicker
                 value={Number(pulse.score)}
                 decimals={0}
-                className={`text-5xl font-bold font-mono tabular-nums lining-nums ${style.text}`}
+                className={`text-4xl sm:text-5xl font-bold font-mono tabular-nums lining-nums ${style.text}`}
               />
-              <span className="text-muted-foreground text-lg font-mono tabular-nums">/ 100</span>
+              <span className="text-muted-foreground text-base sm:text-lg font-mono tabular-nums">/ 100</span>
             </div>
 
             {/* Visual Gauge Meter */}
@@ -154,7 +154,7 @@ export function EconomicPulseCard({ initialData }: EconomicPulseCardProps) {
                     return (
                       <div
                         key={i}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-background dark:bg-[#0B0F17] border border-border dark:border-white/[0.08] text-xs font-mono"
+                        className="inline-flex flex-wrap items-center gap-1.5 px-2.5 py-1 bg-background dark:bg-[#0B0F17] border border-border dark:border-white/[0.08] text-xs font-mono max-w-full"
                       >
                         {isDrag && <TrendingDown className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />}
                         {isSupport && <TrendingUp className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />}
@@ -172,8 +172,8 @@ export function EconomicPulseCard({ initialData }: EconomicPulseCardProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 pt-3 border-t border-border dark:border-white/[0.08] text-[11px] text-muted-foreground font-mono">
-          <Info className="w-3.5 h-3.5 flex-shrink-0 text-emerald-500" />
+        <div className="flex items-start sm:items-center gap-2 pt-3 border-t border-border dark:border-white/[0.08] text-[10px] sm:text-[11px] text-muted-foreground font-mono leading-relaxed">
+          <Info className="w-3.5 h-3.5 flex-shrink-0 text-emerald-500 mt-0.5 sm:mt-0" />
           <span>
             COMPOSITE WEIGHTING: CPI INFLATION · FX STABILITY · REAL GDP GROWTH · SOVEREIGN DEBT SUSTAINABILITY
           </span>

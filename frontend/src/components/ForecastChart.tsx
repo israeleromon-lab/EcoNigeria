@@ -44,12 +44,12 @@ export function ForecastChart({
   });
 
   if (isLoading) {
-    return <Skeleton className="w-full h-[380px] rounded-none" />;
+    return <Skeleton className="w-full h-[280px] sm:h-[340px] md:h-[380px] rounded-none" />;
   }
 
   if (isError || !data || !data.data || !data.data.forecast) {
     return (
-      <div className="w-full h-[380px] flex items-center justify-center border border-dashed rounded-none text-muted-foreground font-mono text-xs">
+      <div className="w-full h-[280px] sm:h-[340px] md:h-[380px] flex items-center justify-center border border-dashed rounded-none text-muted-foreground font-mono text-xs p-4 text-center">
         Forecast trajectory unavailable for this series
       </div>
     );
@@ -104,11 +104,11 @@ export function ForecastChart({
       rowData && rowData.value == null && rowData.forecast != null;
 
     return (
-      <div className="bg-card border-2 border-foreground p-3 shadow-lg rounded-none text-xs font-serif max-w-xs z-50">
-        <div className="flex items-center justify-between gap-3 font-bold text-foreground mb-1 text-sm border-b border-border pb-1 font-mono uppercase tracking-wider">
+      <div className="bg-card border-2 border-foreground p-2.5 sm:p-3 shadow-lg rounded-none text-xs font-serif max-w-[240px] sm:max-w-xs z-50">
+        <div className="flex items-center justify-between gap-2 font-bold text-foreground mb-1 text-xs sm:text-sm border-b border-border pb-1 font-mono uppercase tracking-wider">
           <span>Period: {label}</span>
           <span
-            className={`text-[10px] px-1.5 py-0.5 ${
+            className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 ${
               isForecastOnly
                 ? "bg-amber-500/15 text-amber-500 border border-amber-500/30"
                 : "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
@@ -120,8 +120,8 @@ export function ForecastChart({
 
         <div className="space-y-1 my-2">
           {rowData?.value != null && (
-            <div className="flex justify-between gap-4 font-sans text-xs">
-              <span className="text-muted-foreground">Historical Value:</span>
+            <div className="flex justify-between gap-3 font-sans text-xs">
+              <span className="text-muted-foreground">Historical:</span>
               <span className="font-bold font-mono" style={{ color }}>
                 {formatIndicatorValue(rowData.value, unit)}
               </span>
@@ -129,16 +129,16 @@ export function ForecastChart({
           )}
           {isForecastOnly && rowData?.forecast != null && (
             <>
-              <div className="flex justify-between gap-4 font-sans text-xs">
-                <span className="text-muted-foreground">Ensemble Forecast:</span>
+              <div className="flex justify-between gap-3 font-sans text-xs">
+                <span className="text-muted-foreground">Forecast:</span>
                 <span className="font-bold font-mono text-amber-500">
                   {formatIndicatorValue(rowData.forecast, unit)}
                 </span>
               </div>
               {rowData.prophet_lower != null && rowData.prophet_upper != null && (
-                <div className="flex justify-between gap-4 font-sans text-[11px] pt-1 border-t border-border/50">
-                  <span className="text-muted-foreground">80% CI Bounds:</span>
-                  <span className="font-mono text-muted-foreground">
+                <div className="flex justify-between gap-2 font-sans text-[10px] sm:text-[11px] pt-1 border-t border-border/50">
+                  <span className="text-muted-foreground">80% CI:</span>
+                  <span className="font-mono text-muted-foreground text-right">
                     [{formatIndicatorValue(rowData.prophet_lower, unit)} &mdash;{" "}
                     {formatIndicatorValue(rowData.prophet_upper, unit)}]
                   </span>
@@ -159,7 +159,7 @@ export function ForecastChart({
             <p className="text-foreground text-xs mt-0.5 font-sans font-bold">
               {event.title}
             </p>
-            <p className="text-muted-foreground text-[11px] mt-1 leading-snug font-serif italic">
+            <p className="text-muted-foreground text-[11px] mt-1 leading-snug font-serif italic line-clamp-3">
               &ldquo;{event.description}&rdquo;
             </p>
           </div>
@@ -170,11 +170,11 @@ export function ForecastChart({
 
   return (
     <div className="space-y-3">
-      <div className="h-[380px] w-full relative">
+      <div className="h-[280px] sm:h-[340px] md:h-[380px] w-full relative">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={chartData}
-            margin={{ top: 24, right: 20, left: 4, bottom: 10 }}
+            margin={{ top: 16, right: 8, left: 0, bottom: 6 }}
           >
             <defs>
               <linearGradient id="colorForecast" x1="0" y1="0" x2="0" y2="1">
@@ -192,14 +192,14 @@ export function ForecastChart({
               dataKey="year"
               axisLine={false}
               tickLine={false}
-              minTickGap={35}
-              tick={{ fill: "#888888", fontSize: 11, fontFamily: "monospace" }}
+              minTickGap={28}
+              tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }}
               dy={8}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#888888", fontSize: 11, fontFamily: "monospace" }}
+              tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }}
               tickFormatter={(val) => {
                 const num = Number(val);
                 if (isNaN(num)) return String(val);
@@ -208,18 +208,17 @@ export function ForecastChart({
                 if (Math.abs(num) >= 1e3) return `${(num / 1e3).toFixed(0)}K`;
                 return Number.isInteger(num) ? String(num) : num.toFixed(1);
               }}
-              width={65}
+              width={50}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               verticalAlign="top"
-              height={36}
               wrapperStyle={{
-                fontSize: "11px",
+                fontSize: "10px",
                 fontFamily: "monospace",
                 textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                paddingBottom: "10px",
+                letterSpacing: "0.04em",
+                paddingBottom: "8px",
               }}
             />
 

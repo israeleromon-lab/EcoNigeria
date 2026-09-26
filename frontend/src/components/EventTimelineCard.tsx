@@ -69,7 +69,7 @@ export function EventTimelineCard({
             </CardDescription>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-start sm:self-auto">
             <Button
               variant="outline"
               size="sm"
@@ -83,13 +83,13 @@ export function EventTimelineCard({
         </div>
 
         {/* Filter Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 mt-1">
-          <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-3 mt-1">
+          <div className="flex overflow-x-auto sm:flex-wrap gap-1.5 pb-1 sm:pb-0 -mx-1 px-1 no-scrollbar">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`text-[11px] font-sans px-2.5 py-1 border transition-colors uppercase tracking-wider ${
+                className={`text-[11px] font-sans px-2.5 py-1 border transition-colors uppercase tracking-wider shrink-0 whitespace-nowrap ${
                   selectedCategory === cat
                     ? "border-foreground bg-foreground text-background font-bold"
                     : "border-border/60 hover:bg-muted/30 text-muted-foreground"
@@ -103,7 +103,7 @@ export function EventTimelineCard({
           {indicatorSlug && (
             <button
               onClick={() => setFilterForIndicatorOnly(!filterForIndicatorOnly)}
-              className={`text-[11px] font-mono underline underline-offset-4 transition-colors ${
+              className={`text-[11px] font-mono underline underline-offset-4 transition-colors self-start sm:self-auto shrink-0 ${
                 filterForIndicatorOnly ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -113,13 +113,13 @@ export function EventTimelineCard({
         </div>
       </CardHeader>
 
-      <CardContent className="pt-6 space-y-4">
+      <CardContent className="pt-5 sm:pt-6 space-y-4">
         {filteredEvents.length === 0 ? (
           <div className="p-8 text-center border border-dashed border-border text-muted-foreground text-sm font-serif">
             No policy events matched this specific filter.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
             {filteredEvents.map((evt) => {
               const isHighlighted = highlightedYear === evt.year;
               const isDirectlyRelated = indicatorSlug && evt.indicators.includes(indicatorSlug);
@@ -130,14 +130,14 @@ export function EventTimelineCard({
                   onMouseEnter={() => onHighlightYear(evt.year)}
                   onMouseLeave={() => onHighlightYear(null)}
                   onClick={() => onHighlightYear(isHighlighted ? null : evt.year)}
-                  className={`p-4 border transition-all cursor-pointer flex flex-col justify-between ${
+                  className={`p-3.5 sm:p-4 border transition-all cursor-pointer flex flex-col justify-between ${
                     isHighlighted
                       ? "border-foreground bg-muted/40 shadow-sm"
                       : "border-border/60 bg-background/60 hover:border-foreground/60 hover:bg-muted/10"
                   }`}
                 >
                   <div>
-                    <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-xs font-extrabold px-1.5 py-0.5 bg-foreground text-background">
                           {evt.year}
@@ -163,7 +163,7 @@ export function EventTimelineCard({
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 mt-3 border-t border-border/40 text-[10px] font-mono">
+                  <div className="flex flex-wrap items-center justify-between gap-1 pt-3 mt-3 border-t border-border/40 text-[10px] font-mono">
                     <span className="text-muted-foreground">
                       Related: {evt.indicators.slice(0, 3).join(", ")}{evt.indicators.length > 3 ? "..." : ""}
                     </span>
