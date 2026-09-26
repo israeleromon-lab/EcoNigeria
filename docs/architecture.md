@@ -5,44 +5,39 @@
 EconoNigeria 2.0 transitions from a static dashboard to a near-real-time open economic data infrastructure. It separates high-frequency ingestion checks from low-frequency analytical workloads, ensuring accurate provenance and avoiding fabricated minute-by-minute data points for inherently slow-moving macroeconomic indicators.
 
 ```mermaid
-graph TD
-    %% Sources
-    subgraph Data Sources
-        S1[CBN / Official API]
-        S2[NBS / Excel Scraper]
-        S3[World Bank / FRED]
-        S4[FX / Market Data]
+flowchart TD
+    subgraph Sources ["Data Sources"]
+        S1["CBN Statistical Portal"]
+        S2["NBS Statistical Bulletins"]
+        S3["World Bank WDI and FRED"]
+        S4["FMDQ and ExchangeRate-API"]
     end
 
-    %% Ingestion Layer
-    subgraph Ingestion & Validation Layer
-        I1[1-Minute Check Job]
-        I2[Validation Engine]
-        I1 -->|New Observation?| I2
+    subgraph Ingestion ["Ingestion and Validation Layer"]
+        I1["Source Monitor Job"]
+        I2["Validation and Normalization Engine"]
+        I1 --> I2
     end
     S1 --> I1
     S2 --> I1
     S3 --> I1
     S4 --> I1
 
-    %% Storage Layer
-    subgraph Storage Layer
-        DB[(PostgreSQL / Neon)]
+    subgraph Storage ["Storage Layer"]
+        DB["PostgreSQL Database - Neon.tech"]
     end
-    I2 -->|Normalize & Store| DB
+    I2 --> DB
 
-    %% Intelligence Layer
-    subgraph Intelligence & Forecast Layer
-        M1[Prophet/ARIMA/PatchTST]
-        M2[Gemini AI Analyst]
+    subgraph Intelligence ["Intelligence and Forecast Layer"]
+        M1["Prophet and ARIMA Ensemble"]
+        M2["Grounded AI Analyst"]
     end
-    DB -->|Retrain Trigger| M1
-    DB -->|Context Retrieval| M2
+    DB --> M1
+    DB --> M2
 
-    %% Output Layer
-    subgraph Access Layer
-        A1[Open REST API]
-        A2[Next.js Dashboard]
+    subgraph Access ["Access Layer"]
+        A1["Open REST API - v1"]
+        A2["Next.js Dashboard - Vercel"]
     end
     DB --> A1
     DB --> A2

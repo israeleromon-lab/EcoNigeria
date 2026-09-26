@@ -39,8 +39,8 @@ export default function AdminDashboard() {
             <Database className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">SQLite</div>
-            <p className="text-xs text-muted-foreground mt-1">Local embedded mode active</p>
+            <div className="text-2xl font-bold">PostgreSQL</div>
+            <p className="text-xs text-muted-foreground mt-1">Neon.tech managed database active</p>
           </CardContent>
         </Card>
         
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-500">Healthy</div>
-            <p className="text-xs text-muted-foreground mt-1">FastAPI Backend Online</p>
+            <p className="text-xs text-muted-foreground mt-1">FastAPI Backend Online (Render)</p>
           </CardContent>
         </Card>
         
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
             <Activity className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">10</div>
+            <div className="text-2xl font-bold">12</div>
             <p className="text-xs text-muted-foreground mt-1">Macroeconomic series tracked</p>
           </CardContent>
         </Card>
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
             Data Pipelines (ETL)
           </CardTitle>
           <CardDescription>
-            Manually trigger data synchronization from external sources (World Bank, FRED).
+            Manually trigger data synchronization from external sources (World Bank, FRED, CBN, NBS).
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -82,8 +82,8 @@ export default function AdminDashboard() {
             <h4 className="font-semibold mb-2">What happens when you run this?</h4>
             <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
               <li>Connects to World Bank API and pulls latest data for NGA.</li>
-              <li>Connects to FRED API and pulls latest external datasets.</li>
-              <li>Cleans, normalizes, and upserts data into the SQLite database.</li>
+              <li>Connects to FRED and CBN/NBS adapters to pull latest datasets.</li>
+              <li>Cleans, normalizes, and upserts data into the PostgreSQL (Neon.tech) database.</li>
               <li>Re-trains baseline forecasting models automatically.</li>
             </ul>
           </div>

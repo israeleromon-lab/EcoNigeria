@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=sqlite:///./econonigeria.db
+      - DATABASE_URL=${DATABASE_URL}
       - WORLD_BANK_BASE_URL=https://api.worldbank.org/v2
       - FRED_API_KEY=${FRED_API_KEY}
       - FRED_BASE_URL=https://api.stlouisfed.org/fred
@@ -18,7 +18,6 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - COUNTRY_CODE=NGA
     volumes:
-      # Keep local database persisted across container restarts (for local testing only)
       - backend_data:/app
     restart: unless-stopped
 

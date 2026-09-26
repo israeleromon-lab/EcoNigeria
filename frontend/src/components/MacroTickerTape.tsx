@@ -10,75 +10,73 @@ import { cn, formatIndicatorValue, formatInlineDelta } from "@/lib/utils";
 interface TickerItemMeta {
   shortTag: string;
   provenance: string;
-  asOfDefault: string;
-  isLiveMarket?: boolean;
+  cadenceTag: string;
+  isDailyMarket?: boolean;
 }
 
 const TICKER_META_MAP: Record<string, TickerItemMeta> = {
   DCOILBRENTEU: {
     shortTag: "BRENT CRUDE",
-    provenance: "ICE · FRED",
-    asOfDefault: "LIVE",
-    isLiveMarket: true,
+    provenance: "EIA · FRED",
+    cadenceTag: "SPOT/ANN",
+    isDailyMarket: true,
   },
   NGN_USD: {
     shortTag: "NGN/USD NAFEM",
-    provenance: "FMDQ · CBN",
-    asOfDefault: "10m",
-    isLiveMarket: true,
+    provenance: "CBN · FMDQ",
+    cadenceTag: "DAILY",
+    isDailyMarket: true,
   },
   "FI.RES.TOTL.CD": {
     shortTag: "EXT RESERVES",
     provenance: "CBN",
-    asOfDefault: "MONTHLY",
-    isLiveMarket: false,
+    cadenceTag: "30D-MA",
   },
   "FP.CPI.TOTL.ZG": {
     shortTag: "CPI INFLATION",
-    provenance: "NBS",
-    asOfDefault: "MONTHLY",
-    isLiveMarket: false,
+    provenance: "NBS · WB",
+    cadenceTag: "YO-Y",
   },
   "NY.GDP.MKTP.KD.ZG": {
     shortTag: "REAL GDP",
-    provenance: "NBS",
-    asOfDefault: "QTR",
+    provenance: "NBS · WB",
+    cadenceTag: "CONST-2010",
   },
   FEDFUNDS: {
     shortTag: "FED FUNDS",
-    provenance: "FRED",
-    asOfDefault: "FOMC",
-    isLiveMarket: true,
+    provenance: "FRED · H.15",
+    cadenceTag: "EFFR",
+    isDailyMarket: true,
   },
   "GC.DOD.TOTL.GD.ZS": {
     shortTag: "DEBT / GDP",
     provenance: "DMO · WB",
-    asOfDefault: "ANNUAL",
+    cadenceTag: "ANNUAL",
   },
   "BX.KLT.DINV.CD.WD": {
     shortTag: "NET FDI",
     provenance: "CBN · WB",
-    asOfDefault: "BOP",
+    cadenceTag: "BPM6",
   },
   "NY.GDP.PCAP.CD": {
     shortTag: "GDP / CAPITA",
-    provenance: "WB",
-    asOfDefault: "ATLAS",
+    provenance: "WB · NBS",
+    cadenceTag: "USD",
   },
   "SL.UEM.TOTL.ZS": {
     shortTag: "UNEMPLOYMENT",
     provenance: "NBS · ILO",
-    asOfDefault: "LABOR",
+    cadenceTag: "ILO-19",
   },
   "SI.POV.NAHC": {
     shortTag: "POVERTY HEADCOUNT",
     provenance: "NBS · WB",
-    asOfDefault: "NLSS",
+    cadenceTag: "NLSS",
   },
   "SP.POP.TOTL": {
     shortTag: "POPULATION",
     provenance: "NPC · WB",
-    asOfDefault: "EST",
+    cadenceTag: "ANNUAL",
   },
 };
 
@@ -108,9 +106,8 @@ export function MacroTickerTape() {
     refetchInterval: 45000,
   });
 
-  // Live spot micro-adjustments for high-frequency feeds (Brent Crude & NGN/USD NAFEM)
-  // plus transient 400ms directional flash-highlights on any value change.
-  const [liveOverrides, setLiveOverrides] = useState<Record<string, number>>({});
+  // Track real backend value updates for transient 400ms directional flash-highlights.
+  // Zero synthetic or interpolated ticks — values strictly reflect verified database records.
   const [flashState, setFlashState] = useState<Record<string, "up" | "down">>({});
   const prevValuesRef = useRef<Record<string, number>>({});
   const flashTimersRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
@@ -120,7 +117,6 @@ export function MacroTickerTape() {
       clearTimeout(flashTimersRef.current[code]);
     }
     setFlashState((prev) => ({ ...prev, [code]: direction }));
-    // Exact 400ms transient directional flash-highlight (green tick up / red tick down)
     flashTimersRef.current[code] = setTimeout(() => {
       setFlashState((prev) => {
         const next = { ...prev };
@@ -146,43 +142,6 @@ export function MacroTickerTape() {
     }
   }, [data, triggerDirectionalFlash]);
 
-  // Simulate realistic live market spot ticks on LIVE feeds (DCOILBRENTEU, NGN_USD, FI.RES.TOTL.CD)
-  // so the operational log actively demonstrates 400ms flash-on-change in real time.
-  useEffect(() => {
-    if (!data?.indicators || data.indicators.length === 0) return;
-
-    const liveCodes = ["DCOILBRENTEU", "NGN_USD"];
-    let tickIdx = 0;
-
-    const interval = setInterval(() => {
-      const targetCode = liveCodes[tickIdx % liveCodes.length];
-      tickIdx += 1;
-
-      const baseStat = data.indicators.find((d: any) => d.code === targetCode);
-      if (!baseStat || baseStat.current_value == null) return;
-
-      setLiveOverrides((prev) => {
-        const current = prev[targetCode] ?? baseStat.current_value;
-        // Small realistic institutional tick (+/- 0.04% to 0.12%)
-        const sign = Math.random() > 0.48 ? 1 : -1;
-        const step =
-          targetCode === "DCOILBRENTEU"
-            ? Number((sign * (0.03 + Math.random() * 0.08)).toFixed(2))
-            : Number((sign * (0.25 + Math.random() * 1.15)).toFixed(2));
-        const nextVal = Number((current + step).toFixed(2));
-
-        if (nextVal !== current) {
-          triggerDirectionalFlash(targetCode, nextVal > current ? "up" : "down");
-        }
-        return { ...prev, [targetCode]: nextVal };
-      });
-    }, 4200);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [data, triggerDirectionalFlash]);
-
   useEffect(() => {
     const timers = flashTimersRef.current;
     return () => {
@@ -191,7 +150,6 @@ export function MacroTickerTape() {
   }, []);
 
   const handleSelectMetric = (code: string, slug: string) => {
-    // Dispatch custom HUD event for Dashboard & Forecast Lab
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent("econonigeria:select-metric", {
@@ -201,7 +159,6 @@ export function MacroTickerTape() {
     }
 
     if (pathname === "/") {
-      // Snap/scroll directly to the metric's KPI card or primary chart on Dashboard
       const cardEl = document.getElementById(`kpi-${slug}`);
       const chartEl = document.getElementById("dashboard-primary-chart");
       if (cardEl) {
@@ -223,12 +180,13 @@ export function MacroTickerTape() {
     const stat = data?.indicators?.find((d: any) => d.code === indicator.id);
     const meta = TICKER_META_MAP[indicator.id] || {
       shortTag: indicator.name.toUpperCase(),
-      provenance: stat?.source || "WB",
-      asOfDefault: stat?.current_period || "N/A",
+      provenance: indicator.publisher,
+      cadenceTag: indicator.nativeFrequency,
     };
 
-    const currentVal =
-      liveOverrides[indicator.id] ?? stat?.current_value ?? null;
+    // Use live backend observation if hydrated, otherwise verified institutional baseline
+    const currentVal = stat?.current_value ?? indicator.baselineValue ?? null;
+    const currentPeriod = stat?.current_period ?? indicator.baselinePeriod;
     const formattedVal =
       currentVal != null
         ? formatIndicatorValue(currentVal, indicator.unit)
@@ -244,33 +202,26 @@ export function MacroTickerTape() {
       indicatorCode: indicator.id,
     });
 
-    // Determine whether this series is stale (>24h / non-live lagged observation)
-    const isLive = Boolean(meta.isLiveMarket);
-    const isStale = !isLive && Boolean(stat?.is_stale || (stat?.native_frequency === "Annual" && Number(stat?.current_period) < 2025));
-
+    const isStale = Boolean(stat?.is_stale);
     const flashDir = flashState[indicator.id];
 
-    const asOfLabel = isLive
-      ? `${meta.provenance} · ${meta.asOfDefault}`
-      : `${meta.provenance} · ${stat?.current_period || meta.asOfDefault}`;
+    const asOfLabel = `${meta.provenance} · ${currentPeriod} (${meta.cadenceTag})`;
 
     return (
       <button
         key={`${copyKey}-${indicator.id}`}
         type="button"
         onClick={() => handleSelectMetric(indicator.id, indicator.slug)}
-        title={`Jump to ${indicator.name} (${meta.provenance})`}
+        title={`Jump to ${indicator.name} (${asOfLabel})`}
         className={cn(
           "group inline-flex items-center gap-2 px-3.5 h-8 border-r border-neutral-800/90 text-[11px] font-mono tabular-nums whitespace-nowrap cursor-pointer text-left",
-          // 400ms transient flash-highlight in the direction of change (green tick up / red tick down)
           flashDir === "up" &&
             "bg-emerald-500/25 text-emerald-200 ring-1 ring-inset ring-emerald-500/50 transition-none",
           flashDir === "down" &&
             "bg-rose-500/25 text-rose-200 ring-1 ring-inset ring-rose-500/50 transition-none",
           !flashDir &&
             "transition-colors duration-300 hover:bg-[#111622] focus-visible:outline-none focus-visible:bg-[#111622]",
-          // Desaturate items that haven't updated in >24h / are stale
-          isStale && !flashDir && "opacity-65 saturate-50"
+          isStale && !flashDir && "opacity-75"
         )}
       >
         {/* [METRIC CODE] */}
@@ -292,8 +243,8 @@ export function MacroTickerTape() {
           {formattedVal}
         </span>
 
-        {/* DIRECTIONAL TICK + DELTA */}
-        {currentVal != null && (
+        {/* DIRECTIONAL TICK + DELTA (only when backend previous_value is present) */}
+        {stat?.current_value != null && stat?.previous_value != null && (
           <span
             className={cn(
               "inline-flex items-center gap-0.5 text-[10px] font-medium",
@@ -309,14 +260,17 @@ export function MacroTickerTape() {
           </span>
         )}
 
-        {/* (PROVENANCE · AS-OF / LIVE OR STALE BADGE) */}
-        <span className="text-[10px] text-neutral-500 inline-flex items-center gap-1">
+        {/* (PROVENANCE · PERIOD · CADENCE) */}
+        <span className="text-[10px] text-neutral-400 inline-flex items-center gap-1">
           <span>({asOfLabel})</span>
-          {isLive ? (
-            <span className="inline-block w-1.5 h-1.5 bg-emerald-400" title="Live market feed (<24h)" />
+          {meta.isDailyMarket ? (
+            <span
+              className="inline-block w-1.5 h-1.5 bg-emerald-400"
+              title="High-frequency market series (Daily / Monthly)"
+            />
           ) : isStale ? (
             <span className="px-1 py-0 text-[9px] uppercase tracking-wider border border-amber-500/30 bg-amber-500/10 text-amber-400/90">
-              STALE &gt;24H
+              SOURCE LAG
             </span>
           ) : null}
         </span>
@@ -334,8 +288,8 @@ export function MacroTickerTape() {
       <div className="flex items-center gap-2 px-3 h-full bg-[#111622] border-r border-neutral-800 text-[10px] font-mono uppercase tracking-widest text-neutral-300 shrink-0 z-10">
         <span className="inline-block w-1.5 h-1.5 bg-emerald-500" />
         <span className="font-semibold text-emerald-400">NGA WIRE</span>
-        <span className="text-neutral-600">//</span>
-        <span className="hidden sm:inline text-neutral-400">HUD NAV</span>
+        <span className="text-neutral-500">//</span>
+        <span className="hidden sm:inline text-neutral-400">VERIFIED SERIES</span>
       </div>
 
       {/* Scrolling Operational Ribbon */}

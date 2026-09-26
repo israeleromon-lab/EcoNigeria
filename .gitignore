@@ -43,6 +43,14 @@ coverage/
 # Sensitive files
 api.txt
 
+# Scratch & local notes at root
+/followup.txt
+/scratch*.txt
+/notes*.txt
+/todo*.txt
+/docs/NOTES.md
+*.tmp
+
 # Database
 *.db
 *.sqlite

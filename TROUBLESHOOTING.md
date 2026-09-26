@@ -20,10 +20,11 @@ npm install package-name --legacy-peer-deps
 ## 2. Frontend: Vercel Build Fails due to Type or ESLint Errors
 
 **Symptom:** `npm run build` works locally (sometimes), but Vercel immediately crashes with a `Type error` or `ESLint: Cannot find module` error.
-**Cause:** Vercel treats all TypeScript and ESLint warnings as fatal errors. Furthermore, Next.js 15 flat config (`eslint.config.mjs`) can have strict pathing issues.
+**Cause:** Vercel runs strict TypeScript type-checking and ESLint validation during production builds. Furthermore, Next.js 15 flat config (`eslint.config.mjs`) can have strict pathing requirements.
 **Fix:**
-- **For ESLint imports:** Ensure imports in `eslint.config.mjs` end with `.js` (e.g., `import nextVitals from "eslint-config-next/core-web-vitals.js";`).
-- **For quick deployment bypass:** If you need to force a deploy through minor type/lint warnings, edit `next.config.ts`:
+- **Primary Fix (Always Preferred):** Run `npx tsc --noEmit` and `npm run lint` locally in `frontend/`, resolve all underlying TypeScript and ESLint errors in source code, and verify `npm run build` succeeds cleanly before pushing.
+- **For ESLint flat-config imports:** Ensure imports in `eslint.config.mjs` resolve properly with `FlatCompat` or explicit `.js` extensions (e.g., `import nextVitals from "eslint-config-next/core-web-vitals.js";`).
+- **Last-Resort Emergency Bypass (Temporary Local/Preview Only):** Only in an urgent debugging emergency, you can temporarily bypass checks in `next.config.ts`:
   ```typescript
   const nextConfig = {
     eslint: { ignoreDuringBuilds: true },
@@ -31,6 +32,8 @@ npm install package-name --legacy-peer-deps
   };
   export default nextConfig;
   ```
+  > [!WARNING]
+  > **Never leave `ignoreDuringBuilds: true` or `ignoreBuildErrors: true` in the committed `next.config.ts`.** Leaving these flags enabled in version control silences compiler and linter checks in CI/CD and allows broken types or regressions to ship to production silently.
 
 ---
 
@@ -46,13 +49,12 @@ npm install package-name --legacy-peer-deps
 
 ---
 
-## 4. Backend: Railway Ephemeral Storage (Database Resets)
+## 4. Backend: Render Ephemeral Filesystem & Database Persistence (Resolved History)
 
-**Symptom:** You deploy the FastAPI backend to Railway, it works perfectly, but after a few days or after pushing a new update, all your saved data (AI reports, etc.) vanishes.
-**Cause:** By default, Railway uses Ephemeral Storage for standard deployments. Any local SQLite database (`econonigeria.db`) created during runtime will be wiped out when the container restarts.
-**Fix:** 
-- **Option A (Recommended):** Provision a proper PostgreSQL database via Railway or Supabase. Update your `DATABASE_URL` environment variable to point to the Postgres instance.
-- **Option B (Railway Volume):** Attach a persistent Volume to your Railway FastAPI service and point your SQLite file path to that mounted volume.
+**Historical Context:** In earlier local/dev setups, an embedded SQLite file (`econonigeria.db`) was used and caused data loss on container restart because Render web services use an ephemeral container filesystem by default — **production now uses Neon PostgreSQL (`Neon.tech`), configured via `DATABASE_URL`**, so all ingested macroeconomic series and archived AI research briefs persist across deployments and container restarts.
+**Configuration for Self-Hosting / Contributors on Render:**
+- **Standard Production Setup (Neon PostgreSQL):** Provision a managed PostgreSQL 16 database on [Neon.tech](https://neon.tech/) (or Render PostgreSQL) and set the `DATABASE_URL` environment variable in your Render Web Service dashboard (`postgresql://user:password@ep-....neon.tech/econonigeria?sslmode=require`).
+- **Render Persistent Disk (For Local File Artifacts Only):** If you ever need to persist non-database files on a Render Web Service across deploys, configure a **Render Persistent Disk** under your service's *Disks* tab and mount it to a dedicated directory (e.g., `/var/data`), rather than writing to the ephemeral container root.
 
 ---
 

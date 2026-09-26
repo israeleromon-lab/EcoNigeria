@@ -124,7 +124,18 @@
   animation: ticker-scroll 52s linear infinite;
 }
 
-.animate-ticker-scroll:hover {
+.animate-ticker-scroll:hover,
+.animate-ticker-scroll:active {
   animation-play-state: paused;
 }
+
+/* Hide scrollbars on horizontal pill/tab strips while preserving touch swipe */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 

@@ -32,39 +32,39 @@ We believe that high-quality macroeconomic data and intelligence should not be l
 
 ---
 
-## ✨ Core Product Areas (Implemented & Planned)
+## ✨ Core Product Areas
 
 ### 1. EconoNigeria Explore (Live)
-Public economic dashboard covering Inflation, GDP, Unemployment, Public Debt, Exchange Rate, Brent Crude, Interest Rates, and more.
-- View current values, historical charts, native data frequency, and data provenance.
+Public economic dashboard covering Inflation, Real GDP Growth, Unemployment, Public Debt, Exchange Rate (NAFEM), Gross External Reserves, Brent Crude, Poverty Rate, Foreign Direct Investment, and more.
+- View current values, 15-observation sparklines, historical charts, native data frequency, and data provenance.
 
-### 2. Economic Data Layer (In Development)
-Automated ingestion engine that monitors sources and standardizes disparate economic data into a single, clean PostgreSQL database with absolute transparency.
+### 2. Economic Data Layer (Live — Expanding)
+Automated ingestion engine (`World Bank WDI`, `FRED`, `CBN`, `NBS`, `FMDQ / ExchangeRate-API`) that validates and standardizes disparate economic series into a single PostgreSQL (`Neon.tech`) database with provenance metadata and pipeline health monitoring at `/status`.
 
-### 3. Open API (Planned)
-Public, documented REST endpoints to power third-party economic dashboards, research notebooks, and news applications without paywalls.
+### 3. Open API & Developer Portal (Live)
+Public, un-paywalled REST endpoints under `/v1` (`/v1/indicators`, `/v1/pulse`, `/v1/forecasts`, `/v1/events`, `/v1/signals`, `/v1/compare`) with interactive documentation and cURL/Python/JavaScript quickstarts at `/developers`.
 
-### 4. Forecast Lab (Planned)
-Predictive modeling (Prophet, ARIMA, XGBoost) for 3, 6, and 12-month horizons with transparent accuracy metrics (RMSE, MAE, MAPE). 
+### 4. Forecast Lab (Live — Beta)
+Interactive multi-model predictive laboratory at `/forecasts` (Meta Prophet, Box-Jenkins ARIMA, and Hybrid Ensemble) with 80% Bayesian confidence bands, out-of-sample holdout backtesting metrics (`RMSE`, `MAPE`), Model Cards, and an interactive Scenario Shock Simulator. *(Multivariate XGBoost and sub-annual horizons in progress).*
 
-### 5. AI Economic Analyst (Planned)
-An AI layer grounded strictly in the data layer (not a generic chatbot) to explain *why* movements are happening, providing executive summaries and historical context.
+### 5. AI Economic Analyst & Research Hub (Live)
+An AI synthesis layer grounded strictly in validated PostgreSQL database series, active Economic Signals, and the composite Economic Pulse—providing executive summaries on the dashboard and exportable policy briefs at `/research`.
 
 ---
 
 ## 🏗️ Architecture
 
 ```mermaid
-graph TD
-    A[Sources: CBN, NBS, World Bank] -->|1-Minute Checks| B(Ingestion & Validation)
-    B --> C[(Economic Database)]
-    C --> D[Open API / Cache]
-    D --> E["Dashboard (Explore)"]
-    D --> F["Forecast Lab (Prophet/ARIMA)"]
-    C --> G[AI Economic Analyst]
+flowchart TD
+    A["Data Sources: CBN, NBS, FMDQ, FRED, World Bank"] --> B["Ingestion and Validation Pipeline"]
+    B --> C["PostgreSQL Database - Neon.tech"]
+    C --> D["Open REST API - v1"]
+    D --> E["Explore Dashboard"]
+    D --> F["Forecast Lab - Prophet and ARIMA"]
+    C --> G["Grounded AI Economic Analyst"]
 ```
 
-EconoNigeria separates real-time source monitoring from heavy analytical workloads. Data is only updated based on its **native frequency** (e.g., Inflation is monthly, FX is daily), ensuring we never fabricate minute-by-minute updates for slow-moving data.
+EconoNigeria separates high-frequency market monitoring from low-frequency analytical workloads. Data is updated according to its **native frequency** (e.g., FX and Brent spot feeds on the operational ticker vs. annual/quarterly national accounts), ensuring we never fabricate minute-by-minute updates for slow-moving macroeconomic indicators.
 
 See [docs/architecture.md](docs/architecture.md) for full architectural details.
 
@@ -77,7 +77,7 @@ See [docs/architecture.md](docs/architecture.md) for full architectural details.
 | **Frontend** | Next.js 15, TypeScript, TailwindCSS, Shadcn UI, Recharts |
 | **Backend** | FastAPI, Python 3.12, SQLAlchemy, Pydantic, Pandas |
 | **Database** | PostgreSQL (Neon.tech) |
-| **AI & Models**| Gemini, Prophet, ARIMA, XGBoost *(Upcoming)* |
+| **AI & Models**| Gemini / OpenRouter, Prophet, ARIMA *(Live)*; XGBoost *(Planned)* |
 | **Infrastructure** | Vercel (Frontend), Render (Backend), Docker |
 
 ---

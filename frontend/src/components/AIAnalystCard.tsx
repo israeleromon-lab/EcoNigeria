@@ -19,7 +19,7 @@ export function AIAnalystCard() {
 
   const handleSave = async () => {
     if (!data?.report) return;
-    
+
     setIsSaving(true);
     try {
       await saveAIReport({
@@ -27,7 +27,7 @@ export function AIAnalystCard() {
         summary: data.report.summary,
         insights: data.report.key_insights || [],
         outlook: data.report.outlook || "Neutral",
-        risk_factors: data.report.risk_factors || []
+        risk_factors: data.report.risk_factors || [],
       });
       setIsSaved(true);
       setTimeout(() => setIsSaved(false), 3000);
@@ -41,11 +41,18 @@ export function AIAnalystCard() {
   return (
     <div className="h-full flex flex-col bg-background">
       <div className="mb-6">
+        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 border border-border bg-muted/30 text-[10px] font-mono uppercase tracking-wider text-muted-foreground mb-2">
+          <span>MACHINE-GENERATED MACRO SUMMARY</span>
+          <span>·</span>
+          <span>GROUNDED ON VERIFIED NBS / CBN / WB DATA</span>
+        </div>
         <h2 className="flex items-center gap-2 text-2xl font-bold uppercase tracking-tight">
           <Sparkles className="w-5 h-5 text-foreground" />
           AI Economic Analyst
         </h2>
-        <p className="text-muted-foreground font-serif italic mt-1">Generated insights based on latest macroeconomic data</p>
+        <p className="text-muted-foreground font-serif italic mt-1 text-sm">
+          Synthesizes verified database series into executive macro briefs (non-primary citation)
+        </p>
       </div>
       <div className="flex-1 flex flex-col">
         {isLoading ? (
@@ -55,7 +62,9 @@ export function AIAnalystCard() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-foreground"></span>
               </span>
-              <span className="animate-pulse">Waking up Gemini AI... Please allow up to 50 seconds.</span>
+              <span className="animate-pulse">
+                Synthesizing verified NBS, CBN, and World Bank series...
+              </span>
             </div>
             <Skeleton className="h-24 w-full rounded-none" />
             <Skeleton className="h-4 w-3/4 rounded-none" />
@@ -63,46 +72,64 @@ export function AIAnalystCard() {
           </div>
         ) : isError ? (
           <div className="flex flex-col items-center justify-center p-6 bg-muted/10 text-destructive border border-destructive flex-1 text-center">
-             <AlertCircle className="w-8 h-8 mb-2" />
-             <p className="font-serif">Failed to generate report.</p>
+            <AlertCircle className="w-8 h-8 mb-2" />
+            <p className="font-serif">Failed to generate report.</p>
           </div>
         ) : data?.report ? (
           <div className="space-y-6 flex-1">
             <div className="p-4 bg-muted/10 border-l-4 border-foreground">
               <p className="text-sm leading-relaxed text-foreground/90 font-serif">
-                <span className="font-bold text-foreground block mb-1 uppercase tracking-wider text-xs font-sans">Executive Summary</span> 
+                <span className="font-bold text-foreground block mb-1 uppercase tracking-wider text-xs font-sans">
+                  Executive Summary (Machine-Generated)
+                </span>
                 {data.report.summary}
               </p>
             </div>
-            
+
             <div>
-              <h4 className="text-sm font-bold uppercase tracking-wider mb-2 border-b border-border pb-1">Key Insights</h4>
+              <h4 className="text-sm font-bold uppercase tracking-wider mb-2 border-b border-border pb-1">
+                Key Insights
+              </h4>
               <ul className="text-sm text-muted-foreground list-square pl-5 space-y-2 font-serif">
                 {data.report.key_insights?.map((insight: string, i: number) => (
                   <li key={i}>{insight}</li>
                 ))}
               </ul>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto pt-4 border-t border-border mt-4 pb-2">
-               <div className="sm:border-r border-border sm:pr-4">
-                 <span className="text-xs text-muted-foreground uppercase tracking-wider font-bold">Outlook</span>
-                 <p className="font-serif text-lg mt-1">{data.report.outlook}</p>
-               </div>
-               <div className="sm:pl-4">
-                 <span className="text-xs text-muted-foreground uppercase tracking-wider font-bold">Key Risk</span>
-                 <p className="font-serif text-lg text-destructive mt-1">{data.report.risk_factors?.[0]}</p>
-               </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto pt-4 border-t border-border pb-2">
+              <div className="sm:border-r border-border sm:pr-4">
+                <span className="text-xs text-muted-foreground uppercase tracking-wider font-bold">
+                  Outlook
+                </span>
+                <p className="font-serif text-lg mt-1">{data.report.outlook}</p>
+              </div>
+              <div className="sm:pl-4">
+                <span className="text-xs text-muted-foreground uppercase tracking-wider font-bold">
+                  Key Risk
+                </span>
+                <p className="font-serif text-lg text-destructive mt-1">
+                  {data.report.risk_factors?.[0]}
+                </p>
+              </div>
             </div>
-            
-            <Button 
-              variant="outline" 
-              className="w-full gap-2 mt-2 rounded-none border-foreground hover:bg-foreground hover:text-background transition-colors" 
+
+            <Button
+              variant="outline"
+              className="w-full gap-2 mt-2 rounded-none border-foreground hover:bg-foreground hover:text-background transition-colors"
               onClick={handleSave}
               disabled={isSaving || isSaved}
             >
-              {isSaved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-              {isSaved ? "Saved to Research Hub" : isSaving ? "Saving..." : "Save to Research Hub"}
+              {isSaved ? (
+                <Check className="w-4 h-4" />
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
+              {isSaved
+                ? "Saved to Research Hub"
+                : isSaving
+                ? "Saving..."
+                : "Save to Research Hub"}
             </Button>
           </div>
         ) : (
@@ -111,11 +138,15 @@ export function AIAnalystCard() {
               <Sparkles className="w-6 h-6 text-foreground" />
             </div>
             <p className="text-sm text-muted-foreground mb-8 font-serif leading-relaxed">
-              Our AI Analyst uses Gemini to synthesize the latest data on GDP, Inflation, Population, and Unemployment to provide actionable intelligence.
+              Generates an automated executive synthesis grounded strictly on verified
+              NBS, CBN, DMO, FRED, and World Bank series in the EconoNigeria database.
             </p>
-            <Button onClick={() => refetch()} className="w-full gap-2 rounded-none border-foreground bg-foreground text-background hover:bg-background hover:text-foreground hover:border-foreground border-2 transition-all">
+            <Button
+              onClick={() => refetch()}
+              className="w-full gap-2 rounded-none border-foreground bg-foreground text-background hover:bg-background hover:text-foreground hover:border-foreground border-2 transition-all"
+            >
               <Sparkles className="w-4 h-4" />
-              Generate Full Report
+              Generate Grounded Macro Brief
             </Button>
           </div>
         )}

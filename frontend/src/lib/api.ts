@@ -1,5 +1,21 @@
 import { API_BASE_URL } from "./constants";
 
+export async function warmBackendPing(): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const res = await fetch(`${API_BASE_URL}/health`, {
+      method: "GET",
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function fetchDashboardData() {
   const summaryRes = await fetch(`${API_BASE_URL}/api/dashboard/summary`, {
     next: { revalidate: 3600 },
