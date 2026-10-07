@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Header } from "./Header";
+import { Footer } from "./Footer";
 import { MacroTickerTape } from "@/components/MacroTickerTape";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -122,7 +123,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
               href="https://github.com/israeleromon-lab/EcoNigeria"
               target="_blank"
               rel="noreferrer"
-              className="flex h-10 w-full px-3 border border-border dark:border-white/[0.12] items-center justify-center gap-2 text-foreground hover:bg-muted transition-colors text-xs font-mono uppercase tracking-wider"
+              className="flex h-10 w-full px-3 border border-border dark:border-white/[0.12] items-center justify-center gap-2 text-foreground hover:bg-muted transition-colors text-xs font-mono uppercase font-semibold"
             >
               <span>GitHub Source Repository</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -137,8 +138,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </main>
+
+      {/* Footer with CodeHype Badge */}
+      <Footer />
     </div>
   );
 }
-
-
