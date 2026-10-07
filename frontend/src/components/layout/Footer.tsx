@@ -1,19 +1,30 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export function Footer() {
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
+
+  // Only show footer on explore page (home page "/")
+  const shouldShowFooter = pathname === "/";
 
   useEffect(() => {
+    if (!shouldShowFooter) {
+      setIsVisible(false);
+      return;
+    }
+
     const handleScroll = () => {
       const scrollRoot = document.getElementById("terminal-scroll-root");
       if (!scrollRoot) return;
 
-      const isNearBottom =
-        scrollRoot.scrollHeight - scrollRoot.scrollTop - scrollRoot.clientHeight < 200;
+      // Check if user is at the very bottom of the page (within 50px)
+      const isAtBottom =
+        scrollRoot.scrollHeight - scrollRoot.scrollTop - scrollRoot.clientHeight < 50;
 
-      setIsVisible(isNearBottom);
+      setIsVisible(isAtBottom);
     };
 
     const scrollRoot = document.getElementById("terminal-scroll-root");
@@ -23,7 +34,12 @@ export function Footer() {
     return () => {
       scrollRoot?.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [shouldShowFooter]);
+
+  // Don't render footer on non-explore pages
+  if (!shouldShowFooter) {
+    return null;
+  }
 
   return (
     <footer
@@ -31,8 +47,8 @@ export function Footer() {
         isVisible ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
     >
-      <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-5 md:px-8 lg:px-10 py-3 sm:py-4">
-        <div className="flex items-center justify-end gap-3">
+      <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-5 md:px-8 lg:px-10 py-2 sm:py-3">
+        <div className="flex items-center justify-end">
           <a
             href="https://www.codehype.ai/product/econonigeria?utm_source=codehype_badge"
             target="_blank"
@@ -43,18 +59,18 @@ export function Footer() {
             <img
               src="https://www.codehype.ai/badges/econonigeria.svg?variant=find-us&v=20"
               alt="Featured on CodeHype"
-              width="110"
-              height="40"
+              width="90"
+              height="33"
               loading="lazy"
               decoding="async"
               style={{
                 display: "inline-block",
                 border: 0,
                 width: "100%",
-                maxWidth: "110px",
+                maxWidth: "90px",
                 height: "auto",
-                maxHeight: "40px",
-                opacity: 0.95,
+                maxHeight: "33px",
+                opacity: 0.9,
               }}
             />
           </a>
