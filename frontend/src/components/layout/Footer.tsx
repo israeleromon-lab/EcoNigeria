@@ -41,12 +41,13 @@ export function Footer() {
     return null;
   }
 
+  // Don't render footer element at all if not visible (keeps it out of DOM)
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    <footer
-      className={`border-t border-border/50 bg-background/50 backdrop-blur-sm transition-all duration-300 ${
-        isVisible ? "opacity-100 visible" : "opacity-0 invisible"
-      }`}
-    >
+    <footer className="border-t border-border/50 bg-background/50 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-5 md:px-8 lg:px-10 py-2 sm:py-3">
         <div className="flex items-center justify-end">
           <a
