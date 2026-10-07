@@ -1,30 +1,65 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 export function Footer() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollRoot = document.getElementById("terminal-scroll-root");
+      if (!scrollRoot) return;
+
+      // Calculate if we're near the bottom (within 200px from bottom)
+      const isNearBottom =
+        scrollRoot.scrollHeight - scrollRoot.scrollTop - scrollRoot.clientHeight < 200;
+      
+      setIsVisible(isNearBottom);
+    };
+
+    const scrollRoot = document.getElementById("terminal-scroll-root");
+    scrollRoot?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      scrollRoot?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <footer className="border-t border-border/50 bg-background/50 backdrop-blur-sm">
-      <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-5 md:px-8 lg:px-10 py-4 sm:py-6">
+    <footer
+      className={`border-t border-border/50 bg-background/50 backdrop-blur-sm transition-all duration-300 ${
+        isVisible ? "opacity-100 visible" : "opacity-0 invisible"
+      }`}
+    >
+      <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-5 md:p-8 lg:px-10 py-4 sm:py-6">
         <div className="flex items-center justify-between gap-4 flex-col sm:flex-row">
           <div className="text-xs text-muted-foreground font-mono">
             © {new Date().getFullYear()} EconoNigeria. Open Economic Intelligence Platform.
           </div>
-          
-          {/* CodeHype Badge - Subtle and Right-Aligned */}
-          <a 
-            href="https://www.codehype.ai/product/econonigeria?utm_source=codehype_badge" 
-            target="_blank" 
+
+          {/* CodeHype Badge */}
+          <a
+            href="https://www.codehype.ai/product/econonigeria?utm_source=codehype_badge"
+            target="_blank"
             rel="noopener noreferrer"
             className="transition-opacity hover:opacity-80"
             aria-label="Featured on CodeHype"
           >
-            <img 
-              src="https://www.codehype.ai/badges/econonigeria.svg?variant=find-us&v=20" 
-              alt="Featured on CodeHype" 
-              width="120" 
-              height="45"
-              className="h-auto max-h-[45px]"
-              loading="lazy" 
+            <img
+              src="https://www.codehype.ai/badges/econonigeria.svg?variant=find-us&v=20"
+              alt="Featured on CodeHype"
+              width="180"
+              height="65"
+              loading="lazy"
               decoding="async"
+              style={{
+                display: "inline-block",
+                border: 0,
+                width: "100%",
+                maxWidth: "180px",
+                height: "auto",
+                maxHeight: "65px",
+              }}
             />
           </a>
         </div>
