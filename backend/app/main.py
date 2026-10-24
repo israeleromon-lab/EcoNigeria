@@ -12,8 +12,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
-from app.middleware import RateLimitMiddleware
+from app.middleware import RateLimitMiddleware, CacheControlMiddleware
 from app.routers import dashboard, indicators, forecasts, analyst, research, admin, status, v1, signals, compare
+from app.services.scheduler import scheduler
 
 
 import threading
@@ -23,11 +24,14 @@ from app.services.etl.runner import run_etl
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Startup: ensure all tables exist.  Shutdown: dispose engine."""
+    """Startup: ensure all tables exist and activate background scheduler. Shutdown: dispose cleanly."""
     Base.metadata.create_all(bind=engine)
-    # Automatically run the ETL pipeline in the background on startup
-    threading.Thread(target=run_etl, daemon=True).start()
+    # Run initial ETL pipeline on startup in thread
+    threading.Thread(target=run_etl, daemon=True, name="Initial-ETL").start()
+    # Start periodic background jobs (high-frequency monitoring, signals detection, scheduled ETL)
+    scheduler.start()
     yield
+    scheduler.stop()
     engine.dispose()
 
 
@@ -40,7 +44,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Apply Rate Limiting Middleware
+# Apply Caching & Rate Limiting Middlewares
+app.add_middleware(CacheControlMiddleware)
 app.add_middleware(RateLimitMiddleware)
 
 # Set up CORS
@@ -55,6 +60,8 @@ app.add_middleware(
         "X-RateLimit-Remaining",
         "X-RateLimit-Reset",
         "Retry-After",
+        "X-Cache",
+        "Cache-Control",
     ],
 )
 

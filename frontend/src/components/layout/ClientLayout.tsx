@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { MacroTickerTape } from "@/components/MacroTickerTape";
+import { CookieConsent } from "@/components/CookieConsent";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { X, ExternalLink } from "lucide-react";
@@ -141,6 +142,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
       {/* Footer with CodeHype Badge */}
       <Footer />
+
+      {/* Institutional Cookie & Storage Consent Banner */}
+      <CookieConsent />
     </div>
   );
 }

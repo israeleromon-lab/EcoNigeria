@@ -250,6 +250,8 @@ def get_system_status(db: Session = Depends(get_db)):
     if total_observations == 0 or stale_count >= total_indicators:
         overall_status = "degraded"
 
+    from app.services.scheduler import scheduler
+
     return SystemStatusOut(
         status=overall_status,
         environment="production" if "postgresql" in engine.dialect.name else "local",
@@ -261,4 +263,5 @@ def get_system_status(db: Session = Depends(get_db)):
         freshness_percentage=freshness_pct,
         sources=sources_out,
         economic_pulse=pulse,
+        background_scheduler=scheduler.get_status(),
     )

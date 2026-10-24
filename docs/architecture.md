@@ -82,6 +82,22 @@ The public REST API (`/v1`) and analytical endpoints enforce an in-memory slidin
 - **Exemptions:** Uptime health probes (`/health`) and OpenAPI documentation (`/docs`, `/openapi.json`) are unthrottled.
 - **Telemetry Headers:** Responses supply `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. Exceeded requests receive `HTTP 429 Too Many Requests` with a `Retry-After` countdown.
 
+## Multi-Tier Caching Architecture
+
+To achieve sub-50ms render times and minimize database query overhead:
+1. **Edge & Static Asset Caching (`next.config.ts`):** Webpack JS/CSS bundles, fonts, and images are served with `Cache-Control: public, max-age=31536000, immutable`.
+2. **Client-Side Query Caching (TanStack React Query):** Observations are held in memory with a 5-minute `staleTime` and 30-minute `gcTime`, bypassing redundant network calls during route changes.
+3. **HTTP API Cache-Control Middleware:** GET responses inject `stale-while-revalidate` directives allowing Vercel edge and browser caches to serve warm macroeconomic snapshots.
+4. **Backend In-Memory Response Cache:** High-traffic endpoints (`/api/dashboard/summary`, `/v1/indicators`, `/v1/pulse`) utilize a fast in-memory TTL cache with telemetry headers (`X-Cache: HIT / MISS`).
+
+## Background Task Scheduler
+
+A daemon thread scheduler (`BackgroundScheduler`) runs in the FastAPI application lifecycle:
+- **High-Frequency Monitor:** Ingests rapid FX and commodity spot movements every 5 minutes.
+- **Economic Signals Engine:** Evaluates macro volatility and threshold anomalies every 15 minutes.
+- **Scheduled Macro ETL:** Syncs official multi-decade accounts from World Bank, NBS, and FRED every 12 hours.
+- **Telemetry:** Health metrics and execution history are exposed via `/api/status`.
+
 ## Tech Stack 2.0
 
 | Layer | Technology |

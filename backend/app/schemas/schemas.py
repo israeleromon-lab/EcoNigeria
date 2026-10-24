@@ -174,4 +174,5 @@ class SystemStatusOut(BaseModel):
     freshness_percentage: float
     sources: List[SourceStatus]
     economic_pulse: EconomicPulse
+    background_scheduler: Optional[Dict[str, Any]] = None
 

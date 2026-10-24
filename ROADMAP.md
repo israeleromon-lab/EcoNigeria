@@ -17,7 +17,7 @@ Goal: Establish the open-source foundation, governance, and architecture.
 ## PHASE B — DATA INFRASTRUCTURE (In Progress)
 Goal: Build a robust, transparent, near-real-time data layer.
 - [~] Implement robust source adapters for CBN, NBS, and World Bank *(World Bank WDI, FRED, and ExchangeRate-API ETL pipelines are live; CBN and NBS adapters currently perform portal health checks with verified statistical benchmark fallbacks while full automated bulletin scrapers are in progress)*
-- [~] Establish one-minute source monitoring for eligible high-frequency data *(ETL runs automatically on backend startup and via manual `/api/admin/run-etl` trigger; dedicated 1-minute background cron scheduler is pending)*
+- [x] Establish background scheduler for high-frequency data *(Daemon BackgroundScheduler executes high-frequency FX/market monitoring every 5 mins, anomaly signals scan every 15 mins, and macro ETL updates every 12 hrs; live telemetry reported at /status)*
 - [x] Implement data freshness and provenance tracking metadata (`observation_time`, `publication_time`, `ingestion_time`, `source_checked_time`, `native_frequency`)
 - [x] Build a public Data Status page monitoring pipeline health (`/status` and `/api/status`)
 - [~] Establish versioned datasets for reproducibility *(`/v1/datasets` serves release metadata, BibTeX citations, and SHA-256 checksums; immutable per-release archival snapshots are in progress)*
