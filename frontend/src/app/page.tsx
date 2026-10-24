@@ -224,7 +224,7 @@ export default function Dashboard() {
                   isFocused &&
                     "bg-emerald-500/[0.03] dark:bg-[#111622] ring-1 ring-inset ring-emerald-500/40",
                   isFlashed &&
-                    "ring-2 ring-inset ring-emerald-400 bg-emerald-500/10"
+                    "ring-2 ring-inset ring-emerald-400 bg-emerald-500/10 animate-telemetry-snap"
                 )}
               >
                 {/* 1. Uppercase Monospace Metric Header + Series Code + HUD Chart Trigger */}
@@ -309,6 +309,10 @@ export default function Dashboard() {
                 {/* 4. Footnote Citing Source Entity, Period & 1-Click Verification */}
                 <div className="pt-2.5 border-t border-border/60 dark:border-white/[0.06] flex items-center justify-between gap-1 text-[10px] font-mono text-muted-foreground">
                   <div className="flex items-center gap-1.5 truncate">
+                    <span
+                      className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-phosphor-dot shrink-0"
+                      title="Live Telemetry Ingestion Active"
+                    />
                     <a
                       href={indicator.sourceUrl}
                       target="_blank"
@@ -367,6 +371,10 @@ export default function Dashboard() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border dark:border-white/[0.08] pb-4">
             <div>
               <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] font-mono uppercase tracking-widest text-emerald-500 mb-1">
+                <span className="relative flex h-1.5 w-1.5 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                </span>
                 <span>ACTIVE TERMINAL HUD // PRIMARY CHART</span>
                 <span>·</span>
                 <span>{focusedIndicator.id}</span>

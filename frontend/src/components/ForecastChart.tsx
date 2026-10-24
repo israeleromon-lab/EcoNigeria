@@ -67,6 +67,10 @@ export function ForecastChart({
     forecast: f.ensemble_value,
     prophet_upper: f.prophet_upper,
     prophet_lower: f.prophet_lower,
+    ci_range:
+      f.prophet_lower != null && f.prophet_upper != null
+        ? [f.prophet_lower, f.prophet_upper]
+        : null,
   }));
 
   chartData.push(...forecastItems);
@@ -80,6 +84,7 @@ export function ForecastChart({
       forecast: lastHistorical.value,
       prophet_upper: lastHistorical.value,
       prophet_lower: lastHistorical.value,
+      ci_range: [lastHistorical.value, lastHistorical.value],
     };
     chartData[historicalData.length - 1] = transitionPoint;
   }
@@ -178,8 +183,12 @@ export function ForecastChart({
           >
             <defs>
               <linearGradient id="colorForecast" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={color} stopOpacity={0.3} />
+                <stop offset="5%" stopColor={color} stopOpacity={0.28} />
                 <stop offset="95%" stopColor={color} stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="uncertaintyFan" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#eab308" stopOpacity={0.22} />
+                <stop offset="100%" stopColor="#eab308" stopOpacity={0.05} />
               </linearGradient>
             </defs>
             <CartesianGrid
@@ -210,7 +219,15 @@ export function ForecastChart({
               }}
               width={50}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{
+                stroke: "#10b981",
+                strokeWidth: 1.5,
+                strokeDasharray: "3 3",
+                strokeOpacity: 0.8,
+              }}
+            />
             <Legend
               verticalAlign="top"
               wrapperStyle={{
@@ -222,6 +239,23 @@ export function ForecastChart({
               }}
             />
 
+            {/* 80% Bayesian Credible Fan Band */}
+            <Area
+              type="monotone"
+              dataKey="ci_range"
+              stroke="#eab308"
+              strokeWidth={1}
+              strokeDasharray="3 3"
+              strokeOpacity={0.45}
+              fill="url(#uncertaintyFan)"
+              fillOpacity={1}
+              isAnimationActive={true}
+              animationDuration={600}
+              animationEasing="ease-out"
+              name="80% Bayesian Uncertainty Fan"
+            />
+
+            {/* Empirical Historical Observations */}
             <Area
               type="monotone"
               dataKey="value"
@@ -229,8 +263,13 @@ export function ForecastChart({
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorForecast)"
+              isAnimationActive={true}
+              animationDuration={500}
+              animationEasing="ease-out"
               name="Empirical Historical"
             />
+
+            {/* Continuous Forward Forecast Trajectory */}
             <Line
               type="monotone"
               dataKey="forecast"
@@ -238,28 +277,10 @@ export function ForecastChart({
               strokeWidth={2.5}
               strokeDasharray="5 5"
               dot={false}
+              isAnimationActive={true}
+              animationDuration={700}
+              animationEasing="ease-out"
               name="ML Ensemble Forecast (5Y)"
-            />
-            <Line
-              type="monotone"
-              dataKey="prophet_upper"
-              stroke="#eab308"
-              strokeWidth={1}
-              strokeDasharray="3 3"
-              dot={false}
-              opacity={0.45}
-              name="80% Confidence Band"
-            />
-            <Line
-              type="monotone"
-              dataKey="prophet_lower"
-              stroke="#eab308"
-              strokeWidth={1}
-              strokeDasharray="3 3"
-              dot={false}
-              opacity={0.45}
-              legendType="none"
-              name="Lower Bound"
             />
 
             {showEvents &&
