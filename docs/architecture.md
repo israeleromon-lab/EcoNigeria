@@ -74,6 +74,14 @@ EconoNigeria targets a **one-minute monitoring cadence**, but respects the **nat
 Forecasts are **not** generated every minute. They are computationally expensive.
 Instead, when a low-frequency macro indicator (like GDP) registers a new official observation, an event triggers the retraining and re-evaluation of the forecasting models (Prophet, ARIMA, XGBoost).
 
+## API Protection & Rate Limiting
+
+The public REST API (`/v1`) and analytical endpoints enforce an in-memory sliding-window rate limiter per client IP:
+- **Standard Endpoints (`/v1/*`, `/api/*`):** 60 requests/minute.
+- **Resource-Heavy Endpoints (`/v1/forecasts/*`, `/api/analyst/*`):** 15 requests/minute.
+- **Exemptions:** Uptime health probes (`/health`) and OpenAPI documentation (`/docs`, `/openapi.json`) are unthrottled.
+- **Telemetry Headers:** Responses supply `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`. Exceeded requests receive `HTTP 429 Too Many Requests` with a `Retry-After` countdown.
+
 ## Tech Stack 2.0
 
 | Layer | Technology |

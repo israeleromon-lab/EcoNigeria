@@ -12,6 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
+from app.middleware import RateLimitMiddleware
 from app.routers import dashboard, indicators, forecasts, analyst, research, admin, status, v1, signals, compare
 
 
@@ -39,6 +40,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Apply Rate Limiting Middleware
+app.add_middleware(RateLimitMiddleware)
+
 # Set up CORS
 app.add_middleware(
     CORSMiddleware,
@@ -46,6 +50,12 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=[
+        "X-RateLimit-Limit",
+        "X-RateLimit-Remaining",
+        "X-RateLimit-Reset",
+        "Retry-After",
+    ],
 )
 
 # Include Routers

@@ -100,22 +100,22 @@ export default function ComparePage() {
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       {/* Header */}
-      <div className="border-b-4 border-foreground pb-6">
+      <div className="border-b-4 border-foreground pb-5 sm:pb-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
               Phase F Pan-African Intelligence Layer
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight uppercase">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight uppercase break-words">
               Cross-Country Comparison Tool
             </h1>
-            <p className="text-lg text-muted-foreground mt-3 font-serif italic max-w-3xl">
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground mt-2.5 sm:mt-3 font-serif italic max-w-3xl">
               Benchmarking Nigeria against African peer economies. Analyze growth differentials, consumer price divergence, and sovereign debt leverage across the continent.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
             <span className="px-3 py-1 bg-foreground text-background font-mono text-xs font-bold uppercase tracking-wider">
               7 Economies Live
             </span>
@@ -124,12 +124,12 @@ export default function ComparePage() {
       </div>
 
       {/* Bilateral Comparison Selector Bar */}
-      <div className="border-4 border-foreground bg-background p-6 space-y-6">
+      <div id="bilateral-comparator-section" className="border-2 sm:border-4 border-foreground bg-background p-4 sm:p-6 space-y-5 sm:space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-foreground pb-4">
           <div>
-            <h2 className="text-xl font-bold uppercase tracking-tight flex items-center gap-2">
-              <Scale className="w-5 h-5 text-foreground" />
-              Bilateral Economic Diagnostic
+            <h2 className="text-lg sm:text-xl font-bold uppercase tracking-tight flex items-center gap-2">
+              <Scale className="w-5 h-5 text-foreground shrink-0" />
+              <span>Bilateral Economic Diagnostic</span>
             </h2>
             <p className="text-xs font-mono text-muted-foreground mt-1">
               Select any two peer economies to compute divergence spreads and comparative time series.
@@ -137,8 +137,8 @@ export default function ComparePage() {
           </div>
 
           {/* Quick Presets */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground mr-1">
+          <div className="flex overflow-x-auto sm:flex-wrap items-center gap-1.5 pb-1 sm:pb-0 -mx-1 px-1 no-scrollbar">
+            <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground mr-1 shrink-0">
               Presets:
             </span>
             {PRESET_PAIRS.map((preset) => (
@@ -148,7 +148,7 @@ export default function ComparePage() {
                   setCountryA(preset.a);
                   setCountryB(preset.b);
                 }}
-                className={`px-2.5 py-1 text-[11px] font-mono uppercase tracking-wider border transition-colors ${
+                className={`px-2.5 py-1.5 sm:py-1 text-[11px] font-mono uppercase tracking-wider border transition-colors shrink-0 whitespace-nowrap ${
                   countryA === preset.a && countryB === preset.b
                     ? "bg-foreground text-background border-foreground font-bold"
                     : "bg-background text-foreground border-border hover:bg-muted"
@@ -161,16 +161,16 @@ export default function ComparePage() {
         </div>
 
         {/* Dropdown Selectors & Swap Button */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] items-center gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] items-center gap-3 sm:gap-4">
           {/* Country A */}
-          <div className="border-2 border-foreground p-4 bg-muted/10">
-            <label className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground block mb-2">
+          <div className="border-2 border-foreground p-3 sm:p-4 bg-muted/10">
+            <label className="text-[11px] sm:text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground block mb-2">
               Primary Economy (Country A)
             </label>
             <select
               value={countryA}
               onChange={(e) => setCountryA(e.target.value)}
-              className="w-full bg-background border border-border p-2.5 font-bold uppercase tracking-wider text-sm focus:outline-none focus:border-foreground"
+              className="w-full bg-background border border-border p-2.5 font-bold uppercase tracking-wider text-xs sm:text-sm focus:outline-none focus:border-foreground"
             >
               {COUNTRY_OPTIONS.map((c) => (
                 <option key={c.slug} value={c.slug} disabled={c.slug === countryB}>
@@ -184,22 +184,22 @@ export default function ComparePage() {
           <div className="flex justify-center">
             <button
               onClick={handleSwap}
-              className="p-3 border-2 border-foreground bg-background hover:bg-muted transition-colors rounded-none"
+              className="p-2.5 sm:p-3 border-2 border-foreground bg-background hover:bg-muted transition-colors rounded-none"
               title="Swap Countries"
             >
-              <ArrowRightLeft className="w-5 h-5 text-foreground" />
+              <ArrowRightLeft className="w-4 h-4 sm:w-5 sm:h-5 text-foreground rotate-90 md:rotate-0 transition-transform" />
             </button>
           </div>
 
           {/* Country B */}
-          <div className="border-2 border-foreground p-4 bg-muted/10">
-            <label className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground block mb-2">
+          <div className="border-2 border-foreground p-3 sm:p-4 bg-muted/10">
+            <label className="text-[11px] sm:text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground block mb-2">
               Benchmark Economy (Country B)
             </label>
             <select
               value={countryB}
               onChange={(e) => setCountryB(e.target.value)}
-              className="w-full bg-background border border-border p-2.5 font-bold uppercase tracking-wider text-sm focus:outline-none focus:border-foreground"
+              className="w-full bg-background border border-border p-2.5 font-bold uppercase tracking-wider text-xs sm:text-sm focus:outline-none focus:border-foreground"
             >
               {COUNTRY_OPTIONS.map((c) => (
                 <option key={c.slug} value={c.slug} disabled={c.slug === countryA}>
@@ -218,15 +218,15 @@ export default function ComparePage() {
             ))}
           </div>
         ) : cA && cB ? (
-          <div className="space-y-6 pt-2">
+          <div className="space-y-5 sm:space-y-6 pt-2">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-l border-t border-border">
               {/* Inflation Differential */}
-              <div className="border-r border-b border-border p-5 bg-background">
+              <div className="border-r border-b border-border p-4 sm:p-5 bg-background">
                 <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
                   Inflation Spread
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-mono font-bold text-foreground">
+                  <span className="text-xl sm:text-2xl font-mono font-bold text-foreground">
                     {diffs.inflation_spread > 0 ? `+${diffs.inflation_spread}%` : `${diffs.inflation_spread}%`}
                   </span>
                   <span className="text-xs font-mono text-muted-foreground">differential</span>
@@ -239,12 +239,12 @@ export default function ComparePage() {
               </div>
 
               {/* GDP Growth Differential */}
-              <div className="border-r border-b border-border p-5 bg-background">
+              <div className="border-r border-b border-border p-4 sm:p-5 bg-background">
                 <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
                   GDP Growth Spread
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-mono font-bold text-foreground">
+                  <span className="text-xl sm:text-2xl font-mono font-bold text-foreground">
                     {diffs.gdp_growth_spread > 0 ? `+${diffs.gdp_growth_spread}%` : `${diffs.gdp_growth_spread}%`}
                   </span>
                   <span className="text-xs font-mono text-muted-foreground">differential</span>
@@ -257,12 +257,12 @@ export default function ComparePage() {
               </div>
 
               {/* Debt-to-GDP Spread */}
-              <div className="border-r border-b border-border p-5 bg-background">
+              <div className="border-r border-b border-border p-4 sm:p-5 bg-background">
                 <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
                   Debt-to-GDP Spread
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-mono font-bold text-foreground">
+                  <span className="text-xl sm:text-2xl font-mono font-bold text-foreground">
                     {diffs.debt_spread > 0 ? `+${diffs.debt_spread}%` : `${diffs.debt_spread}%`}
                   </span>
                   <span className="text-xs font-mono text-muted-foreground">of GDP delta</span>
@@ -275,12 +275,12 @@ export default function ComparePage() {
               </div>
 
               {/* GDP Per Capita Gap */}
-              <div className="border-r border-b border-border p-5 bg-background">
+              <div className="border-r border-b border-border p-4 sm:p-5 bg-background">
                 <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1">
                   Income Per Capita Gap
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-mono font-bold text-foreground">
+                  <span className="text-xl sm:text-2xl font-mono font-bold text-foreground">
                     {diffs.gdp_per_capita_spread > 0 ? `+$${diffs.gdp_per_capita_spread}` : `-$${Math.abs(diffs.gdp_per_capita_spread)}`}
                   </span>
                   <span className="text-xs font-mono text-muted-foreground">USD delta</span>
@@ -295,7 +295,7 @@ export default function ComparePage() {
 
             {/* Empirical Synthesis Insights */}
             {bilateralData.analytical_insights && bilateralData.analytical_insights.length > 0 && (
-              <div className="p-5 border-l-4 border-foreground bg-muted/10 space-y-2">
+              <div className="p-4 sm:p-5 border-l-4 border-foreground bg-muted/10 space-y-2">
                 <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-foreground">
                   Empirical Divergence Analysis
                 </h4>
@@ -310,10 +310,10 @@ export default function ComparePage() {
             )}
 
             {/* Aligned Historical Trajectory Chart */}
-            <div className="border border-border p-6 bg-background space-y-4">
+            <div className="border border-border p-3.5 sm:p-6 bg-background space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
                 <div>
-                  <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-foreground">
+                  <h3 className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-foreground">
                     10-Year Comparative Trajectory (2018–2024)
                   </h3>
                   <div className="text-xs font-serif text-muted-foreground">
@@ -322,12 +322,12 @@ export default function ComparePage() {
                 </div>
 
                 {/* Metric Switcher */}
-                <div className="flex items-center gap-1">
+                <div className="flex flex-wrap items-center gap-1 w-full sm:w-auto">
                   {(["inflation", "gdp_growth", "debt_to_gdp"] as const).map((m) => (
                     <button
                       key={m}
                       onClick={() => setActiveMetric(m)}
-                      className={`px-3 py-1 text-xs font-mono uppercase tracking-wider border transition-colors ${
+                      className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 sm:py-1 text-[11px] sm:text-xs font-mono uppercase tracking-wider border transition-colors whitespace-nowrap ${
                         activeMetric === m
                           ? "bg-foreground text-background border-foreground font-bold"
                           : "bg-background text-foreground border-border hover:bg-muted"
@@ -340,38 +340,38 @@ export default function ComparePage() {
               </div>
 
               {/* Recharts Line Chart */}
-              <div className="h-80 w-full pt-4">
+              <div className="h-[260px] sm:h-80 w-full pt-2 sm:pt-4">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData} margin={{ top: 16, right: 24, left: 4, bottom: 8 }}>
+                  <LineChart data={chartData} margin={{ top: 12, right: 10, left: -4, bottom: 6 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888888" strokeOpacity={0.25} />
                     <XAxis 
                       dataKey="period" 
                       axisLine={false} 
                       tickLine={false} 
                       minTickGap={25}
-                      tick={{ fill: "#888888", fontSize: 11, fontFamily: "monospace" }}
+                      tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }}
                       dy={8}
                     />
                     <YAxis 
                       axisLine={false} 
                       tickLine={false} 
-                      width={55}
-                      tick={{ fill: "#888888", fontSize: 11, fontFamily: "monospace" }}
+                      width={48}
+                      tick={{ fill: "#888888", fontSize: 10, fontFamily: "monospace" }}
                       tickFormatter={(v) => `${v}%`}
                     />
                     <Tooltip
                       content={({ active, payload, label }: any) => {
                         if (!active || !payload || !payload.length) return null;
                         return (
-                          <div className="bg-card border-2 border-foreground p-3 shadow-xl text-xs font-mono min-w-[180px]">
+                          <div className="bg-card border-2 border-foreground p-2.5 sm:p-3 shadow-xl text-xs font-mono min-w-[160px] max-w-[240px]">
                             <div className="font-bold text-foreground border-b border-border pb-1 mb-2 uppercase tracking-wider">
                               Year: {label}
                             </div>
                             <div className="space-y-1.5">
                               {payload.map((entry: any, idx: number) => (
-                                <div key={idx} className="flex items-center justify-between gap-4">
-                                  <span className="text-muted-foreground">{entry.name}:</span>
-                                  <span className="font-bold" style={{ color: entry.color }}>
+                                <div key={idx} className="flex items-center justify-between gap-3">
+                                  <span className="text-muted-foreground truncate">{entry.name}:</span>
+                                  <span className="font-bold shrink-0" style={{ color: entry.color }}>
                                     {entry.value != null ? `${entry.value}%` : "N/A"}
                                   </span>
                                 </div>
@@ -383,11 +383,10 @@ export default function ComparePage() {
                     />
                     <Legend 
                       verticalAlign="top" 
-                      height={36}
                       wrapperStyle={{ 
                         fontFamily: "monospace", 
-                        fontSize: "12px", 
-                        paddingBottom: "10px" 
+                        fontSize: "11px", 
+                        paddingBottom: "8px" 
                       }} 
                     />
                     <Line
@@ -418,12 +417,12 @@ export default function ComparePage() {
       </div>
 
       {/* Pan-African Benchmark Matrix Table */}
-      <div className="space-y-6">
-        <div className="border-b-2 border-foreground pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="border-b-2 border-foreground pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <h2 className="text-xl font-bold uppercase tracking-tight flex items-center gap-2">
-              <Globe2 className="w-5 h-5 text-foreground" />
-              Pan-African Macroeconomic Benchmark Matrix
+            <h2 className="text-lg sm:text-xl font-bold uppercase tracking-tight flex items-center gap-2">
+              <Globe2 className="w-5 h-5 text-foreground shrink-0" />
+              <span>Pan-African Macroeconomic Benchmark Matrix</span>
             </h2>
             <p className="text-xs font-mono text-muted-foreground mt-0.5">
               Harmonized metrics across 7 African economies (World Bank / IMF WEO Standardized).
@@ -432,7 +431,7 @@ export default function ComparePage() {
 
           <button
             onClick={handleExportCSV}
-            className="px-3 py-1.5 text-xs font-mono font-bold uppercase tracking-wider border border-border hover:bg-muted flex items-center gap-1.5 shrink-0"
+            className="px-3 py-1.5 text-xs font-mono font-bold uppercase tracking-wider border border-border hover:bg-muted flex items-center gap-1.5 shrink-0 self-start sm:self-auto"
           >
             <Download className="w-3.5 h-3.5" />
             Export Benchmark CSV
@@ -447,18 +446,18 @@ export default function ComparePage() {
           </div>
         ) : (
           <div className="overflow-x-auto border-2 border-foreground bg-background">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full min-w-[720px] text-left border-collapse">
               <thead>
                 <tr className="border-b-2 border-foreground bg-muted/40 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-                  <th className="p-3.5">Economy</th>
-                  <th className="p-3.5">Region</th>
-                  <th className="p-3.5 text-right">GDP Growth</th>
-                  <th className="p-3.5 text-right">CPI Inflation</th>
-                  <th className="p-3.5 text-right">Debt / GDP</th>
-                  <th className="p-3.5 text-right">GDP Per Capita</th>
-                  <th className="p-3.5 text-right">Population</th>
-                  <th className="p-3.5 text-right">Unemployment</th>
-                  <th className="p-3.5 text-center">Action</th>
+                  <th className="p-3 sm:p-3.5 sticky left-0 z-10 bg-card">Economy</th>
+                  <th className="p-3 sm:p-3.5">Region</th>
+                  <th className="p-3 sm:p-3.5 text-right">GDP Growth</th>
+                  <th className="p-3 sm:p-3.5 text-right">CPI Inflation</th>
+                  <th className="p-3 sm:p-3.5 text-right">Debt / GDP</th>
+                  <th className="p-3 sm:p-3.5 text-right">GDP Per Capita</th>
+                  <th className="p-3 sm:p-3.5 text-right">Population</th>
+                  <th className="p-3 sm:p-3.5 text-right">Unemployment</th>
+                  <th className="p-3 sm:p-3.5 text-center">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border font-mono text-xs">
@@ -469,10 +468,10 @@ export default function ComparePage() {
                       key={row.code}
                       className={`hover:bg-muted/30 transition-colors ${isNigeria ? "bg-muted/15 font-semibold" : ""}`}
                     >
-                      <td className="p-3.5 flex items-center gap-2">
+                      <td className="p-3 sm:p-3.5 flex items-center gap-2 sticky left-0 z-10 bg-background">
                         <span className="text-base">{row.flag}</span>
                         <div>
-                          <div className="font-bold text-foreground flex items-center gap-1.5">
+                          <div className="font-bold text-foreground flex items-center gap-1.5 whitespace-nowrap">
                             {row.name}
                             {isNigeria && (
                               <span className="text-[9px] font-mono px-1 py-0.2 bg-foreground text-background">
@@ -483,31 +482,37 @@ export default function ComparePage() {
                           <div className="text-[10px] text-muted-foreground">{row.currency}</div>
                         </div>
                       </td>
-                      <td className="p-3.5 text-muted-foreground">{row.region}</td>
-                      <td className={`p-3.5 text-right font-bold ${row.gdp_growth_rate >= 5.0 ? "text-emerald-600 dark:text-emerald-400" : ""}`}>
+                      <td className="p-3 sm:p-3.5 text-muted-foreground whitespace-nowrap">{row.region}</td>
+                      <td className={`p-3 sm:p-3.5 text-right font-bold ${row.gdp_growth_rate >= 5.0 ? "text-emerald-600 dark:text-emerald-400" : ""}`}>
                         {row.gdp_growth_rate?.toFixed(2)}%
                       </td>
-                      <td className={`p-3.5 text-right font-bold ${row.inflation_rate >= 20.0 ? "text-destructive" : ""}`}>
+                      <td className={`p-3 sm:p-3.5 text-right font-bold ${row.inflation_rate >= 20.0 ? "text-destructive" : ""}`}>
                         {row.inflation_rate?.toFixed(1)}%
                       </td>
-                      <td className={`p-3.5 text-right ${row.debt_to_gdp >= 75.0 ? "text-amber-600 dark:text-amber-400" : ""}`}>
+                      <td className={`p-3 sm:p-3.5 text-right ${row.debt_to_gdp >= 75.0 ? "text-amber-600 dark:text-amber-400" : ""}`}>
                         {row.debt_to_gdp?.toFixed(1)}%
                       </td>
-                      <td className="p-3.5 text-right font-bold">
+                      <td className="p-3 sm:p-3.5 text-right font-bold">
                         ${row.gdp_per_capita?.toLocaleString()}
                       </td>
-                      <td className="p-3.5 text-right text-muted-foreground">
+                      <td className="p-3 sm:p-3.5 text-right text-muted-foreground">
                         {row.population_millions?.toFixed(1)}M
                       </td>
-                      <td className="p-3.5 text-right text-muted-foreground">
+                      <td className="p-3 sm:p-3.5 text-right text-muted-foreground">
                         {row.unemployment_rate?.toFixed(1)}%
                       </td>
-                      <td className="p-3.5 text-center">
+                      <td className="p-3 sm:p-3.5 text-center">
                         <button
                           onClick={() => {
                             setCountryA("nigeria");
                             setCountryB(row.slug);
-                            window.scrollTo({ top: 120, behavior: "smooth" });
+                            const el = document.getElementById("bilateral-comparator-section");
+                            if (el) {
+                              el.scrollIntoView({ behavior: "smooth", block: "start" });
+                            } else {
+                              const scrollRoot = document.getElementById("terminal-scroll-root");
+                              scrollRoot?.scrollTo({ top: 120, behavior: "smooth" });
+                            }
                           }}
                           className="px-2 py-1 text-[10px] uppercase font-bold border border-border hover:bg-foreground hover:text-background transition-colors"
                         >

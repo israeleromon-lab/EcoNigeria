@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     WORLD_BANK_BASE_URL: str = "https://api.worldbank.org/v2"
     COUNTRY_CODE: str = "NGA"
 
+    # API Rate Limiting
+    RATE_LIMIT_ENABLED: bool = True
+    RATE_LIMIT_DEFAULT_PER_MINUTE: int = 60
+    RATE_LIMIT_EXPENSIVE_PER_MINUTE: int = 15
+
     model_config = SettingsConfigDict(env_file=str(_dotenv_path), env_file_encoding="utf-8", extra="ignore")
 
 

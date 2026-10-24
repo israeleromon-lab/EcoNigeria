@@ -101,27 +101,27 @@ export default function Dashboard() {
       .sort((a: any, b: any) => Number(a.year) - Number(b.year)) || [];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 sm:space-y-10">
       {/* Editorial Terminal Masthead */}
-      <div className="border-b border-border dark:border-white/[0.12] pb-6 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+      <div className="border-b border-border dark:border-white/[0.12] pb-5 sm:pb-6 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-2">
+          <div className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-2">
             <span>NGA // SOVEREIGN MACRO TERMINAL</span>
             <span className="text-muted-foreground">·</span>
             <span className="text-muted-foreground">12 VERIFIED SERIES</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight uppercase">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight uppercase leading-tight">
             The open intelligence layer for Nigeria&apos;s economy.
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mt-3 font-serif italic max-w-3xl">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mt-2.5 sm:mt-3 font-serif italic max-w-3xl">
             Explore verified official time series, inspect trailing trajectories,
             analyze structural drivers, and model forward scenarios.
           </p>
         </div>
-        <div className="flex items-center gap-3 text-[11px] font-mono text-muted-foreground shrink-0">
+        <div className="flex items-center gap-3 text-[10px] sm:text-[11px] font-mono text-muted-foreground shrink-0 self-start lg:self-auto">
           <Link
             href="/methodology"
-            className="px-2.5 py-1 border border-border dark:border-white/[0.08] bg-card dark:bg-[#111622] hover:border-foreground transition-colors"
+            className="px-2.5 py-1.5 sm:py-1 border border-border dark:border-white/[0.08] bg-card dark:bg-[#111622] hover:border-foreground transition-colors"
           >
             SOURCES: CBN · NBS · DMO · FRED · WB &rarr;
           </Link>
@@ -156,7 +156,7 @@ export default function Dashboard() {
               refetch();
             }}
             disabled={isFetching}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-emerald-500/50 bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 font-mono text-[11px] uppercase tracking-wider transition-colors shrink-0 disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-emerald-500/50 bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 font-mono text-[11px] uppercase tracking-wider transition-colors shrink-0 disabled:opacity-50 self-start sm:self-auto"
           >
             <RefreshCw className={cn("w-3 h-3", isFetching && "animate-spin")} />
             {isFetching ? "Reconnecting..." : "Retry Connection"}
@@ -166,7 +166,7 @@ export default function Dashboard() {
 
       {/* 12-Indicator Anti-Vibe Macro Grid (Always rendered in SSR & Client with Verified Provenance) */}
       <div className="space-y-2">
-        <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono uppercase tracking-wider text-muted-foreground px-0.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-muted-foreground px-0.5">
           <span>
             MACROECONOMIC KPI MATRIX //{" "}
             {isLoading && !loadingTimedOut
@@ -180,7 +180,7 @@ export default function Dashboard() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 border-l border-t border-border dark:border-white/[0.08]">
+        <div className="grid grid-cols-1 min-[520px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 border-l border-t border-border dark:border-white/[0.08]">
           {INDICATORS.map((indicator) => {
             const stat = data?.indicators?.find(
               (d: any) => d.code === indicator.id
@@ -220,7 +220,7 @@ export default function Dashboard() {
                 key={indicator.id}
                 id={`kpi-${indicator.slug}`}
                 className={cn(
-                  "bg-card dark:bg-[#0B0F17] border-r border-b border-border dark:border-white/[0.08] hover:border-foreground/30 dark:hover:border-white/[0.18] dark:hover:bg-[#111622]/70 transition-colors duration-150 p-4 flex flex-col justify-between relative h-full",
+                  "bg-card dark:bg-[#0B0F17] border-r border-b border-border dark:border-white/[0.08] hover:border-foreground/30 dark:hover:border-white/[0.18] dark:hover:bg-[#111622]/70 transition-colors duration-150 p-3.5 sm:p-4 flex flex-col justify-between relative h-full",
                   isFocused &&
                     "bg-emerald-500/[0.03] dark:bg-[#111622] ring-1 ring-inset ring-emerald-500/40",
                   isFlashed &&
@@ -250,13 +250,13 @@ export default function Dashboard() {
                       }}
                       title={`Snap ${indicator.name} to Primary Chart HUD`}
                       className={cn(
-                        "p-1 border text-[10px] font-mono transition-colors shrink-0",
+                        "p-1.5 sm:p-1 border text-[10px] font-mono transition-colors shrink-0",
                         isFocused
                           ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-400"
                           : "border-transparent text-muted-foreground/60 hover:text-foreground hover:border-white/10"
                       )}
                     >
-                      <Crosshair className="w-3 h-3" />
+                      <Crosshair className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
                     </button>
                   </div>
 
@@ -341,10 +341,10 @@ export default function Dashboard() {
                   ) : (
                     <Link
                       href={`/${indicator.slug}`}
-                      className="inline-flex items-center text-muted-foreground hover:text-emerald-400 transition-colors shrink-0"
+                      className="inline-flex items-center text-muted-foreground hover:text-emerald-400 transition-colors shrink-0 p-1 -m-1"
                       title={`Open full ${indicator.name} workbench`}
                     >
-                      <ArrowUpRight className="w-3 h-3" />
+                      <ArrowUpRight className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
                     </Link>
                   )}
                 </div>
@@ -359,43 +359,43 @@ export default function Dashboard() {
         id="dashboard-primary-chart"
         className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-border dark:border-white/[0.08] bg-card dark:bg-[#0B0F17]"
       >
-        <div className="border-b lg:border-b-0 lg:border-r border-border dark:border-white/[0.08] p-6 md:p-8 bg-card dark:bg-[#0B0F17]">
+        <div className="border-b lg:border-b-0 lg:border-r border-border dark:border-white/[0.08] p-4 sm:p-6 md:p-8 bg-card dark:bg-[#0B0F17]">
           <AIAnalystCard />
         </div>
 
-        <div className="p-6 md:p-8 bg-card dark:bg-[#111622]/50 flex flex-col justify-between space-y-6">
+        <div className="p-4 sm:p-6 md:p-8 bg-card dark:bg-[#111622]/50 flex flex-col justify-between space-y-5 sm:space-y-6 overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border dark:border-white/[0.08] pb-4">
             <div>
-              <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-emerald-500 mb-1">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] font-mono uppercase tracking-widest text-emerald-500 mb-1">
                 <span>ACTIVE TERMINAL HUD // PRIMARY CHART</span>
                 <span>·</span>
                 <span>{focusedIndicator.id}</span>
                 <span>·</span>
                 <span>{focusedIndicator.publisher}</span>
               </div>
-              <h2 className="text-xl font-bold uppercase tracking-tight">
+              <h2 className="text-lg sm:text-xl font-bold uppercase tracking-tight">
                 {focusedIndicator.name} — Empirical Series &amp; Forecast
               </h2>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
               <Link
                 href={`/${focusedIndicator.slug}`}
-                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-mono uppercase tracking-wider border border-border dark:border-white/[0.12] hover:border-emerald-500/50 hover:text-emerald-400 transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 sm:py-1 text-xs font-mono uppercase tracking-wider border border-border dark:border-white/[0.12] hover:border-emerald-500/50 hover:text-emerald-400 transition-colors"
               >
                 Full Workbench <ArrowUpRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
 
-          {/* Quick Metric Switcher Strip */}
-          <div className="flex flex-wrap gap-1.5">
+          {/* Quick Metric Switcher Strip - Horizontal swipe on mobile, wrapped matrix on sm+ */}
+          <div className="flex overflow-x-auto sm:flex-wrap gap-1.5 pb-1 sm:pb-0 -mx-1 px-1 no-scrollbar">
             {INDICATORS.map((ind) => (
               <button
                 key={ind.id}
                 type="button"
                 onClick={() => setFocusedSlug(ind.slug)}
                 className={cn(
-                  "px-2 py-1 text-[10px] font-mono uppercase tracking-wider border transition-colors",
+                  "px-2.5 sm:px-2 py-1.5 sm:py-1 text-[10px] font-mono uppercase tracking-wider border transition-colors shrink-0 whitespace-nowrap",
                   focusedSlug === ind.slug
                     ? "border-emerald-500 bg-emerald-500/15 text-emerald-400 font-semibold"
                     : "border-border dark:border-white/[0.08] bg-background dark:bg-[#0B0F17] text-muted-foreground hover:text-foreground"
@@ -407,9 +407,9 @@ export default function Dashboard() {
           </div>
 
           {/* Embedded Live ForecastChart for Selected Indicator */}
-          <div className="flex-1 min-h-[340px]">
+          <div className="flex-1 min-h-[280px] sm:min-h-[340px]">
             {isFocusedChartLoading ? (
-              <Skeleton className="w-full h-[340px] rounded-none" />
+              <Skeleton className="w-full h-[280px] sm:h-[340px] rounded-none" />
             ) : focusedChartPoints.length > 0 ? (
               <ForecastChart
                 indicatorCode={focusedIndicator.id}
@@ -422,7 +422,7 @@ export default function Dashboard() {
                 highlightedYear={null}
               />
             ) : (
-              <div className="h-[340px] flex items-center justify-center border border-dashed border-white/10 font-mono text-xs text-muted-foreground">
+              <div className="h-[280px] sm:h-[340px] flex items-center justify-center border border-dashed border-white/10 font-mono text-xs text-muted-foreground p-4 text-center">
                 SELECT AN INDICATOR TO INSPECT TRAJECTORY
               </div>
             )}

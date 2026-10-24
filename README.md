@@ -42,7 +42,7 @@ Public economic dashboard covering Inflation, Real GDP Growth, Unemployment, Pub
 Automated ingestion engine (`World Bank WDI`, `FRED`, `CBN`, `NBS`, `FMDQ / ExchangeRate-API`) that validates and standardizes disparate economic series into a single PostgreSQL (`Neon.tech`) database with provenance metadata and pipeline health monitoring at `/status`.
 
 ### 3. Open API & Developer Portal (Live)
-Public, un-paywalled REST endpoints under `/v1` (`/v1/indicators`, `/v1/pulse`, `/v1/forecasts`, `/v1/events`, `/v1/signals`, `/v1/compare`) with interactive documentation and cURL/Python/JavaScript quickstarts at `/developers`.
+Public, un-paywalled REST endpoints under `/v1` (`/v1/indicators`, `/v1/pulse`, `/v1/forecasts`, `/v1/events`, `/v1/signals`, `/v1/compare`) protected with fair-use sliding-window rate limiting (60 req/min data, 15 req/min AI/forecasts), standard RFC rate-limit headers, and interactive documentation and quickstarts at `/developers`.
 
 ### 4. Forecast Lab (Live — Beta)
 Interactive multi-model predictive laboratory at `/forecasts` (Meta Prophet, Box-Jenkins ARIMA, and Hybrid Ensemble) with 80% Bayesian confidence bands, out-of-sample holdout backtesting metrics (`RMSE`, `MAPE`), Model Cards, and an interactive Scenario Shock Simulator. *(Multivariate XGBoost and sub-annual horizons in progress).*

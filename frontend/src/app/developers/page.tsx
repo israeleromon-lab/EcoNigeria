@@ -166,7 +166,7 @@ console.log(\`Found \${events.count} structural reform events\`);`
       </div>
 
       {/* Access Guarantees Banner */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 border-l border-t border-border">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-l border-t border-border">
         <div className="p-6 bg-background border-r border-b border-border">
           <div className="flex items-center gap-2 text-foreground font-bold uppercase tracking-wider text-xs mb-1">
             <KeyRound className="w-4 h-4 text-emerald-500" />
@@ -174,6 +174,16 @@ console.log(\`Found \${events.count} structural reform events\`);`
           </div>
           <p className="text-xs text-muted-foreground font-serif">
             No API keys, developer tokens, or billing tiers. Public endpoints are freely accessible for all users.
+          </p>
+        </div>
+
+        <div className="p-6 bg-background border-r border-b border-border">
+          <div className="flex items-center gap-2 text-foreground font-bold uppercase tracking-wider text-xs mb-1">
+            <Zap className="w-4 h-4 text-emerald-500" />
+            Fair-Use Rate Limits
+          </div>
+          <p className="text-xs text-muted-foreground font-serif">
+            Sliding-window quota: 60 req/min for data endpoints, 15 req/min for ML forecasting and AI reports.
           </p>
         </div>
 
@@ -315,13 +325,28 @@ console.log(\`Found \${events.count} structural reform events\`);`
       </div>
 
       {/* Terms & Open License Callout */}
-      <div className="p-6 border border-border bg-muted/10 space-y-2">
+      <div className="p-6 border border-border bg-muted/10 space-y-3">
         <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-xs text-foreground">
           <ShieldCheck className="w-4 h-4 text-primary" />
-          Fair Use & Open Data License
+          Fair Use, Rate Limits &amp; Open Data License
         </div>
         <p className="text-xs font-serif text-muted-foreground leading-relaxed">
-          EconoNigeria data is offered under open principles. You are free to redistribute, analyze, and build commercial products upon these endpoints with appropriate attribution. We ask that automated bots cache responses reasonably and respect a maximum threshold of 60 requests per minute.
+          EconoNigeria data is offered under open principles. You are free to redistribute, analyze, and build commercial products upon these endpoints with appropriate attribution. 
+          To protect community infrastructure against denial-of-service, all requests are governed by a per-IP sliding window rate limiter:
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono pt-1">
+          <div className="p-3 border border-border bg-background">
+            <span className="text-emerald-500 font-bold block mb-1">Standard Endpoints (60 req/min)</span>
+            <span className="text-muted-foreground">Applies to /v1/indicators, /v1/pulse, /v1/events, /v1/signals, and /v1/compare.</span>
+          </div>
+          <div className="p-3 border border-border bg-background">
+            <span className="text-amber-500 font-bold block mb-1">Heavy Compute (15 req/min)</span>
+            <span className="text-muted-foreground">Applies to ML model simulations (/v1/forecasts/*) and AI report synthesis (/api/analyst/*).</span>
+          </div>
+        </div>
+        <p className="text-[11px] font-mono text-muted-foreground">
+          Telemetry headers included in every response: <code className="text-foreground">X-RateLimit-Limit</code>, <code className="text-foreground">X-RateLimit-Remaining</code>, <code className="text-foreground">X-RateLimit-Reset</code>. 
+          If quota is exceeded, the server returns <code className="text-foreground">HTTP 429 Too Many Requests</code> with a <code className="text-foreground">Retry-After</code> countdown in seconds.
         </p>
         <div className="pt-2 text-xs font-mono">
           <a 
@@ -330,7 +355,7 @@ console.log(\`Found \${events.count} structural reform events\`);`
             rel="noopener noreferrer" 
             className="underline text-foreground font-bold hover:text-primary"
           >
-            GitHub Repository & Community SDKs →
+            GitHub Repository &amp; Community SDKs →
           </a>
         </div>
       </div>
