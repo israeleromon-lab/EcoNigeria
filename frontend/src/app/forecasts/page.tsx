@@ -111,6 +111,7 @@ export default function ForecastLabPage() {
       forecast: lastHist.value,
       upper: lastHist.value,
       lower: lastHist.value,
+      ci_range: [lastHist.value, lastHist.value],
       scenario: shockPct !== 0 ? lastHist.value : null,
     };
 
@@ -127,6 +128,10 @@ export default function ForecastLabPage() {
         forecast: f.selected_value,
         upper: f.prophet_upper,
         lower: f.prophet_lower,
+        ci_range:
+          f.prophet_lower != null && f.prophet_upper != null
+            ? [f.prophet_lower, f.prophet_upper]
+            : null,
         scenario: liveScenarioVal ?? f.scenario_value,
       });
     });
@@ -460,6 +465,12 @@ export default function ForecastLabPage() {
             <div className="h-[280px] sm:h-[360px] md:h-[420px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={chartData} margin={{ top: 16, right: 8, left: 0, bottom: 6 }}>
+                  <defs>
+                    <linearGradient id="uncertaintyFanLab" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#eab308" stopOpacity={0.24} />
+                      <stop offset="100%" stopColor="#eab308" stopOpacity={0.05} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#888888" strokeOpacity={0.25} />
                   <XAxis 
                     dataKey="year" 
@@ -483,7 +494,15 @@ export default function ForecastLabPage() {
                     }}
                     width={50}
                   />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip
+                    content={<CustomTooltip />}
+                    cursor={{
+                      stroke: "#10b981",
+                      strokeWidth: 1.5,
+                      strokeDasharray: "3 3",
+                      strokeOpacity: 0.8,
+                    }}
+                  />
                   <Legend 
                     verticalAlign="top" 
                     wrapperStyle={{ 
@@ -495,6 +514,22 @@ export default function ForecastLabPage() {
                     }} 
                   />
 
+                  {/* 80% Bayesian Uncertainty Fan Band */}
+                  <Area
+                    type="monotone"
+                    dataKey="ci_range"
+                    stroke="#eab308"
+                    strokeWidth={1}
+                    strokeDasharray="3 3"
+                    strokeOpacity={0.45}
+                    fill="url(#uncertaintyFanLab)"
+                    fillOpacity={1}
+                    isAnimationActive={true}
+                    animationDuration={600}
+                    animationEasing="ease-out"
+                    name="80% Bayesian Uncertainty Fan"
+                  />
+
                   {/* Historical Area */}
                   <Area 
                     type="monotone" 
@@ -503,6 +538,8 @@ export default function ForecastLabPage() {
                     strokeWidth={3}
                     fillOpacity={0.2} 
                     fill={selectedIndicator.color} 
+                    isAnimationActive={true}
+                    animationDuration={500}
                     name="Historical Observation"
                   />
 
@@ -514,30 +551,9 @@ export default function ForecastLabPage() {
                     strokeWidth={3} 
                     strokeDasharray="5 5" 
                     dot={{ r: 4, fill: '#eab308' }}
+                    isAnimationActive={true}
+                    animationDuration={700}
                     name="Projected Forecast"
-                  />
-
-                  {/* Confidence Interval Bands */}
-                  <Line 
-                    type="monotone" 
-                    dataKey="upper" 
-                    stroke="#eab308" 
-                    strokeWidth={1} 
-                    strokeDasharray="2 2" 
-                    dot={false}
-                    opacity={0.45}
-                    name="80% Confidence Band"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="lower" 
-                    stroke="#eab308" 
-                    strokeWidth={1} 
-                    strokeDasharray="2 2" 
-                    dot={false}
-                    opacity={0.45}
-                    legendType="none"
-                    name="80% Lower Bound"
                   />
 
                   {/* Scenario Line */}
